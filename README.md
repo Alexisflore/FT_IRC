@@ -1,2 +1,1 @@
-# FT_IRC
-42 IRC 
+# ft_irc
