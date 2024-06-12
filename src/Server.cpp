@@ -3,6 +3,11 @@
 
 bool Server::Signal = false;
 
+bool ChannelNameComparator::operator()(const Channel& channel) const
+{
+	return channel.getName() == channelName;
+}
+
 Server::Server()
 {
 	_socket_fd = -1;
@@ -189,7 +194,10 @@ void	Server::processJoin(int fd, std::vector<std::string> args)
 	{
 		std::cout << "Client " << fd << " is trying to join channel #" << args[1] << std::endl;
 		std::string channelName = args[1];
-		std::vector<Channel>::iterator it = std::find_if(this->_channels.begin(), this->_channels.end(), );
+		std::vector<Channel>::iterator it = std::find_if(
+			this->_channels.begin(),
+			this->_channels.end(),
+			ChannelNameComparator(channelName));
 		if (it != this->_channels.end()) // le canal existe
 		{
 			Channel& channel = *it;
@@ -218,7 +226,11 @@ void	Server::processQuit(int fd, std::vector<std::string> args)
 	{
 		std::cout << "Client " << fd << " is trying to quit channel #" << args[1] << std::endl;
 		std::string channelName = args[1];
-		std::vector<Channel>::iterator it = std::find_if(this->_channels.begin(), this->_channels.end(), [&channelName](Channel& channel) {return (channel.getName() == channelName);});
+
+		std::vector<Channel>::iterator it = std::find_if(
+			this->_channels.begin(),
+			this->_channels.end(),
+			ChannelNameComparator(channelName));
 		if (it != this->_channels.end()) // le canal existe
 		{
 			Channel& channel = *it;

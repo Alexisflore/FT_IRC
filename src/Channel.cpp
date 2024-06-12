@@ -22,7 +22,7 @@ Channel::~Channel()
 
 // }
 
-std::string     Channel::getName()
+std::string     Channel::getName() const
 {
     return this->name;
 }
