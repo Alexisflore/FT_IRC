@@ -2,10 +2,20 @@
 #define SERVER_HPP
 
 #include "Irc.hpp"
+#include "Channel.hpp"
 
 class Client;
 
 class Channel;
+
+struct ChannelNameComparator
+{
+	std::string channelName;
+
+	ChannelNameComparator(const std::string& name) : channelName(name) {}
+
+	bool operator()(const Channel& channel) const;
+};
 
 class Server
 {

@@ -17,7 +17,7 @@ public:
 	// Channel &operator=(const Channel &other);
 
     void    joinChannel(int clientFd);
-    std::string getName();
+    std::string getName() const;
     void    leaveChannel(int clientFd);
     bool    isClientInChannel(int clientFd);
     void sendMessage(const std::string message);
