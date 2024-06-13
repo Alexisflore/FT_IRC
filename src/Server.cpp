@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:02 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 12:10:52 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void	Server::newClient()
 	std::cout << VERT << "Client Connected" << REINIT << std::endl;
 }
 
-void	Server::mewDataClient(int fd)
+void	Server::newDataClient(int fd)
 {
 	char buffer[BUFFER_SIZE];//buffer pour recevoir la data
 	std::vector<std::string> args;
@@ -306,7 +306,7 @@ void	Server::initServer(char *port, char *pass)
 				}
 				else
 				{
-					mewDataClient(_fds[i].fd);//recevoir une data du client
+					newDataClient(_fds[i].fd);//recevoir une data du client
 				}
 
 			}

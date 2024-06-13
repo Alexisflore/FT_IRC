@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:51 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 12:10:50 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Server
 		void			creatSocket();
 		void			initServer(char *port, char *pass);
 		void			newClient();
-		void			mewDataClient(int fd);
+		void			newDataClient(int fd);
 		static void		signalHandler(int signum);
 		void			treatData(std::vector<std::string>, int fd);
 		void			closeFds();
