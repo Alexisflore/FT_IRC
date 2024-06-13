@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 13:12:40 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:51:55 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class Server
 		void			treatData(std::vector<std::string>, int fd);
 		void			closeFds();
 		void			clearClient(int fd);
+		Client*			getClient(int fd);
 		void			processJoin(int fd, std::vector<std::string>);
 		void			processQuit(int fd, std::vector<std::string>);
 		void			processNames(int fd, std::vector<std::string>);

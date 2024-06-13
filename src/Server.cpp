@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:34:15 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:54:24 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,16 @@ void	Server::clearClient(int fd)
 			break ;
 		}
 	}
+}
+
+Client* Server::getClient(int fd)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i].getFd() == fd)
+			return (&_clients[i]);
+	}
+	return (NULL);
 }
 
 void		Server::signalHandler(int signum)
@@ -176,11 +186,11 @@ void	Server::newClient()
 void	Server::newDataClient(int fd)
 {
 	char buffer[BUFFER_SIZE];//buffer pour recevoir la data
+	Client *client = getClient(fd);
 	std::vector<std::string> args;
 
 	memset(buffer, 0, BUFFER_SIZE);
-	int	recevBytes = recv(fd, buffer, (BUFFER_SIZE - 1), 0);//recevoir la data
-		
+	ssize_t	recevBytes = recv(fd, buffer, (BUFFER_SIZE - 1), 0);//recevoir la data
 	if (recevBytes <= 0)// si le client est deconnecte ou y a une erreur
 	{
 		std::cout << "(SERVEUR) Failure to receive message from the client" << std::endl;
@@ -190,6 +200,9 @@ void	Server::newDataClient(int fd)
 	else
 	{
 		buffer[recevBytes] = '\0';
+		client->setBuffer(buffer);//set le buffer du client
+		if (client->getBuffer().find("\n") != std::string::npos)
+			client->setBuffer(client->getBuffer().substr(0, client->getBuffer().find("\n")));
 		std::cout << "Client <" << fd << "> Data: " << buffer << std::endl;
 		args = getArgs(buffer);
 		treatData(args, fd);
