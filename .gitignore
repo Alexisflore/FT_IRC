@@ -1,4 +1,4 @@
 *.o
 ircserv
 .vscode
-/build
+build/
