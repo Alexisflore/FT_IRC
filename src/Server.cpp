@@ -249,7 +249,7 @@ std::vector<std::string>	Server::getArgs(char* buffer)
 void	Server::treatData(std::vector<std::string> args, int fd)
 {
 	std::string command[] = {
-		"JOIN", "QUIT", "NAMES", "BONG", "PASS", "KICK", "TOPIC", "PRIVMSG",
+		"JOIN", "QUIT", "NAMES", "BONG", "PART", "KICK", "TOPIC", "PRIVMSG",
 		"INVITE", "MODE", "NICK", "USER"};
 
 	void	(Server::*commandFunc[12])(int, std::vector<std::string>) = {

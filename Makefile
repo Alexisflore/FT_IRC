@@ -30,7 +30,7 @@ SRC_FILES :=		Channel.cpp \
 					process/mode.cpp \
 					process/names.cpp \
 					process/nick.cpp \
-					process/pass.cpp \
+					process/part.cpp \
 					process/privmsg.cpp \
 					process/quit.cpp \
 					process/topic.cpp \

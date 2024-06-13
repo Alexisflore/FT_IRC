@@ -15,7 +15,7 @@
 void Server::processPass(int fd, std::vector <std::string> string)
 {
 		(void)string;
-	std::string		msg = "PASS\n";
+	std::string		msg = "PART\n";
 
 	send(fd, msg.c_str(), msg.length(), 0);
 }
