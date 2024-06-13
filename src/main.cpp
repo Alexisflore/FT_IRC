@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:31 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:47 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:26:28 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,14 @@ int main(int ac, char **av)
 	// std::cout << " *-*-*- SERVER -*-*-* " << std::endl;
 	try
 	{
+		if (ac != 3)
+		{
+			throw std::invalid_argument("The ircserv needs port and password for get ready");
+			return (1);
+		}
 		signal(SIGINT, Server::signalHandler);//catch (Ctrl + C)
 		signal(SIGQUIT, Server::signalHandler);//catch (Ctrl + \)
-		
-		if (ac == 3)
-		{
-			serv.initServer(av[1], av[2]);
-		}
-		else
-			throw std::invalid_argument("The ircserv needs port and password for get ready");
-
+		serv.initServer(av[1], av[2]);
 	}
 	catch (const std::exception& e)
 	{

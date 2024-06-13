@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:22:27 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:28:35 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ class Client
 		void		setIpAdd(std::string ipadd);
 
 	private:
-		int					_fd;
-		std::string			_ip_add;
-		bool			_is_admin;
+		int				_fd;
 		std::string		_nickname;
 		std::string		_password;
+		std::string		_ip_add;
+		bool			_is_admin;
 		// struct sockaddr_in	_cliaddr;
 };
 

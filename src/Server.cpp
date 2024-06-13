@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 13:16:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:30:16 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,9 @@ void	Server::initServer(char *port, char *pass)
 {
 	securArg(port, pass);//check error port and pass
 	creatSocket();//creation du socket server
-
+	
+	std::cout << std::endl;
+	std::cout << "--------------- Server IRC ---------------" << std::endl;
 	std::cout << VERT << "Server <" << _socket_fd << "> connected" << REINIT << std::endl;
 	std::cout << "Waiting to accept a connection..." << std::endl;
 	
