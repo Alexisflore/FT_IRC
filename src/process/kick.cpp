@@ -41,4 +41,17 @@ void Server::processKick(int fd, std::vector <std::string> args)
 	}
 
 	int fdToKick = isNameInChannel(channelName, clientName);
+	if (fdToKick == 0)
+	{
+		std::cout << "Client isn t in the channel " << channelName << std::endl;
+		return ;
+	}
+	else
+	{
+		channel.leaveChannel(fdToKick);
+		std::string str = "You have been kicked from " + channelName;
+		if (args.size() == 4)
+			str = str + "\nComment : " + args[3];
+		send(fdToKick, str.c_str(), str.size(), 0);
+	}
 }
