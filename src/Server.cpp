@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:30:16 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:34:15 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,14 +243,9 @@ void	Server::initServer(char *port, char *pass)
 			if (_fds[i].revents & POLLIN)
 			{
 				if (_fds[i].fd ==  _socket_fd)
-				{
 					newClient();//accepter un client
-				}
 				else
-				{
 					newDataClient(_fds[i].fd);//recevoir une data du client
-				}
-
 			}
 		}
 	}
