@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:55 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:23:30 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,19 @@
 
 Client::Client()
 {
+	_is_admin = false;
 	// std::cout << VERT << "Default constructor are called" << REINIT << std::endl;
 }
+
+Client::Client(int fd, std::string nickname, std::string password, std::string ipadd) :
+		_fd(fd),
+		_nickname(nickname),
+		_password(password),
+		_ip_add(ipadd),
+		_is_admin(false)
+{
+	// std::cout << VERT << "Constructor are called" << REINIT << std::endl;
+};
 
 Client::~Client()
 {
