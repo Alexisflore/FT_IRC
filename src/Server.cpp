@@ -14,16 +14,41 @@ Server::Server()
 	// std::cout << VERT << "Default constructor are called" << REINIT << std::endl;
 }
 
-// Server::Server(const Server &other)
-// {
-
-// }
-
 Server::~Server()
 {
 	// _state = false;
 	std::cout << ROUGE << "ircserv off" << REINIT << std::endl;
 }
+
+void Server::securArg(const char *port, const char *pass)
+{
+	int			i = 0;
+	std::string	sPort = port;
+	std::string	sPass = pass;
+
+	if (sPort.empty() || sPass.empty())
+		throw std::invalid_argument("The arguments are empty");
+	while (port[i])
+	{
+		if (!isdigit(port[i]))
+			throw std::invalid_argument("The connection port needs just digit");
+		i++;
+	}
+
+	long int	tmp = atol(sPort.c_str());
+	if (tmp > INT_MAX)
+		throw std::overflow_error("Alert: Int overflow");
+	else if (tmp < 0)
+			throw std::invalid_argument("The connection port can't take a negative value");
+	else if (tmp == 0)
+		throw std::invalid_argument("The connection port can't take zero for value");
+	this->_port = tmp;
+	this->_pass = sPass;
+}
+// Server::Server(const Server &other)
+// {
+
+// }
 
 void	Server::clearClient(int fd)
 {
@@ -278,28 +303,3 @@ void	Server::initServer(char *port, char *pass)
 	closeFds();//close tout les fds a l'arret du server
 }
 
-void Server::securArg(const char *port, const char *pass)
-{
-	int			i = 0;
-	std::string	sPort = port;
-	std::string	sPass = pass;
-
-	if (sPort.empty() || sPass.empty())
-		throw std::invalid_argument("The arguments are empty");
-	while (port[i])
-	{
-		if (!isdigit(port[i]))
-			throw std::invalid_argument("The connection port needs just digit");
-		i++;
-	}
-
-	long int	tmp = atol(sPort.c_str());
-	if (tmp > INT_MAX)
-		throw std::overflow_error("Alert: Int overflow");
-	else if (tmp < 0)
-			throw std::invalid_argument("The connection port can't take a negative value");
-	else if (tmp == 0)
-		throw std::invalid_argument("The connection port can't take zero for value");
-	this->_port = tmp;
-	this->_pass = sPass;
-}
