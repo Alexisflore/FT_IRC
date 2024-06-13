@@ -41,7 +41,8 @@ std::string     Channel::getName() const
 
 bool    Channel::isClientInChannel(int clientFd)
 {
-    return (std::find(this->clients.begin(), this->clients.end(), clientFd) != this->clients.end());
+    bool res = std::find(this->clients.begin(), this->clients.end(), clientFd) != this->clients.end();
+    return (res);
 }
 
 void Channel::joinChannel(int clientFd)

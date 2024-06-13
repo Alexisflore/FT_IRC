@@ -205,11 +205,28 @@ void	Server::newDataClient(int fd)
 			return ;
 		std::cout << "Client <" << fd << "> Data: " << buffer << std::endl;
 		args = getArgs(buffer);
+		std::cout << "args 0 : " << args[0] << std::endl;
 		treatData(args, fd);
 		if (getClient(fd) != NULL)
 			client->getBuffer().clear();		
 	}
 }
+
+// std::vector<std::string>	Server::getArgs(char* buffer)
+// {
+// 	std::vector<std::string> args;
+// 	std::istringstream iss(buffer);
+// 	std::string str;
+
+// 	while (std::getline(iss, str))
+// 	{
+// 		size_t pos = str.find("\n");
+// 		if (pos != std::string::npos)
+// 			str = str.substr(0, pos);
+// 		args.push_back(str);
+// 	}
+// 	return (args);
+// }
 
 std::vector<std::string>	Server::getArgs(char* buffer)
 {
@@ -217,15 +234,17 @@ std::vector<std::string>	Server::getArgs(char* buffer)
 	std::istringstream iss(buffer);
 	std::string str;
 
-	while (std::getline(iss, str))
+	while (iss >> str)
 	{
 		size_t pos = str.find("\n");
 		if (pos != std::string::npos)
 			str = str.substr(0, pos);
 		args.push_back(str);
 	}
+	
 	return (args);
 }
+
 
 void	Server::treatData(std::vector<std::string> args, int fd)
 {
@@ -246,7 +265,7 @@ void	Server::treatData(std::vector<std::string> args, int fd)
 			return;
 		}
 	}
-	std::cout << "Command not found." << std::endl;
+	std::cout << "Command " << args[0] << " not found." << std::endl;
 }
 
 void	Server::initServer(char *port, char *pass)

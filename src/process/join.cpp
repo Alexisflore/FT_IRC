@@ -28,16 +28,21 @@ void	Server::processJoin(int fd, std::vector<std::string> args)
 		{
 			Channel& channel = *it;
 			if (channel.isClientInChannel(fd))
-				std::cout << "Client " << fd << " is already in the channel " << channel.getName();
+				std::cout << "Client " << fd << " is already in the channel " << channel.getName() << std::endl;
 			else
 				channel.joinChannel(fd);
 		}
 		else // creation du canal
 		{
-			Channel newChannel(channelName);
-			this->_channels.push_back(newChannel);
-			std::cout << "new channel " << channelName << " created" << std::endl;
-			newChannel.joinChannel(fd);
+			this->_channels.push_back(Channel(channelName));
+			std::vector<Channel>::iterator newIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
+			if (newIt != this->_channels.end())
+			{
+				std::cout << "new channel " << channelName << " created" << std::endl;
+				newIt->joinChannel(fd);
+			}
+			else
+				std::cout << "failed to create channel " << channelName << std::endl;
 		}
 	}
 	else
