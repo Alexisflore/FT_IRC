@@ -6,38 +6,44 @@
 #    By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/13 09:48:39 by alfloren          #+#    #+#              #
-#    Updated: 2024/06/13 13:53:20 by alfloren         ###   ########.fr        #
+#    Updated: 2024/06/13 14:35:10 by alfloren         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =				ircserv
 
-BUILD_DIR =			build
+BUILD_DIR :=		./build
+INCLUDE_DIR	:= 		./includes
+SRC_DIR :=			./src
 
-CXX =				c++
+CC =				c++
 
-CXXFLAGS =			-Iincludes -std=c++98 -Wall -Wextra -Werror -g3
+SRC_FILES :=		Channel.cpp \
+					Client.cpp \
+					main.cpp \
+					Server.cpp \
+					Utils.cpp \
+					process/join.cpp \
+					process/quit.cpp \
+					process/names.cpp \
 
-SRCS	=			src/main.cpp \
-					src/Server.cpp \
-					src/Client.cpp \
-					src/Channel.cpp \
-					src/Utils.cpp \
-					src/join.cpp \
-					src/names.cpp \
-					src/quit.cpp \
+OBJ_FILES	:= $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
+DEP_FILES	:= $(OBJ_FILES:.o=.d)
 
-OBJS =				$(SRCS:src/%.cpp=$(BUILD_DIR)/%.o) $(PROCESS:src/process/%.cpp=$(BUILD_DIR)/%.o)
+#Coompiler flags
+CFLAGS =			-Iincludes -std=c++98 -Wall -Wextra -Werror -g3
+CPPFLAGS	:= -I$(INCLUDE_DIR)
 
 all:				$(NAME)
 
-$(NAME):			$(OBJS)
-	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/%.o: src/%.cpp
-	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+-include $(DEP_FILES)
+
+$(NAME): $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(OBJ_FILES) -o $(NAME)
 
 clean:
 	@rm -rf $(BUILD_DIR)
