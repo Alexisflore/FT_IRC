@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
+/*   Updated: 2024/06/13 09:48:02 by alfloren         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/Server.hpp"
 #include <algorithm>
 
@@ -296,9 +308,9 @@ void	Server::initServer(char *port, char *pass)
 				{
 					mewDataClient(_fds[i].fd);//recevoir une data du client
 				}
-					
+
 			}
-		}	
+		}
 	}
 	closeFds();//close tout les fds a l'arret du server
 }
