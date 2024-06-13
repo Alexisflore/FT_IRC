@@ -6,11 +6,11 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:50 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 14:42:54 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 17:03:37 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "../../includes/Server.hpp"
 
 void Server::processNames(int fd, std::vector< std::string> strings)
 {

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 17:01:40 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 17:18:08 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Client
 		Client(int fd, std::string nickname, std::string password, std::string ipadd);
 		// Client(const Client &other);
 		~Client();
-		// Client &operator=(const Client &other);
+		Client &operator=(const Client &other);
 		
 		//---------Getters------------
 		int			getFd();
@@ -32,10 +32,11 @@ class Client
 		std::string	getIpAdd();
 		std::string	getUsername();
 		std::string	getBuffer();
+		bool		isLogged();
+		bool		isRegistered();
 
 		//---------Setters------------
 		void		setFd(int fd);
-		void		setIpAdd(std::string ipadd);
 		void		setBuffer(std::string buffer);
 		void		setNickname(std::string nickname);
 		void		setPassword(std::string password);
@@ -48,16 +49,16 @@ class Client
 		void		addInvolvedChannel(std::string channelName);
 		void		removeInvolvedChannel(std::string channelName);
 	private:
-		int				_fd;
-		std::string		_username;
-		std::string		_nickname;
-		std::string		_password;
-		std::string		_ip_add;
-		bool			_is_operator;
-		bool			_registered;
-		bool			_logged;
-		std::string		_buffer;
-		std::string		_channelInvolved;
+		int							_fd;
+		std::string					_username;
+		std::string					_nickname;
+		std::string					_password;
+		std::string					_ip_add;
+		bool						_is_operator;
+		bool						_registered;
+		bool						_logged;
+		std::string					_buffer;
+		std::vector<std::string>	_channelInvolved;
 		// struct sockaddr_in	_cliaddr;
 };
 

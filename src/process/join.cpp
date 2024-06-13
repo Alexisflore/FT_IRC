@@ -6,11 +6,11 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 14:42:53 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 17:03:41 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "../../includes/Server.hpp"
 
 void	Server::processJoin(int fd, std::vector<std::string> args)
 {
