@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:55:54 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:08:27 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ std::string Client::getBuffer()
 
 void	Client::setBuffer(std::string buffer)
 {
-	this->_buffer = buffer;
+	this->_buffer += buffer;
 }
 
 void	Client::setIpAdd(std::string ipadd)

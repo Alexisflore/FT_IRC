@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:54:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:42:42 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,13 +199,15 @@ void	Server::newDataClient(int fd)
 	}
 	else
 	{
-		buffer[recevBytes] = '\0';
+		// buffer[recevBytes] = '\0';
 		client->setBuffer(buffer);//set le buffer du client
-		if (client->getBuffer().find("\n") != std::string::npos)
-			client->setBuffer(client->getBuffer().substr(0, client->getBuffer().find("\n")));
+		if (client->getBuffer().find("\n") == std::string::npos)
+			return ;
 		std::cout << "Client <" << fd << "> Data: " << buffer << std::endl;
 		args = getArgs(buffer);
 		treatData(args, fd);
+		if (getClient(fd) != NULL)
+			client->getBuffer().clear();		
 	}
 }
 
@@ -215,16 +217,27 @@ std::vector<std::string>	Server::getArgs(char* buffer)
 	std::istringstream iss(buffer);
 	std::string str;
 
-	while (iss >> str)
+	while (std::getline(iss, str))
+	{
+		size_t pos = str.find("\n");
+		if (pos != std::string::npos)
+			str = str.substr(0, pos);
 		args.push_back(str);
-	
+	}
 	return (args);
 }
 
 void	Server::treatData(std::vector<std::string> args, int fd)
 {
-	std::string command[] = {"JOIN", "QUIT", "NAMES"};
-	void	(Server::*commandFunc[3])(int, std::vector<std::string>) = {&Server::processJoin, &Server::processQuit, &Server::processNames};
+	std::string command[] = {
+		"JOIN", "QUIT", "NAMES", "BONG", "PASS", "KICK", "TOPIC", "PRIVMSG",
+		"INVITE", "MODE", "NICK", "USER"};
+
+	void	(Server::*commandFunc[12])(int, std::vector<std::string>) = {
+		&Server::processJoin, &Server::processQuit, &Server::processNames, &Server::processBong,
+		&Server::processPass, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
+		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser};
+
 	for (size_t i = 0; i < command->size() - 1; i++)
 	{
 		if (strcmp(args[0].c_str(), command[i].c_str()) == 0)

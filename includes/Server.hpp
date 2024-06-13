@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:51:55 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:39:34 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,15 @@ class Server
 		void			processJoin(int fd, std::vector<std::string>);
 		void			processQuit(int fd, std::vector<std::string>);
 		void			processNames(int fd, std::vector<std::string>);
+		void			processPass(int fd, std::vector<std::string>);
+		void			processBong(int fd, std::vector<std::string>);
+		void			processKick(int fd, std::vector<std::string>);
+		void			processTopic(int fd, std::vector<std::string>);
+		void			processPrivmsg(int fd, std::vector<std::string>);
+		void			processInvite(int fd, std::vector<std::string>);
+		void			processMode(int fd, std::vector<std::string>);
+		void			processNick(int fd, std::vector<std::string>);
+		void			processUser(int fd, std::vector<std::string>);
 		std::vector<std::string>	getArgs(char* buffer);
 
 	private:
