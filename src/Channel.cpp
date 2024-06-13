@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:54 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:15:11 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,3 +73,7 @@ void Channel::sendMessage(const std::string message)
     }
 }
 
+std::vector<int>    Channel::getClients() const
+{
+	return this->clients;
+}

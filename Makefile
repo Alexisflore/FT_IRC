@@ -6,7 +6,7 @@
 #    By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/13 09:48:39 by alfloren          #+#    #+#              #
-#    Updated: 2024/06/13 09:48:45 by alfloren         ###   ########.fr        #
+#    Updated: 2024/06/13 13:53:20 by alfloren         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,9 +22,12 @@ SRCS	=			src/main.cpp \
 					src/Server.cpp \
 					src/Client.cpp \
 					src/Channel.cpp \
-					src/Utils.cpp
+					src/Utils.cpp \
+					src/join.cpp \
+					src/names.cpp \
+					src/quit.cpp \
 
-OBJS	=			$(addprefix $(BUILD_DIR)/, $(notdir $(SRCS:.cpp=.o)))
+OBJS =				$(SRCS:src/%.cpp=$(BUILD_DIR)/%.o) $(PROCESS:src/process/%.cpp=$(BUILD_DIR)/%.o)
 
 all:				$(NAME)
 
@@ -32,7 +35,7 @@ $(NAME):			$(OBJS)
 	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(BUILD_DIR)/%.o:	src/%.cpp
+$(BUILD_DIR)/%.o: src/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 

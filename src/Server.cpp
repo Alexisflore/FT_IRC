@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 12:10:52 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:16:44 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,8 +210,8 @@ std::vector<std::string>	Server::getArgs(char* buffer)
 
 void	Server::treatData(std::vector<std::string> args, int fd)
 {
-	std::string command[] = {"JOIN", "QUIT"};
-	void	(Server::*commandFunc[2])(int, std::vector<std::string>) = {&Server::processJoin, &Server::processQuit};
+	std::string command[] = {"JOIN", "QUIT", "NAMES"};
+	void	(Server::*commandFunc[3])(int, std::vector<std::string>) = {&Server::processJoin, &Server::processQuit, &Server::processNames};
 	for (size_t i = 0; i < command->size() - 1; i++)
 	{
 		if (strcmp(args[0].c_str(), command[i].c_str()) == 0)
@@ -221,66 +221,6 @@ void	Server::treatData(std::vector<std::string> args, int fd)
 		}
 	}
 	std::cout << "Command not found." << std::endl;
-}
-
-void	Server::processJoin(int fd, std::vector<std::string> args)
-{
-	if (args.size() > 2)
-		std::cout << "Usage : \"JOIN nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
-	else if (args.size() == 2)
-	{
-		std::cout << "Client " << fd << " is trying to join channel #" << args[1] << std::endl;
-		std::string channelName = args[1];
-		std::vector<Channel>::iterator it = std::find_if(
-			this->_channels.begin(),
-			this->_channels.end(),
-			ChannelNameComparator(channelName));
-		if (it != this->_channels.end()) // le canal existe
-		{
-			Channel& channel = *it;
-			if (channel.isClientInChannel(fd))
-				std::cout << "Client " << fd << " is already in the channel " << channel.getName();
-			else
-				channel.joinChannel(fd);
-		}
-		else // creation du canal
-		{
-			Channel newChannel(channelName);
-			this->_channels.push_back(newChannel);
-			std::cout << "new channel " << channelName << " created" << std::endl;
-			newChannel.joinChannel(fd);
-		}
-	}
-	else
-		std::cout << "need to specify the channel name" << std::endl;
-}
-
-void	Server::processQuit(int fd, std::vector<std::string> args)
-{
-	if (args.size() > 2)
-		std::cout << "Usage : \"QUIT nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
-	else if (args.size() == 2)
-	{
-		std::cout << "Client " << fd << " is trying to quit channel #" << args[1] << std::endl;
-		std::string channelName = args[1];
-
-		std::vector<Channel>::iterator it = std::find_if(
-			this->_channels.begin(),
-			this->_channels.end(),
-			ChannelNameComparator(channelName));
-		if (it != this->_channels.end()) // le canal existe
-		{
-			Channel& channel = *it;
-			if (channel.isClientInChannel(fd))
-				channel.leaveChannel(fd);
-			else
-				std::cout << "Client " << fd << " isn't in the channel " << channelName << std::endl;
-		}
-		else 
-			std::cout << "Channel " << channelName << " doesnt exist yet!" << std::endl;
-	}
-	else
-		std::cout << "need to specify the channel name" << std::endl;
 }
 
 void	Server::initServer(char *port, char *pass)

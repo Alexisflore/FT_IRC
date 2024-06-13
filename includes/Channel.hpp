@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:48 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:14:50 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ public:
     void    leaveChannel(int clientFd);
     bool    isClientInChannel(int clientFd);
     void sendMessage(const std::string message);
+	std::vector<int>	getClients() const;
 
     class SendException : public std::exception
     {
