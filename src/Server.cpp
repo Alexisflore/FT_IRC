@@ -297,3 +297,17 @@ void	Server::initServer(char *port, char *pass)
 	closeFds();//close tout les fds a l'arret du server
 }
 
+int	Server::isNameInChannel(const std::string& channelName, const std::string& clientName)
+{
+	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
+	if (channelIt != this->_channels.end())
+	{
+		for (size_t i = 0; i < this->_clients.size(); i++)
+		{
+			Client& client = this->_clients[i];
+			if (client.getUsername() == clientName && channelIt->isClientInChannel(client.getFd()))
+				return (client.getFd());
+		}
+	}
+	return 0;
+}
