@@ -58,7 +58,7 @@ Exécuter le Serveur :
 ./ft_irc <port> <password>
 ```
 Remplacez <port> par le numéro de port sur lequel le serveur doit écouter et <password> par le mot de passe nécessaire pour se connecter au serveur.
-```
+
 Utilisation
 Connexion
 Pour vous connecter au serveur IRC :
