@@ -92,8 +92,11 @@ Modes de Canal
 `+m`: Le canal est modéré (seuls les utilisateurs avec des privilèges peuvent parler).
 
 Modes Utilisateur
+
 `+i`: Invisible (l'utilisateur n'apparaît pas dans les listes de canaux pour les non-membres).
+
 `+o`: Opérateur de canal.
+
 `+v`: Voix (autorise à parler dans un canal modéré).
 
 Commandes Admin
