@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:09:47 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 13:39:57 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ public:
 	/*--------------Setters--------------*/
 	void				setName(std::string name);
 	void				setTopic(std::string topic);
+	void				setMode(std::string mode, bool value);
 	void				setClientasOperator(int clientFd);
 	void				setClientasBanned(int clientFd);
 	void				setClientasInvited(int clientFd);
@@ -54,6 +55,7 @@ public:
     void 				sendMessage(const std::string message);
     void    			joinChannel(int clientFd);
 	bool				canClientSetTopic(int clientFd);
+	bool				canClientSetMode(int clientFd, std::string mode);
 	void				removeClientfromList(int clientFd, std::vector<int> &_clients);
 
 	/*--------------Exceptions--------------*/

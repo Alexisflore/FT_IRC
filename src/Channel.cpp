@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:28:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 13:29:41 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Channel::Channel(std::string channelName) : _name(channelName) , _topic(NULL) {
 	_modes["l"] = false;
 	_modes["o"] = false;
 }
+
 Channel::Channel() : _name(NULL), _topic(NULL) {
 	_modes["t"] = false;
 	_modes["i"] = false;
@@ -26,6 +27,7 @@ Channel::Channel() : _name(NULL), _topic(NULL) {
 	_modes["l"] = false;
 	_modes["o"] = false;
 }
+
 Channel::~Channel() {}
 // Channel(const Channel &other) {}
 // Channel &operator=(const Channel &other) {}
