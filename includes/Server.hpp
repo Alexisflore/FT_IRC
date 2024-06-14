@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 10:22:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 10:35:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ class Server
 		std::vector<std::string>	split_args(std::string str);
 		std::vector<std::string>	getArgs(std::string str);
 	private:
-		int							_port;//
-		int							_socket_fd;//
-		static bool					_signal;//
-		std::vector<Client>			_clients;//
+		int							_port;
+		int							_socket_fd;
+		static bool					_signal;
+		std::vector<Client>			_clients;
 		std::vector<Channel>		_channels;
-		std::vector<struct pollfd>	_fds;//
+		std::vector<struct pollfd>	_fds;
 		std::string					_pass;
 		struct sockaddr_in			_socket_add;
 };
