@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 15:06:58 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 15:24:36 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,21 @@
 
 void Server::processTopic(int fd, std::vector <std::string> string)
 {
-	if (string.size() < 2 || string.size() > 3)
+	try {
+		if (string.size() < 2 || string.size() > 3)
+			throw std::invalid_argument("Usage : TOPIC <channel> [<topic>].");
+		std::string channelName = string[1];
+		Channel &channel = getChannel(channelName);
+		if (string.size() == 2)
+			displayTopic(fd, channel);
+		else
+			changeTopic(fd, channel, string[2]);
+	}
+	catch (std::exception &e)
 	{
-		std::cout << "Usage : TOPIC <channel> [<topic>]." << std::endl;
+		std::cout << e.what() << std::endl;
 		return ;
 	}
-	else if (string.size() == 2)
-		displayTopic(fd, string);
-	else
-		changeTopic(fd, string);
 }
 
 bool Channel::canClientSetTopic(int clientFd)
@@ -45,49 +51,32 @@ bool Channel::canClientSetTopic(int clientFd)
 	return true;
 }
 
-void Server::displayTopic(int fd, std::vector<std::string> string)
+void Server::displayTopic(int fd, Channel& channel)
 {
-	try {
-		std::string channelName = string[1];
-		Channel &channel = getChannel(channelName);
 		std::string topic = channel.getTopic();
-		std::string msg = "TOPIC " + channelName + " :";
+		std::string msg = "TOPIC " + channel.getName() + " :";
 		if (topic.empty())
 			msg += "No topic is set\n";
 		else
 			msg += topic + "\n";
 		send(fd, msg.c_str(), msg.length(), 0);
-	}
-	catch (std::exception &e)
-	{
-		std::cout << e.what() << std::endl;
-		return ;
-	}
 }
 
-void Server::changeTopic(int fd, std::vector<std::string> string)
+void Server::changeTopic(int fd, Channel& channel, std::string topic)
 {
-	if (string[2].length() > 50)
+	if (topic.length() > 50)
 	{
 		std::cout << "The topic is too long." << std::endl;
 		return ;
 	}
-	std::string channelName = string[1];
-	std::string topic = string[2];
-	try {
-		Channel &channel = getChannel(channelName);
-		if (channel.canClientSetTopic(fd) == true)
-		{
-			channel.setTopic(topic);
-			std::string msg = "TOPIC " + channelName + " :" + topic + "\n";
-			send(fd, msg.c_str(), msg.length(), 0);
-		}
-		else
-			return ;
-	}
-	catch (std::exception &e)
+	if (channel.canClientSetTopic(fd) == true)
 	{
-		std::cout << e.what() << std::endl;
-		return ;
+		channel.setTopic(topic);
+		std::string msg = "TOPIC " + channel.getName() + " :" + topic + "\n";
+		send(fd, msg.c_str(), msg.length(), 0);
+	}
+	else
+	{
+		std::cout << "The client can't set the topic." << std::endl;
 	}
 }
