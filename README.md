@@ -138,8 +138,10 @@ FT_IRC/
 ```
 
 ## Contributeurs
-Nom Prénom: GitHub
-Nom Prénom: GitHub
+Nom Prénom: Alexiflore
+
+Nom Prénom: Petitco3ur
+
 Les contributions sont les bienvenues ! Veuillez consulter notre guide de contribution pour plus de détails.
 
 ## Licence
