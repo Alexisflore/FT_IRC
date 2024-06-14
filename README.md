@@ -32,7 +32,7 @@ Pour installer FT_IRC sur votre machine locale, suivez les étapes ci-dessous.
 
 ### Prérequis
 
-- **C++17** ou version ultérieure.
+- **C++98** ou version antérieur.
 - **CMake** 3.10 ou version ultérieure.
 - **Make** (ou un autre build system compatible).
 - **Git** pour cloner le dépôt (optionnel mais recommandé).
@@ -80,7 +80,7 @@ Définir un sujet de canal : `/topic #canal <sujet>`
 
 Changer de pseudonyme : `/nick <nouveau_nick>`
 
-Modes et Commandes
+## Mode et commandes
 Modes de Canal
 
 `+t`: Seuls les opérateurs peuvent changer le sujet du canal.
@@ -115,7 +115,7 @@ Unban : Débannir un utilisateur d'un canal.
 /mode <canal> -b <utilisateur>
 ```
 
-Structure du Projet
+## Structure du Projet
 ```bash
 FT_IRC/
 │
@@ -137,26 +137,16 @@ FT_IRC/
 └── LICENSE                 # Fichier de licence
 ```
 
-Contributeurs
+## Contributeurs
 Nom Prénom: GitHub
 Nom Prénom: GitHub
 Les contributions sont les bienvenues ! Veuillez consulter notre guide de contribution pour plus de détails.
 
-Licence
+## Licence
 Ce projet est sous licence MIT. Consultez le fichier LICENSE pour plus de détails.
 
-Ressources
+## Ressources
 Documentation IRC - RFC 1459 pour le protocole IRC.
 C++ Reference - Documentation C++ standard.
 Boost Libraries - Bibliothèques C++ complémentaires.
 Merci d'utiliser FT_IRC ! Nous sommes impatients de recevoir vos retours et contributions.
-
-markdown
-Copier le code
-
-### Points Importants à Adapter:
-1. **URL du dépôt GitHub**: Remplacez `https://github.com/votreutilisateur/FT_IRC.git` par l'URL réelle de votre dépôt.
-2. **Contributeurs**: Remplacez les exemples par les noms et liens GitHub des contributeurs réels du projet.
-3. **Licence**: Vérifiez et modifiez la licence si nécessaire. 
-
-Assurez-vous que les sections correspondent bien à votre projet et que le texte est a
