@@ -6,11 +6,12 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:03:35 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 13:21:25 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
+#include "../../includes/Channel.hpp"
 
 void Server::processTopic(int fd, std::vector <std::string> string)
 {
@@ -62,4 +63,23 @@ void Server::processTopic(int fd, std::vector <std::string> string)
 		else
 			return ;
 	}
+}
+
+bool Channel::canClientSetTopic(int clientFd)
+{
+	//check if the client is in the channel
+	if (!isClientInChannel(clientFd))
+	{
+		std::cout << "Client " << clientFd << " isn t in the channel #" << this->_name << std::endl;
+		return false;
+	}
+	//check if the client is the channel operator
+	if (isClientOperator(clientFd))
+		return true;
+	if (this->_modes["t"] == true)
+	{
+		std::cout << "Client " << clientFd << " isn t the channel operator in the channel #" << this->_name << std::endl;
+		return false;
+	}
+	return true;
 }

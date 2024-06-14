@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:15:03 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 13:21:41 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,24 +77,6 @@ void Channel::sendMessage(const std::string message)
             throw SendException();
         std::cout << "Message " << message << " send to client " << *it << " in channel #" << this->_name << std::endl;
     }
-}
-bool Channel::canClientSetTopic(int clientFd)
-{
-	//check if the client is in the channel
-	if (!isClientInChannel(clientFd))
-	{
-		std::cout << "Client " << clientFd << " isn t in the channel #" << this->_name << std::endl;
-		return false;
-	}
-	//check if the client is the channel operator
-	if (isClientOperator(clientFd))
-		return true;
-	if (this->_modes["t"] == true)
-	{
-		std::cout << "Client " << clientFd << " isn t the channel operator in the channel #" << this->_name << std::endl;
-		return false;
-	}
-	return true;
 }
 
 bool Channel::isClientBanned(int clientFd)
