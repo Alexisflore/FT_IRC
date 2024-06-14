@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 17:18:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 11:04:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Client
 		void		sendMessage(const std::string message);
 		void		addInvolvedChannel(std::string channelName);
 		void		removeInvolvedChannel(std::string channelName);
+		void		clearBuffer();
 	private:
 		int							_fd;
 		std::string					_username;

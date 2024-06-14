@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 10:24:46 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 11:19:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,15 +214,17 @@ void	Server::newDataClient(int fd)
 		client->setBuffer(buffer);//set le buffer du client
 		if (client->getBuffer().find("\n") == std::string::npos)
 			return ;
-		// std::cout << "Client <" << fd << "> Data: " << buffer << std::endl;
+		std::cout << "Client <" << fd << "> Data: " << client->getBuffer() << std::endl;
 		args = getArgs(client->getBuffer().c_str());
+		// for (size_t i = 0; i < args.size(); i++)
+		// 	std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 		for (size_t i = 0; i < args.size(); i++)
 			treatData(args[i], fd);
-		if (getClient(fd) != NULL)
-			client->getBuffer().clear();		
+		if (getClient(fd) == NULL)
+			return ;
+		client->clearBuffer();
 	}
 }
-
 
 std::vector<std::string>	Server::getArgs(std::string buffer)
 {
@@ -270,7 +272,7 @@ void	Server::treatData(std::string arg, int fd)
 		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser};
 
 	std::vector <std::string> args = split_args(arg);
-	for (size_t i = 0; i < command->size() - 1; i++)
+	for (size_t i = 0; i < 12; i++)
 	{
 		if (strcmp(args[0].c_str(), command[i].c_str()) == 0)
 		{
