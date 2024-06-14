@@ -71,9 +71,13 @@ Commandes IRC de Base
 Une fois connecté, vous pouvez utiliser des commandes IRC standards :
 
 Rejoindre un canal : `/join #canal`
+
 Envoyer un message privé : `/msg <utilisateur> <message>`
+
 Quitter un canal : /part `#canal`
+
 Définir un sujet de canal : `/topic #canal <sujet>`
+
 Changer de pseudonyme : `/nick <nouveau_nick>`
 
 Modes et Commandes
