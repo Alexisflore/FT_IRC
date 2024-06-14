@@ -82,6 +82,7 @@ Changer de pseudonyme : `/nick <nouveau_nick>`
 
 Modes et Commandes
 Modes de Canal
+
 `+t`: Seuls les opérateurs peuvent changer le sujet du canal.
 
 `+i`: Le canal est en mode invitation seulement.
