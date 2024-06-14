@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:29:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:31:32 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ Channel::Channel(std::string channelName) : _name(channelName) , _topic(NULL) {
 	_modes["k"] = false;
 	_modes["l"] = false;
 	_modes["o"] = false;
+	_key = nullptr;
+	_limit = -1;
 }
 
 Channel::Channel() : _name(NULL), _topic(NULL) {
@@ -26,6 +28,8 @@ Channel::Channel() : _name(NULL), _topic(NULL) {
 	_modes["k"] = false;
 	_modes["l"] = false;
 	_modes["o"] = false;
+	_key = nullptr;
+	_limit = -1;
 }
 
 Channel::~Channel() {}
@@ -37,6 +41,15 @@ std::string     			Channel::getName() const {return this->_name;}
 std::vector<int>    		Channel::getClients() const {return this->_clients;}
 std::string					Channel::getTopic() {return this->_topic;}
 std::map<std::string, bool> Channel::getModes() {return this->_modes;}
+Client*						Channel::getClient(int fd)
+{
+	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (*it == fd)
+			return (getClient(fd));
+	}
+	return (NULL);
+}
 
 /*--------------Setters--------------*/
 void						Channel::setName(std::string name) {this->_name = name;}

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 15:14:01 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:35:08 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,53 +15,59 @@
 
 void Server::processMode(int fd, std::vector <std::string> string)
 {
-	if (string.size() < 2 || string.size() > 3)
+	if (string.size() < 2 || string.size() > 4)
 	{
-		std::cout << "Usage : MODE <channel> [<mode>] {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>] [<key>]." << std::endl;
+		std::cout << "Usage : MODE <channel> [<mode>] {[+|-]|o|p|s|i|t|n|b|v} [<parameter>]." << std::endl;
 		return ;
 	}
 	std::string channelName = string[1];
 	Channel &channel = getChannel(channelName);
+	if (channel.canClientSetMode(fd) == false)
+	{
+		std::cout << "Client " << fd << " can't set mode " << string[2] << " in channel " << channelName << std::endl;
+		return ;
+	}
 	if (string.size() == 2)
 		displayMode(fd, channel);
+	std::string mode = string[2];
+	bool		value;
+	std::string params;
+	if (string.size() == 4)
+		params = string[3];
 	else
-	{
-		std::string mode = string[2];
-		if (channel.canClientSetMode(fd, mode) == true)
-		{
-			channel.setMode(mode, true);
-			std::string msg = "MODE " + channelName + " :" + mode + "\n";
-			send(fd, msg.c_str(), msg.length(), 0);
-		}
-	}
+		params = "";
+	createValue(mode, value);
+	channel.setMode(mode, value, params);
 }
 
-bool Channel::canClientSetMode(int clientFd, std::string mode)
+bool Channel::canClientSetMode(int clientFd)
 {
-	if (mode == "o" || mode == "l")
-	{
-		if (isClientInChannel(clientFd) == true)
-			return (true);
-		else
-			return (false);
-	}
-	else if (mode == "t" || mode == "i" || mode == "k")
-	{
-		if (isClientOperator(clientFd) == true)
-			return (true);
-		else
-			return (false);
-	}
-	else
-	{
-		std::cout << "The mode " << mode << " doesn't exist." << std::endl;
-		return (false);
-	}
+	if (!isClientOperator(clientFd))
+		return false;
+	return true;
 }
 
-void	Channel::setMode(std::string mode, bool value)
+void	Channel::setMode(std::string mode, bool value, std::string params)
 {
 	this->_modes[mode] = value;
+	std::string m[5] = {"t", "i", "k", "l", "o"};
+	void	(Channel::*Mode[5])(bool, std::string) = {
+		&Channel::topicMode,
+		&Channel::inviteMode,
+		&Channel::keyMode,
+		&Channel::limitMode,
+		&Channel::operatorMode
+	};
+	for (int i = 0; i < 5; i++)
+	{
+		if (mode == m[i])
+		{
+			try{(this->*Mode[i])(value, params);}
+			catch (std::exception &e)
+			{std::cout << e.what() << std::endl;}
+			break;
+		}
+	}
 }
 
 void Server::displayMode(int fd, Channel& channel)
@@ -84,4 +90,81 @@ void Server::displayMode(int fd, Channel& channel)
 		std::cout << e.what() << std::endl;
 		return ;
 	}
+}
+
+void Server::createValue(std::string& mode, bool& value)
+{
+	if (mode[0] == '+')
+		value = true;
+	else if (mode[0] == '-')
+		value = false;
+	else
+		throw std::invalid_argument("The mode must start with + or -");
+	mode = mode.substr(1);
+}
+
+void		Channel::topicMode(bool value, std::string params)
+{
+	if (params != "")
+		throw std::invalid_argument("The topic mode doesn't need any parameters.");
+	if (value == true)
+		_modes["t"] = true;
+	else
+		_modes["t"] = false;
+}
+
+void		Channel::inviteMode(bool value, std::string params)
+{
+	if (params != "")
+		throw std::invalid_argument("The invite mode doesn't need any parameters.");
+	if (value == true)
+		_modes["i"] = true;
+	else
+		_modes["i"] = false;
+}
+
+void		Channel::keyMode(bool value, std::string params)
+{
+	if (value == true)
+		this->_key = params;
+	else
+		this->_key = nullptr;
+}
+
+void		Channel::limitMode(bool value, std::string params)
+{
+	if (params == "")
+		throw std::invalid_argument("The limit mode needs a parameter.");
+	if (value == true)
+		this->_limit = std::stoll(params);
+	else
+		this->_limit = -1;
+}
+
+void		Channel::operatorMode(bool value, std::string params)
+{
+	if (value == true)
+	{
+		int fd = getFdFromNick(params);
+		if (isClientInChannel(fd) == false)
+			throw std::invalid_argument("The client isn't in the channel.");
+		_operators.push_back(fd);
+	}
+	else
+	{
+		int fd = getFdFromNick(params);
+		if (isClientOperator(fd) == false)
+			throw std::invalid_argument("The client isn't an operator.");
+		removeClientfromList(fd, _operators);
+	}
+}
+
+int		Channel::getFdFromNick(std::string nick)
+{
+	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (nick == getClient(*it)->getNickname())
+			return (*it);
+	}
+	throw std::invalid_argument("The client isn't in the channel.");
 }

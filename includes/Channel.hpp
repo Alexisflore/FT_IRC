@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 14:50:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:34:35 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define CHANNEL_HPP
 
 #include "Irc.hpp"
+
+class Client;
 
 class Channel
 {
@@ -25,8 +27,8 @@ private:
 	std::vector<int> 			_banned;
 	std::vector<int> 			_invited;
 	std::vector<int> 			_operators;
-	int							_limit;
-	int							_key;
+	long long					_limit;
+	std::string					_key;
 public:
     Channel();
     Channel(std::string channelName);
@@ -36,14 +38,16 @@ public:
 
 	/*--------------Getters--------------*/
     std::string 				getName() const;
+	Client*						getClient(int fd);
 	std::vector<int>			getClients() const;
 	std::string 				getTopic();
 	std::map<std::string, bool> getModes();
+	int							getFdFromNick(std::string nick);
 
 	/*--------------Setters--------------*/
 	void						setName(std::string name);
 	void						setTopic(std::string topic);
-	void						setMode(std::string mode, bool value);
+	void						setMode(std::string mode, bool value, std::string params);
 	void						setClientasOperator(int clientFd);
 	void						setClientasBanned(int clientFd);
 	void						setClientasInvited(int clientFd);
@@ -57,8 +61,13 @@ public:
     void 						sendMessage(const std::string message);
     void    					joinChannel(int clientFd);
 	bool						canClientSetTopic(int clientFd);
-	bool						canClientSetMode(int clientFd, std::string mode);
+	bool						canClientSetMode(int clientFd);
 	void						removeClientfromList(int clientFd, std::vector<int> &_clients);
+	void						topicMode(bool value, std::string topic);
+	void						inviteMode(bool value, std::string clientName);
+	void						keyMode(bool value, std::string key);
+	void						limitMode(bool value, std::string limit);
+	void						operatorMode(bool value, std::string clientName);
 
 	/*--------------Exceptions--------------*/
     class SendException : public std::exception
