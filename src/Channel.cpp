@@ -6,25 +6,17 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:21:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 13:23:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Channel.hpp"
 
 Channel::Channel(std::string channelName) : _name(channelName) , _topic(NULL) {
-	_modes["t"] = false;
-	_modes["i"] = false;
-	_modes["k"] = false;
-	_modes["l"] = false;
-	_modes["o"] = false;
+	_modes = {{"t", false}, {"i", false}, {"k", false}, {"l", false}, {"o", false}};
 }
 Channel::Channel() : _name(NULL), _topic(NULL) {
-	_modes["t"] = false;
-	_modes["i"] = false;
-	_modes["k"] = false;
-	_modes["l"] = false;
-	_modes["o"] = false;
+_modes = {{"t", false}, {"i", false}, {"k", false}, {"l", false}, {"o", false}};
 }
 Channel::~Channel() {}
 // Channel(const Channel &other) {}
