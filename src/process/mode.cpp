@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 17:34:05 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 17:37:34 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void Server::createValue(std::string& mode, bool& value)
 
 void		Channel::topicMode(bool value, std::string params)
 {
-	if (params != nullptr)
+	if (params.c_str() != nullptr)
 		throw std::invalid_argument("The topic mode doesn't need any parameters.");
 	if (value == true)
 		_modes["t"] = true;
@@ -115,7 +115,7 @@ void		Channel::topicMode(bool value, std::string params)
 
 void		Channel::inviteMode(bool value, std::string params)
 {
-	if (params != nullptr)
+	if (params.c_str() != nullptr)
 		throw std::invalid_argument("The invite mode doesn't need any parameters.");
 	if (value == true)
 		_modes["i"] = true;
@@ -125,6 +125,8 @@ void		Channel::inviteMode(bool value, std::string params)
 
 void		Channel::keyMode(bool value, std::string params)
 {
+	if (params.c_str() == nullptr)
+		throw std::invalid_argument("The key mode needs a parameter.");
 	if (value == true)
 		this->_key = params;
 	else
@@ -133,7 +135,7 @@ void		Channel::keyMode(bool value, std::string params)
 
 void		Channel::limitMode(bool value, std::string params)
 {
-	if (params == nullptr)
+	if (params.c_str() == nullptr)
 		throw std::invalid_argument("The limit mode needs a parameter.");
 	if (value == true)
 		this->_limit = std::stoll(params);
@@ -143,6 +145,8 @@ void		Channel::limitMode(bool value, std::string params)
 
 void		Channel::operatorMode(bool value, std::string params)
 {
+	if (params.c_str() == nullptr)
+		throw std::invalid_argument("The operator mode needs a parameter.");
 	int fd = getFdFromNick(params);
 	if (value == true)
 	{
