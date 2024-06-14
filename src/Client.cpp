@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:17:52 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 17:01:06 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,20 @@ Client::Client(int fd, std::string nickname, std::string password, std::string i
 	// std::cout << VERT << "Constructor are called" << REINIT << std::endl;
 };
 
+Client::Client(const Client &other)
+{
+	_fd = other._fd;
+	_nickname = other._nickname;
+	_password = other._password;
+	_ip_add = other._ip_add;
+}
+
+Client::Client(int fd)
+{
+	_fd = fd;
+	_nickname = nullptr;
+}
+
 Client 		&Client::operator=(const Client &other)
 {
 	if (this != &other)
@@ -42,7 +56,7 @@ Client 		&Client::operator=(const Client &other)
 
 //----------------Getters------------
 int			Client::getFd() {return (this->_fd);}
-std::string	Client::getNickname() {return (this->_nickname);}
+std::string	Client::getNickname() const {return (this->_nickname);}
 std::string Client::getBuffer() {return (this->_buffer);}
 std::string	Client::getIpAdd() {return (this->_ip_add);}
 std::string	Client::getUsername() {return (this->_username);}

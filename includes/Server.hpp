@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 15:50:12 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:57:11 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "Irc.hpp"
 #include "Channel.hpp"
+#include "Client.hpp"
 
 class Client;
 
@@ -27,6 +28,15 @@ struct ChannelNameComparator
 	ChannelNameComparator(const std::string& name) : channelName(name) {}
 
 	bool operator()(const Channel& channel) const;
+};
+
+struct NicknameComparator
+{
+	std::string nickname;
+
+	NicknameComparator(const std::string& name) : nickname(name) {}
+
+	bool operator()(const Client& client) const;
 };
 
 class Server
@@ -65,6 +75,7 @@ class Server
 		void 						displayMode(int fd, Channel& channel);
 		void 						changeMode(int fd, Channel& channel);
 		void 						createValue(std::string& mode, bool& value);
+		bool						isNicknameUsed(std::string nickname);
 		
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::vector<std::string>);

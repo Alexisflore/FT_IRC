@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 14:58:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:58:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@ bool Server::Signal = false;
 bool ChannelNameComparator::operator()(const Channel& channel) const
 {
 	return channel.getName() == channelName;
+}
+
+bool NicknameComparator::operator()(const Client& client) const
+{
+	return client.getNickname() == this->nickname;
 }
 
 Server::Server()

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 16:35:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:41:07 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,16 +143,15 @@ void		Channel::limitMode(bool value, std::string params)
 
 void		Channel::operatorMode(bool value, std::string params)
 {
+	int fd = getFdFromNick(params);
 	if (value == true)
 	{
-		int fd = getFdFromNick(params);
 		if (isClientInChannel(fd) == false)
 			throw std::invalid_argument("The client isn't in the channel.");
 		_operators.push_back(fd);
 	}
 	else
 	{
-		int fd = getFdFromNick(params);
 		if (isClientOperator(fd) == false)
 			throw std::invalid_argument("The client isn't an operator.");
 		removeClientfromList(fd, _operators);

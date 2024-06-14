@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Names.cpp                                          :+:      :+:    :+:   */
+/*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:50 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 17:03:37 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:44:34 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void Server::processNames(int fd, std::vector< std::string> strings)
 			std::vector<int> clients = channel.getClients();
 			for (std::vector<int>::iterator it = clients.begin(); it != clients.end(); it++)
 			{
-				std::cout << "Client " << *it << std::endl;
+				std::cout << "Client " << getClient(*it)->getNickname() << std::endl;
 			}
 		}
 		else

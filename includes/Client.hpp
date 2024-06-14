@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 12:20:48 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 17:01:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,16 @@ class Client
 {
 	public:
 		Client();
+		Client(int fd);
 		Client(int fd, std::string nickname, std::string password, std::string ipadd);
 		// Client(const Client &other);
 		~Client();
+		Client(const Client &other);
 		Client &operator=(const Client &other);
 		
 		//---------Getters------------
 		int			getFd();
-		std::string	getNickname();
+		std::string	getNickname() const;
 		std::string	getPassword();
 		bool		getIsOperator();
 		std::string	getIpAdd();
