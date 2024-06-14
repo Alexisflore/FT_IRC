@@ -70,11 +70,11 @@ Pour vous connecter au serveur IRC :
 Commandes IRC de Base
 Une fois connecté, vous pouvez utiliser des commandes IRC standards :
 
-Rejoindre un canal : /join #canal`
-Envoyer un message privé : /msg <utilisateur> <message>`
-Quitter un canal : /part #canal`
-Définir un sujet de canal : /topic #canal <sujet>`
-Changer de pseudonyme : /nick <nouveau_nick>`
+Rejoindre un canal : `/join #canal`
+Envoyer un message privé : `/msg <utilisateur> <message>`
+Quitter un canal : /part `#canal`
+Définir un sujet de canal : `/topic #canal <sujet>`
+Changer de pseudonyme : `/nick <nouveau_nick>`
 
 Modes et Commandes
 Modes de Canal
@@ -92,15 +92,15 @@ Commandes Admin
 Kick : Éjecter un utilisateur d'un canal.
 ```bash
 /kick <canal> <utilisateur> [raison]
-
+```
 Ban : Bannir un utilisateur d'un canal.
 ```bash
 /mode <canal> +b <utilisateur>
-
+```
 Unban : Débannir un utilisateur d'un canal.
 ```bash
 /mode <canal> -b <utilisateur>
-
+```
 Structure du Projet
 makefile
 FT_IRC/
