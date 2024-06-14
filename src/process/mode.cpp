@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 16:41:07 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 17:34:05 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void Server::processMode(int fd, std::vector <std::string> string)
 	if (string.size() == 4)
 		params = string[3];
 	else
-		params = "";
+		params = nullptr;
 	createValue(mode, value);
 	channel.setMode(mode, value, params);
 }
@@ -105,7 +105,7 @@ void Server::createValue(std::string& mode, bool& value)
 
 void		Channel::topicMode(bool value, std::string params)
 {
-	if (params != "")
+	if (params != nullptr)
 		throw std::invalid_argument("The topic mode doesn't need any parameters.");
 	if (value == true)
 		_modes["t"] = true;
@@ -115,7 +115,7 @@ void		Channel::topicMode(bool value, std::string params)
 
 void		Channel::inviteMode(bool value, std::string params)
 {
-	if (params != "")
+	if (params != nullptr)
 		throw std::invalid_argument("The invite mode doesn't need any parameters.");
 	if (value == true)
 		_modes["i"] = true;
@@ -133,7 +133,7 @@ void		Channel::keyMode(bool value, std::string params)
 
 void		Channel::limitMode(bool value, std::string params)
 {
-	if (params == "")
+	if (params == nullptr)
 		throw std::invalid_argument("The limit mode needs a parameter.");
 	if (value == true)
 		this->_limit = std::stoll(params);
