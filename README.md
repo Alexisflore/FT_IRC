@@ -42,63 +42,67 @@ Pour installer FT_IRC sur votre machine locale, suivez les étapes ci-dessous.
 1. **Cloner le Dépôt** :
    ```bash
    git clone https://github.com/votreutilisateur/FT_IRC.git
-   cd FT_IRC
+   ./ircserv
+
 Compiler le Projet :
 
-bash
-Copier le code
+```bash
 mkdir build
 cd build
 cmake ..
 make
+```
 Exécuter le Serveur :
 
-bash
-Copier le code
+```bash
 ./ft_irc <port> <password>
+```
 Remplacez <port> par le numéro de port sur lequel le serveur doit écouter et <password> par le mot de passe nécessaire pour se connecter au serveur.
-
+```
 Utilisation
 Connexion
 Pour vous connecter au serveur IRC :
 
-Utilisez un client IRC (par exemple, HexChat, WeeChat, ou irssi).
-Configurez une nouvelle connexion avec l'adresse IP ou le nom de domaine de votre serveur, et le port spécifié lors du lancement du serveur.
-Entrez le mot de passe que vous avez spécifié.
+1.	Utilisez un client IRC (par exemple, HexChat, WeeChat, ou irssi).
+2.	Configurez une nouvelle connexion avec l'adresse IP ou le nom de domaine de votre serveur, et le port spécifié lors du lancement du serveur.
+3.	Entrez le mot de passe que vous avez spécifié.
+
 Commandes IRC de Base
 Une fois connecté, vous pouvez utiliser des commandes IRC standards :
 
-Rejoindre un canal : /join #canal
-Envoyer un message privé : /msg <utilisateur> <message>
-Quitter un canal : /part #canal
-Définir un sujet de canal : /topic #canal <sujet>
-Changer de pseudonyme : /nick <nouveau_nick>
+Rejoindre un canal : /join #canal`
+Envoyer un message privé : /msg <utilisateur> <message>`
+Quitter un canal : /part #canal`
+Définir un sujet de canal : /topic #canal <sujet>`
+Changer de pseudonyme : /nick <nouveau_nick>`
+
 Modes et Commandes
 Modes de Canal
-+t: Seuls les opérateurs peuvent changer le sujet du canal.
-+i: Le canal est en mode invitation seulement.
-+k <password>: Nécessite un mot de passe pour rejoindre.
-+m: Le canal est modéré (seuls les utilisateurs avec des privilèges peuvent parler).
+`+t`: Seuls les opérateurs peuvent changer le sujet du canal.
+`+i`: Le canal est en mode invitation seulement.
+`+k <password>`: Nécessite un mot de passe pour rejoindre.
+`+m`: Le canal est modéré (seuls les utilisateurs avec des privilèges peuvent parler).
+
 Modes Utilisateur
-+i: Invisible (l'utilisateur n'apparaît pas dans les listes de canaux pour les non-membres).
-+o: Opérateur de canal.
-+v: Voix (autorise à parler dans un canal modéré).
+`+i`: Invisible (l'utilisateur n'apparaît pas dans les listes de canaux pour les non-membres).
+`+o`: Opérateur de canal.
+`+v`: Voix (autorise à parler dans un canal modéré).
+
 Commandes Admin
 Kick : Éjecter un utilisateur d'un canal.
-bash
-Copier le code
+```bash
 /kick <canal> <utilisateur> [raison]
+
 Ban : Bannir un utilisateur d'un canal.
-bash
-Copier le code
+```bash
 /mode <canal> +b <utilisateur>
+
 Unban : Débannir un utilisateur d'un canal.
-bash
-Copier le code
+```bash
 /mode <canal> -b <utilisateur>
+
 Structure du Projet
 makefile
-Copier le code
 FT_IRC/
 │
 ├── src/                    # Code source principal
@@ -117,6 +121,7 @@ FT_IRC/
 ├── CMakeLists.txt          # Fichier de configuration de CMake
 ├── README.md               # Documentation du projet
 └── LICENSE                 # Fichier de licence
+
 Contributeurs
 Nom Prénom: GitHub
 Nom Prénom: GitHub
