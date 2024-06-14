@@ -149,6 +149,9 @@ Ce projet est sous licence MIT. Consultez le fichier LICENSE pour plus de détai
 
 ## Ressources
 Documentation IRC - RFC 1459 pour le protocole IRC.
+
 C++ Reference - Documentation C++ standard.
+
 Boost Libraries - Bibliothèques C++ complémentaires.
+
 Merci d'utiliser FT_IRC ! Nous sommes impatients de recevoir vos retours et contributions.
