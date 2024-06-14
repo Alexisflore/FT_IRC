@@ -138,9 +138,9 @@ FT_IRC/
 ```
 
 ## Contributeurs
-Nom Prénom: Alexiflore
+Alexiflore
 
-Nom Prénom: Petitco3ur
+Petitco3ur
 
 Les contributions sont les bienvenues ! Veuillez consulter notre guide de contribution pour plus de détails.
 
