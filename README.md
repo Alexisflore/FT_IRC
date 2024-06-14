@@ -93,10 +93,12 @@ Kick : Éjecter un utilisateur d'un canal.
 ```bash
 /kick <canal> <utilisateur> [raison]
 ```
+
 Ban : Bannir un utilisateur d'un canal.
 ```bash
 /mode <canal> +b <utilisateur>
 ```
+
 Unban : Débannir un utilisateur d'un canal.
 ```bash
 /mode <canal> -b <utilisateur>
