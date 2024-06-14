@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 10:35:26 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 12:55:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,14 @@ class Server
 
 		// Server &operator=(const Server &other);
 		// void			Run();
+		/*--------------Getters--------------*/
+		std::vector<std::string>	getArgs(std::string str);
+		Client*						getClient(int fd);
 
+		/*--------------Setters--------------*/
+
+
+		/*--------------Methods--------------*/
 		void						securArg(const char *port, const char *pass);
 		void						creatSocket();
 		void						initServer(char *port, char *pass);
@@ -50,7 +57,10 @@ class Server
 		void						treatData(std::string, int fd);
 		void						closeFds();
 		void						clearClient(int fd);
-		Client*						getClient(int fd);
+		int							isNameInChannel(const std::string& channelName, const std::string& clientName);
+		std::vector<std::string>	split_args(std::string str);
+		
+		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::vector<std::string>);
 		void						processQuit(int fd, std::vector<std::string>);
 		void						processNames(int fd, std::vector<std::string>);
@@ -63,9 +73,6 @@ class Server
 		void						processMode(int fd, std::vector<std::string>);
 		void						processNick(int fd, std::vector<std::string>);
 		void						processUser(int fd, std::vector<std::string>);
-		int							isNameInChannel(const std::string& channelName, const std::string& clientName);
-		std::vector<std::string>	split_args(std::string str);
-		std::vector<std::string>	getArgs(std::string str);
 	private:
 		int							_port;
 		int							_socket_fd;

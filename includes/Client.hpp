@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 11:04:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 12:20:48 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ class Client
 		void		setBuffer(std::string buffer);
 		void		setNickname(std::string nickname);
 		void		setPassword(std::string password);
-		void		setIsOperator(bool is_admin);
 		void		setIpAdd(std::string ip_add);
 		void		setUsername(std::string username);
 
@@ -55,7 +54,6 @@ class Client
 		std::string					_nickname;
 		std::string					_password;
 		std::string					_ip_add;
-		bool						_is_operator;
 		bool						_registered;
 		bool						_logged;
 		std::string					_buffer;

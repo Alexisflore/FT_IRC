@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 09:48:50 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 13:05:43 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,13 @@
 #include <poll.h>
 #include <fcntl.h>//pour fnctl()
 #include <algorithm>
+#include <map>
 
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Server.hpp"
 #include "Utils.hpp"
-
-/* +++ COLORS +++ */
-#define REINIT "\033[0m"
-#define NOIR "\033[30m"
-#define ROUGE "\033[31m"
-#define VERT "\033[32m"
-#define JAUNE "\033[33m"
-#define BLEU "\033[34m"
-#define MAGENTA "\033[35m"
-#define CYAN "\033[36m"
-#define BLANC "\033[37m"
-
-#define PENDING_QUEUE_MAXLENGTH 1 // a changer => nombre de client qui peuvent se connecte
-#define BUFFER_SIZE 1024
+#include "define.hpp"
 
 /* +++ Global +++ */
 extern bool _state;
