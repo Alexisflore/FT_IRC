@@ -101,8 +101,8 @@ Unban : Débannir un utilisateur d'un canal.
 ```bash
 /mode <canal> -b <utilisateur>
 ```
+
 Structure du Projet
-makefile
 FT_IRC/
 │
 ├── src/                    # Code source principal
@@ -121,6 +121,7 @@ FT_IRC/
 ├── CMakeLists.txt          # Fichier de configuration de CMake
 ├── README.md               # Documentation du projet
 └── LICENSE                 # Fichier de licence
+
 
 Contributeurs
 Nom Prénom: GitHub
