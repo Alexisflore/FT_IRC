@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 16:42:42 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 10:24:46 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,17 @@ Server::~Server()
 {
 	// _state = false;
 	std::cout << ROUGE << "ircserv off" << REINIT << std::endl;
+}
+
+std::vector<std::string>	Server::split_args(std::string str)
+{
+	std::vector<std::string> args;
+	std::istringstream iss(str);
+	std::string arg;
+
+	while (iss >> arg)
+		args.push_back(arg);
+	return (args);
 }
 
 void Server::securArg(const char *port, const char *pass)
@@ -203,13 +214,30 @@ void	Server::newDataClient(int fd)
 		client->setBuffer(buffer);//set le buffer du client
 		if (client->getBuffer().find("\n") == std::string::npos)
 			return ;
-		std::cout << "Client <" << fd << "> Data: " << buffer << std::endl;
-		args = getArgs(buffer);
-		std::cout << "args 0 : " << args[0] << std::endl;
-		treatData(args, fd);
+		// std::cout << "Client <" << fd << "> Data: " << buffer << std::endl;
+		args = getArgs(client->getBuffer().c_str());
+		for (size_t i = 0; i < args.size(); i++)
+			treatData(args[i], fd);
 		if (getClient(fd) != NULL)
 			client->getBuffer().clear();		
 	}
+}
+
+
+std::vector<std::string>	Server::getArgs(std::string buffer)
+{
+	std::vector<std::string> args;
+	std::istringstream iss(buffer);
+	std::string str;
+
+	while (std::getline(iss, str))
+	{
+		size_t pos = str.find("\n");
+		if (pos != std::string::npos)
+			str = str.substr(0, pos);
+		args.push_back(str);
+	}
+	return (args);
 }
 
 // std::vector<std::string>	Server::getArgs(char* buffer)
@@ -218,35 +246,19 @@ void	Server::newDataClient(int fd)
 // 	std::istringstream iss(buffer);
 // 	std::string str;
 
-// 	while (std::getline(iss, str))
+// 	while (iss >> str)
 // 	{
 // 		size_t pos = str.find("\n");
 // 		if (pos != std::string::npos)
 // 			str = str.substr(0, pos);
 // 		args.push_back(str);
 // 	}
+	
 // 	return (args);
 // }
 
-std::vector<std::string>	Server::getArgs(char* buffer)
-{
-	std::vector<std::string> args;
-	std::istringstream iss(buffer);
-	std::string str;
 
-	while (iss >> str)
-	{
-		size_t pos = str.find("\n");
-		if (pos != std::string::npos)
-			str = str.substr(0, pos);
-		args.push_back(str);
-	}
-	
-	return (args);
-}
-
-
-void	Server::treatData(std::vector<std::string> args, int fd)
+void	Server::treatData(std::string arg, int fd)
 {
 	std::string command[] = {
 		"JOIN", "QUIT", "NAMES", "BONG", "PART", "KICK", "TOPIC", "PRIVMSG",
@@ -257,6 +269,7 @@ void	Server::treatData(std::vector<std::string> args, int fd)
 		&Server::processPass, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
 		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser};
 
+	std::vector <std::string> args = split_args(arg);
 	for (size_t i = 0; i < command->size() - 1; i++)
 	{
 		if (strcmp(args[0].c_str(), command[i].c_str()) == 0)
