@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 12:55:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 15:13:58 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class Server
 		/*--------------Getters--------------*/
 		std::vector<std::string>	getArgs(std::string str);
 		Client*						getClient(int fd);
+		Channel&					getChannel(std::string name);
 
 		/*--------------Setters--------------*/
 
@@ -59,6 +60,10 @@ class Server
 		void						clearClient(int fd);
 		int							isNameInChannel(const std::string& channelName, const std::string& clientName);
 		std::vector<std::string>	split_args(std::string str);
+		void 						displayTopic(int fd, std::vector<std::string> string);
+		void 						changeTopic(int fd, std::vector<std::string> string);
+		void 						displayMode(int fd, Channel& channel);
+		void 						changeMode(int fd, Channel& channel);
 		
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::vector<std::string>);

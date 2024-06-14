@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 11:44:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 14:58:41 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,14 @@ Client* Server::getClient(int fd)
 			return (&_clients[i]);
 	}
 	return (NULL);
+}
+
+Channel&	Server::getChannel(std::string name)
+{
+	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
+	if (channelIt == this->_channels.end())
+		throw std::runtime_error("The channel doesn't exist.");
+	return *channelIt;
 }
 
 void		Server::signalHandler(int signum)

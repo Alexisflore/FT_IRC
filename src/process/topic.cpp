@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 13:21:25 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 15:06:58 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,48 +21,9 @@ void Server::processTopic(int fd, std::vector <std::string> string)
 		return ;
 	}
 	else if (string.size() == 2)
-	{
-		std::string channelName = string[1];
-		std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
-		if (channelIt == this->_channels.end()) // le canal n existe pas
-		{
-			std::cout << "the channel " << channelName << " doesn t exist." << std::endl;
-			return ;
-		}
-		Channel &channel = *channelIt; // le canal existe bien
-		std::string topic = channel.getTopic();
-		std::string msg = "TOPIC " + channelName + " :";
-		if (topic.empty())
-			msg += "No topic is set\n";
-		else
-			msg += topic + "\n";
-		send(fd, msg.c_str(), msg.length(), 0);
-	}
+		displayTopic(fd, string);
 	else
-	{
-		if (string[2].length() > 50)
-		{
-			std::cout << "The topic is too long." << std::endl;
-			return ;
-		}
-		std::string channelName = string[1];
-		std::string topic = string[2];
-		std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
-		if (channelIt == this->_channels.end()) // le canal n existe pas
-		{
-			std::cout << "the channel " << channelName << " doesn t exist." << std::endl;
-			return ;
-		}
-		Channel &channel = *channelIt; // le canal existe bien
-		if (channel.canClientSetTopic(fd) == true)
-		{
-			channel.setTopic(topic);
-			std::string msg = "TOPIC " + channelName + " :" + topic + "\n";
-			send(fd, msg.c_str(), msg.length(), 0);
-		}
-		else
-			return ;
-	}
+		changeTopic(fd, string);
 }
 
 bool Channel::canClientSetTopic(int clientFd)
@@ -82,4 +43,51 @@ bool Channel::canClientSetTopic(int clientFd)
 		return false;
 	}
 	return true;
+}
+
+void Server::displayTopic(int fd, std::vector<std::string> string)
+{
+	try {
+		std::string channelName = string[1];
+		Channel &channel = getChannel(channelName);
+		std::string topic = channel.getTopic();
+		std::string msg = "TOPIC " + channelName + " :";
+		if (topic.empty())
+			msg += "No topic is set\n";
+		else
+			msg += topic + "\n";
+		send(fd, msg.c_str(), msg.length(), 0);
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+		return ;
+	}
+}
+
+void Server::changeTopic(int fd, std::vector<std::string> string)
+{
+	if (string[2].length() > 50)
+	{
+		std::cout << "The topic is too long." << std::endl;
+		return ;
+	}
+	std::string channelName = string[1];
+	std::string topic = string[2];
+	try {
+		Channel &channel = getChannel(channelName);
+		if (channel.canClientSetTopic(fd) == true)
+		{
+			channel.setTopic(topic);
+			std::string msg = "TOPIC " + channelName + " :" + topic + "\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+		}
+		else
+			return ;
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+		return ;
+	}
 }
