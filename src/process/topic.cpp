@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 15:24:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/14 15:27:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ void Server::processTopic(int fd, std::vector <std::string> string)
 	try {
 		if (string.size() < 2 || string.size() > 3)
 			throw std::invalid_argument("Usage : TOPIC <channel> [<topic>].");
-		std::string channelName = string[1];
-		Channel &channel = getChannel(channelName);
+		Channel &channel = getChannel(string[1]);
 		if (string.size() == 2)
 			displayTopic(fd, channel);
 		else
@@ -76,7 +75,5 @@ void Server::changeTopic(int fd, Channel& channel, std::string topic)
 		send(fd, msg.c_str(), msg.length(), 0);
 	}
 	else
-	{
 		std::cout << "The client can't set the topic." << std::endl;
-	}
 }
