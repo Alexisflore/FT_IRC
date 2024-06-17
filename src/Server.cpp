@@ -357,3 +357,13 @@ int	Server::isNameInChannel(const std::string& channelName, const std::string& c
 	}
 	return 0;
 }
+
+int		Server::findFdByName(std::string clientName)
+{
+	for (size_t i = 0; i < this->_clients.size(); i++)
+	{
+		if (this->_clients[i].getUsername() == clientName)
+			return (this->_clients[i].getFd());
+	}
+	return (0);
+}

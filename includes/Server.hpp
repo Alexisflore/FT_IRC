@@ -76,6 +76,7 @@ class Server
 		void 						changeMode(int fd, Channel& channel);
 		void 						createValue(std::string& mode, bool& value);
 		bool						isNicknameUsed(std::string nickname);
+		int							findFdByName(std::string clientName);
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
