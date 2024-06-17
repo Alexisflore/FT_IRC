@@ -6,15 +6,16 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 16:35:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:00:07 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 #include <string>
 
-void	Server::processJoin(int fd, std::vector<std::string> args)
+void	Server::processJoin(int fd, std::string arg)
 {
+	std::vector<std::string> args = split_args(arg);
 	if (args.size() > 2)
 		std::cout << "Usage : \"JOIN nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
 	else if (args.size() == 2)

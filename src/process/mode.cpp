@@ -6,15 +6,16 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 16:06:12 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:00:48 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 #include "../../includes/Channel.hpp"
 
-void Server::processMode(int fd, std::vector <std::string> string)
+void Server::processMode(int fd, std::string strings)
 {
+	std::vector<std::string> string = split_args(strings);
 	if (string.size() < 2 || string.size() > 4)
 	{
 		std::cout << "Usage : MODE <channel> [<mode>] {[+|-]|o|p|s|i|t|n|b|v} [<parameter>]." << std::endl;

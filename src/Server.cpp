@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 16:03:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:06:57 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,20 +287,22 @@ void	Server::treatData(std::string arg, int fd)
 		"JOIN", "QUIT", "NAMES", "BONG", "PART", "KICK", "TOPIC", "PRIVMSG",
 		"INVITE", "MODE", "NICK", "USER", "PASS", "CAP", "PING"};
 
-	void	(Server::*commandFunc[15])(int, std::vector<std::string>) = {
+	void	(Server::*commandFunc[15])(int, std::string) = {
 		&Server::processJoin, &Server::processQuit, &Server::processNames, &Server::processBong,
 		&Server::processPass, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
 		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser,
 		&Server::processPass, &Server::processCap, &Server::processPing};
 
-	std::vector <std::string> args = split_args(arg);
+	std::string cmd;
+	arg.find(" ") != std::string::npos ? cmd = arg.substr(0, arg.find(" ")) : cmd = arg;
+
 	for (size_t i = 0; i < 15; i++)
 	{
-		if (strcmp(args[0].c_str(), command[i].c_str()) == 0)
+		if (strcmp(cmd.c_str(), command[i].c_str()) == 0)
 		{
 
-			std::cout << "Command " << args[0] << " found." << std::endl;
-			try{(this->*commandFunc[i])(fd, args);
+			std::cout << "Command " << cmd << " found." << std::endl;
+			try{(this->*commandFunc[i])(fd, arg);
 			return;}
 			catch (std::exception &e)
 			{
@@ -309,7 +311,7 @@ void	Server::treatData(std::string arg, int fd)
 			}
 		}
 	}
-	std::cout << "Command " << args[0] << " not found." << std::endl;
+	std::cout << "Command " << cmd << " not found." << std::endl;
 }
 
 void	Server::initServer(char *port, char *pass)

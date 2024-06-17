@@ -6,14 +6,15 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 15:29:32 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:00:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 
-void Server::processKick(int fd, std::vector <std::string> args)
+void Server::processKick(int fd, std::string arg)
 {
+	std::vector<std::string> args = split_args(arg);
 	std::string		msg = "KICK\n";
 
 	send(fd, msg.c_str(), msg.length(), 0);

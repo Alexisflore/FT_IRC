@@ -1,8 +1,9 @@
 #include "../../includes/Server.hpp"
 
-void Server::processCap(int fd, std::vector <std::string> string)
+void Server::processCap(int fd, std::string string)
 {
-	if (string[1] == "LS")
+	std::vector<std::string> strings = split_args(string);
+	if (strings[1] == "LS")
 	{
 		std::string capabilities = "";
 

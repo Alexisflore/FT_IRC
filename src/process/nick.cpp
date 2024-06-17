@@ -6,20 +6,21 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 17:00:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:02:02 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 
-void Server::processNick(int fd, std::vector <std::string> string)
+void Server::processNick(int fd, std::string string)
 {
-	if (string.size() != 2)
+	std::vector<std::string> strings = split_args(string);
+	if (strings.size() != 2)
 	{
 		std::cout << "Usage : NICK <nickname>" << std::endl;
 		return ;
 	}
-	std::string nickname = string[1];
+	std::string nickname = strings[1];
 	if (nickname.size() > 9)
 	{
 		std::cout << "Nickname is too long" << std::endl;

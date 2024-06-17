@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 14:14:27 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:06:34 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,21 +78,21 @@ class Server
 		bool						isNicknameUsed(std::string nickname);
 
 		/*--------------PROCESS--------------*/
-		void						processJoin(int fd, std::vector<std::string>);
-		void						processQuit(int fd, std::vector<std::string>);
-		void						processNames(int fd, std::vector<std::string>);
-		void						processPass(int fd, std::vector<std::string>);
-		void						processBong(int fd, std::vector<std::string>);
-		void						processKick(int fd, std::vector<std::string>);
-		void						processTopic(int fd, std::vector<std::string>);
-		void						processPrivmsg(int fd, std::vector<std::string>);
-		void						processInvite(int fd, std::vector<std::string>);
-		void						processMode(int fd, std::vector<std::string>);
-		void						processNick(int fd, std::vector<std::string>);
-		void						processUser(int fd, std::vector<std::string>);
-		void						processPart(int fd, std::vector <std::string> string);
-		void						processCap(int fd, std::vector <std::string> string);
-		void						processPing(int fd, std::vector <std::string> string);
+		void						processJoin(int fd, std::string);
+		void						processQuit(int fd, std::string);
+		void						processNames(int fd, std::string);
+		void						processPass(int fd, std::string);
+		void						processBong(int fd, std::string);
+		void						processKick(int fd, std::string);
+		void						processTopic(int fd, std::string);
+		void						processPrivmsg(int fd, std::string);
+		void						processInvite(int fd, std::string);
+		void						processMode(int fd, std::string);
+		void						processNick(int fd, std::string);
+		void						processUser(int fd, std::string);
+		void						processPart(int fd, std::string);
+		void						processCap(int fd, std::string);
+		void						processPing(int fd, std::string);
 	private:
 		int							_port;
 		int							_socket_fd;

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 15:16:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:03:59 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 #include "../../includes/Channel.hpp"
 #include <string>
 
-void Server::processTopic(int fd, std::vector <std::string> string)
+void Server::processTopic(int fd, std::string string)
 {
-
 	try {
-		std::string channelName = string[2].substr(1, string[0].length());
-		if (string.size() != 4 && string.size() != 3)
+		std::vector<std::string> strings = split_args(string);
+		if (strings.size() != 4 && strings.size() != 3)
 			throw std::invalid_argument("Usage : TOPIC <channel> [<topic>].");
+		std::string channelName = strings[2].substr(1, strings[0].length());
 		std::cout << channelName << std::endl;
 		Channel &channel = getChannel(channelName);
-		if (string.size() == 2)
+		if (strings.size() == 2)
 			displayTopic(fd, channel);
 		else
-			changeTopic(fd, channel, string[3]);
+			changeTopic(fd, channel, strings[3]);
 	}
 	catch (std::exception &e)
 	{
@@ -81,3 +81,4 @@ void Server::changeTopic(int fd, Channel& channel, std::string topic)
 	else
 		std::cout << "The client can't set the topic." << std::endl;
 }
+

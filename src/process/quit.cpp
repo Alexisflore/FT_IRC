@@ -6,14 +6,16 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 16:06:40 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:57:32 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 
-void	Server::processQuit(int fd, std::vector<std::string> args)
+void	Server::processQuit(int fd, std::string arg)
 {
+
+	std::vector<std::string> args = split_args(arg);
 	if (args.size() > 2)
 		std::cout << "Usage : \"QUIT nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
 	else if (args.size() == 2)
