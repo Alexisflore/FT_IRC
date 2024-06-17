@@ -15,7 +15,7 @@
 void Server::processPass(int fd, std::vector <std::string> args)
 {
 		if (args.size() > 2)
-		std::cout << "Usage : \"QUIT nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
+		std::cout << "Usage : \"PART nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
 	else if (args.size() == 2)
 	{
 		std::cout << "Client " << fd << " is trying to quit channel #" << args[1] << std::endl;

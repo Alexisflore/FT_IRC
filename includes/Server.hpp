@@ -65,6 +65,7 @@ class Server
 		void			processUser(int fd, std::vector<std::string>);
 		int				isNameInChannel(const std::string& channelName, const std::string& clientName);
 		std::vector<std::string>	getArgs(char* buffer);
+		int				findFdByName(std::string &clientName);
 
 	private:
 		int							_port;//

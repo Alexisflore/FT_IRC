@@ -12,10 +12,28 @@
 
 #include "../../includes/Server.hpp"
 
-void Server::processPrivmsg(int fd, std::vector <std::string> string)
+void Server::processPrivmsg(int fd, std::vector <std::string> args)
 {
-		(void)string;
-	std::string		msg = "PRIVMSG\n";
+	if (args.size() < 3)
+	{
+		std::cout << "Usage : PRIVMSG <client> <message>" << std::endl;
+		return ;
+	}
+	std::string clientName = args[1];
+	std::string	msg = args[2];
+	for (size_t i = 3; i < args.size(); i++)
+	{
+		msg += " " + args[i];
+	}
+	
+	int clientFd = this->findFdByName(clientName);
+	if (clientFd == 0)
+	{
+		std::cout << "Client " << clientName << " not found." << std::endl;
+		return ;
+	}
 
-	send(fd, msg.c_str(), msg.length(), 0);
+	msg = "Private message from fd " + std::to_string(fd) + " : " + msg;
+	send(clientFd, msg.c_str(), msg.size(), 0);
+	std::cout << "private message sent to " << clientName << std::endl;
 }
