@@ -6,11 +6,12 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 15:53:55 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:35:36 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
+#include <string>
 
 void	Server::processJoin(int fd, std::vector<std::string> args)
 {
@@ -18,8 +19,8 @@ void	Server::processJoin(int fd, std::vector<std::string> args)
 		std::cout << "Usage : \"JOIN nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
 	else if (args.size() == 2)
 	{
-		std::cout << "Client " << fd << " is trying to join channel #" << args[1] << std::endl;
-		std::string channelName = args[1];
+		std::cout << "Client " << fd << " is trying to join channel " << args[1] << std::endl;
+		std::string channelName = args[1].substr(1, args[1].length());
 		std::vector<Channel>::iterator it = std::find_if(
 			this->_channels.begin(),
 			this->_channels.end(),
@@ -50,5 +51,3 @@ void	Server::processJoin(int fd, std::vector<std::string> args)
 	else
 		std::cout << "need to specify the channel name" << std::endl;
 }
-
-
