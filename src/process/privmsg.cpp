@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:05:22 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 18:14:47 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,17 @@ void Server::processPrivmsg(int fd, std::string string)
 	{
 		msg += " " + args[i];
 	}
-	
+
 	int clientFd = this->findFdByName(clientName);
 	if (clientFd == 0)
 	{
 		std::cout << "Client " << clientName << " not found." << std::endl;
 		return ;
 	}
-
-	msg = "Private message from fd " + std::to_string(fd) + " : " + msg;
+	std::stringstream ss;
+	ss << fd;
+	std::string fdStr = ss.str();
+	msg = "Private message from fd " + fdStr + " : " + msg;
 	send(clientFd, msg.c_str(), msg.size(), 0);
 	std::cout << "private message sent to " << clientName << std::endl;
 }
