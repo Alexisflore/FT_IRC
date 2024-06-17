@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 17:01:06 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:03:29 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ Client::Client(const Client &other)
 Client::Client(int fd)
 {
 	_fd = fd;
-	_nickname = nullptr;
 }
 
 Client 		&Client::operator=(const Client &other)

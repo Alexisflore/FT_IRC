@@ -6,23 +6,27 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 15:27:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:16:04 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 #include "../../includes/Channel.hpp"
+#include <string>
 
 void Server::processTopic(int fd, std::vector <std::string> string)
 {
+
 	try {
-		if (string.size() < 2 || string.size() > 3)
+		std::string channelName = string[2].substr(1, string[0].length());
+		if (string.size() != 4 && string.size() != 3)
 			throw std::invalid_argument("Usage : TOPIC <channel> [<topic>].");
-		Channel &channel = getChannel(string[1]);
+		std::cout << channelName << std::endl;
+		Channel &channel = getChannel(channelName);
 		if (string.size() == 2)
 			displayTopic(fd, channel);
 		else
-			changeTopic(fd, channel, string[2]);
+			changeTopic(fd, channel, string[3]);
 	}
 	catch (std::exception &e)
 	{

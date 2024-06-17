@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Join.cpp                                           :+:      :+:    :+:   */
+/*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 17:03:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:53:55 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ void	Server::processJoin(int fd, std::vector<std::string> args)
 		}
 		else // creation du canal
 		{
-			this->_channels.push_back(Channel(channelName));
+			std::cout << "Channel " << channelName << " doesnt exist yet!" << std::endl;
+			Channel newChannel(channelName);
+			this->_channels.push_back(newChannel);
 			std::vector<Channel>::iterator newIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
 			if (newIt != this->_channels.end())
 			{

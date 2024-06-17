@@ -6,7 +6,7 @@
 #    By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/13 09:48:39 by alfloren          #+#    #+#              #
-#    Updated: 2024/06/14 10:17:31 by alfloren         ###   ########.fr        #
+#    Updated: 2024/06/17 14:15:58 by alfloren         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC_FILES :=		Channel.cpp \
 					Server.cpp \
 					Utils.cpp \
 					process/bong.cpp \
+					process/ping.cpp \
 					process/invite.cpp \
 					process/join.cpp \
 					process/kick.cpp \
@@ -35,6 +36,8 @@ SRC_FILES :=		Channel.cpp \
 					process/quit.cpp \
 					process/topic.cpp \
 					process/user.cpp \
+					process/pass.cpp \
+					process/cap.cpp \
 
 OBJ_FILES	:= $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
 DEP_FILES	:= $(OBJ_FILES:.o=.d)

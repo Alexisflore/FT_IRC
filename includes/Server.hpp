@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 16:57:11 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 14:14:27 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ class Server
 		void 						changeMode(int fd, Channel& channel);
 		void 						createValue(std::string& mode, bool& value);
 		bool						isNicknameUsed(std::string nickname);
-		
+
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::vector<std::string>);
 		void						processQuit(int fd, std::vector<std::string>);
@@ -90,6 +90,9 @@ class Server
 		void						processMode(int fd, std::vector<std::string>);
 		void						processNick(int fd, std::vector<std::string>);
 		void						processUser(int fd, std::vector<std::string>);
+		void						processPart(int fd, std::vector <std::string> string);
+		void						processCap(int fd, std::vector <std::string> string);
+		void						processPing(int fd, std::vector <std::string> string);
 	private:
 		int							_port;
 		int							_socket_fd;

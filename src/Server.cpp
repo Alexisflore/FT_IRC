@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 16:58:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:03:41 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,11 @@ Client* Server::getClient(int fd)
 
 Channel&	Server::getChannel(std::string name)
 {
+	// std::cout << _channels.size() << std::endl;
+	// for (size_t i = 0; i < _channels.size(); i++)
+	// {
+	// 	std::cout << "Channel <" << _channels[i].getName() << ">" << std::endl;
+	// }
 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
 	if (channelIt == this->_channels.end())
 		throw std::runtime_error("The channel doesn't exist.");
@@ -158,7 +163,7 @@ void			Server::creatSocket()
 		throw std::runtime_error("(SERVER) failed to set option on socket");
 	if (fcntl(_socket_fd, F_SETFL, O_NONBLOCK) == -1)// definir l'option NonBlaquant pour les sockets
 		throw std::runtime_error("(SERVER) failed to set option (O_NONBLOCK) on socket");
-	
+
 	// configuration et liaisons
 	int	socketAdresslenght = sizeof(this->_socket_add);
 	int	bind_adress = bind(this->_socket_fd, (struct sockaddr*) &this->_socket_add, socketAdresslenght);
@@ -172,7 +177,7 @@ void			Server::creatSocket()
 	newPoll.events = POLLIN;//evenements attendus (entree)
 	newPoll.revents = 0;//evenements detectes (sortie)
 
-	_fds.push_back(newPoll);// ajouter le socket du server au pollfd 
+	_fds.push_back(newPoll);// ajouter le socket du server au pollfd
 }
 
 void	Server::newClient()
@@ -201,7 +206,7 @@ void	Server::newClient()
 
 	client.setFd(connectSockFD);//set le fd au client
 	client.setIpAdd(inet_ntoa(cliaddr.sin_addr));// convertire l'addr ip en string
-	_clients.push_back(client);// ajouter le client au vecteur des clients 
+	_clients.push_back(client);// ajouter le client au vecteur des clients
 	_fds.push_back(newPoll);// ajouter le socket du client au pollfd
 
 	std::cout << VERT << "Client Connected" << REINIT << std::endl;
@@ -232,7 +237,10 @@ void	Server::newDataClient(int fd)
 		// for (size_t i = 0; i < args.size(); i++)
 		// 	std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 		for (size_t i = 0; i < args.size(); i++)
+		{
+			std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 			treatData(args[i], fd);
+		}
 		if (getClient(fd) == NULL)
 			return ;
 		client->clearBuffer();
@@ -268,7 +276,7 @@ std::vector<std::string>	Server::getArgs(std::string buffer)
 // 			str = str.substr(0, pos);
 // 		args.push_back(str);
 // 	}
-	
+
 // 	return (args);
 // }
 
@@ -277,20 +285,28 @@ void	Server::treatData(std::string arg, int fd)
 {
 	std::string command[] = {
 		"JOIN", "QUIT", "NAMES", "BONG", "PART", "KICK", "TOPIC", "PRIVMSG",
-		"INVITE", "MODE", "NICK", "USER"};
+		"INVITE", "MODE", "NICK", "USER", "PASS", "CAP", "PING"};
 
-	void	(Server::*commandFunc[12])(int, std::vector<std::string>) = {
+	void	(Server::*commandFunc[15])(int, std::vector<std::string>) = {
 		&Server::processJoin, &Server::processQuit, &Server::processNames, &Server::processBong,
 		&Server::processPass, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
-		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser};
+		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser,
+		&Server::processPass, &Server::processCap, &Server::processPing};
 
 	std::vector <std::string> args = split_args(arg);
-	for (size_t i = 0; i < 12; i++)
+	for (size_t i = 0; i < 15; i++)
 	{
 		if (strcmp(args[0].c_str(), command[i].c_str()) == 0)
 		{
-			(this->*commandFunc[i])(fd, args);
-			return;
+
+			std::cout << "Command " << args[0] << " found." << std::endl;
+			try{(this->*commandFunc[i])(fd, args);
+			return;}
+			catch (std::exception &e)
+			{
+				std::cout << e.what() << std::endl;
+				return ;
+			}
 		}
 	}
 	std::cout << "Command " << args[0] << " not found." << std::endl;
@@ -300,12 +316,12 @@ void	Server::initServer(char *port, char *pass)
 {
 	securArg(port, pass);//check error port and pass
 	creatSocket();//creation du socket server
-	
+
 	std::cout << std::endl;
 	std::cout << "--------------- Server IRC ---------------" << std::endl;
 	std::cout << VERT << "Server <" << _socket_fd << "> connected" << REINIT << std::endl;
 	std::cout << "Waiting to accept a connection..." << std::endl;
-	
+
 	while (Server::Signal == false)// le serveur est en marche si pas de signal
 	{
 		if ((poll(&_fds[0], _fds.size(), -1) == -1) && Server::Signal == false)// surveille si y a un fd qui est pret a etre lu

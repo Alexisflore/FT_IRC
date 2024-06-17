@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 16:34:35 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:40:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ private:
 	std::vector<int> 			_banned;
 	std::vector<int> 			_invited;
 	std::vector<int> 			_operators;
-	long long					_limit;
 	std::string					_key;
+	long long					_limit;
 public:
     Channel();
     Channel(std::string channelName);
