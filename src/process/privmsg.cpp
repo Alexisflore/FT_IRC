@@ -14,11 +14,6 @@
 
 void Server::processPrivmsg(int fd, std::string string)
 {
-		(void)string;
-	std::string		msg = "PRIVMSG\n";
-
-	send(fd, msg.c_str(), msg.length(), 0);
-
 	std::vector<std::string> args = getArgs(string);
 
 	if (args.size() < 3)
