@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:03:59 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:18:19 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,32 @@
 
 void Server::processTopic(int fd, std::string string)
 {
-	try {
-		std::vector<std::string> strings = split_args(string);
-		if (strings.size() != 4 && strings.size() != 3)
-			throw std::invalid_argument("Usage : TOPIC <channel> [<topic>].");
-		std::string channelName = strings[2].substr(1, strings[0].length());
-		std::cout << channelName << std::endl;
-		Channel &channel = getChannel(channelName);
-		if (strings.size() == 2)
+	string.erase(0, 6); //erase the command
+	if (string[0] == '#')
+		string.erase(0, 1);
+	std::cout << string << std::endl;
+	std::string channelName;
+	string.find(":") == std::string::npos ? channelName = string.substr(0, string.length()) : channelName = string.substr(0, string.find(":") - 1);
+	Channel &channel = getChannel(channelName);
+	if (string.find(":") == std::string::npos)
 			displayTopic(fd, channel);
-		else
-			changeTopic(fd, channel, strings[3]);
-	}
-	catch (std::exception &e)
+	else if (channel.canClientSetTopic(fd) == true)
 	{
-		std::cout << e.what() << std::endl;
-		return ;
+		std::string topic = string.substr(string.find(":") + 1, string.length());
+		if (topic.length() > 50)
+		{
+			send(fd, "The topic is too long.\n", 23, 0);
+			return ;
+		}
+		else if (topic.empty())
+		{
+			channel.clearTopic();
+			topic = "No topic is set\n";
+		}
+		else
+			channel.setTopic(topic);
+		std::string msg = "TOPIC " + channel.getName() + " :" + topic + "\n";
+		channel.sendMessage(msg);
 	}
 }
 
@@ -56,13 +66,13 @@ bool Channel::canClientSetTopic(int clientFd)
 
 void Server::displayTopic(int fd, Channel& channel)
 {
-		std::string topic = channel.getTopic();
-		std::string msg = "TOPIC " + channel.getName() + " :";
-		if (topic.empty())
-			msg += "No topic is set\n";
-		else
-			msg += topic + "\n";
-		send(fd, msg.c_str(), msg.length(), 0);
+	std::string topic = channel.getTopic();
+	std::string msg = "TOPIC " + channel.getName() + " :";
+	if (topic.empty())
+		msg += "No topic is set\n";
+	else
+		msg += topic + "\n";
+	send(fd, msg.c_str(), msg.length(), 0);
 }
 
 void Server::changeTopic(int fd, Channel& channel, std::string topic)

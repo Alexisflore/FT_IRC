@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 15:44:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:08:13 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Client*						Channel::getClient(int fd)
 /*--------------Setters--------------*/
 void						Channel::setName(std::string name) {this->_name = name;}
 void						Channel::setTopic(std::string topic) {this->_topic = topic;}
+void						Channel::clearTopic() {this->_topic.clear();}
 void						Channel::setClientasBanned(int clientFd) {this->_banned.push_back(clientFd);}
 void						Channel::setClientasInvited(int clientFd) {this->_invited.push_back(clientFd);}
 void						Channel::setClientasOperator(int clientFd) {this->_operators.push_back(clientFd);}

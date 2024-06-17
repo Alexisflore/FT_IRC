@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 15:40:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:04:41 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ public:
 	/*--------------Setters--------------*/
 	void						setName(std::string name);
 	void						setTopic(std::string topic);
+	void						clearTopic();
 	void						setMode(std::string mode, bool value, std::string params);
 	void						setClientasOperator(int clientFd);
 	void						setClientasBanned(int clientFd);
