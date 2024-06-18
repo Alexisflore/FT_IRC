@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:47:19 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:05:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::processNick(int fd, std::string string)
 {
-	std::vector<std::string> strings = split_args(string, ' ');
+	std::vector<std::string> strings = split_args(string, " ");
 	if (strings.size() != 2)
 	{
 		std::cout << "Usage : NICK <nickname>" << std::endl;

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 13:20:12 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:03:14 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	Server::processJoin(int fd, std::string arg)
 {
 	arg.erase(0, 5);
-	std::vector<std::string> args = split_args(arg, ' ');
+	std::vector<std::string> args = split_args(arg, " ");
 	if (args.size() == 0 || args[0].empty() || args.size() > 2)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "JOIN").c_str();
@@ -27,9 +27,9 @@ void	Server::processJoin(int fd, std::string arg)
 	std::vector<Channel> channels;
 	std::vector<std::string> password;
 	if (args.size() == 2)
-		password = split_args(args[1], ' ');
+		password = split_args(args[1], " ");
 	Channel newChannel;
-	channelNames = split_args(args[0], ',');
+	channelNames = split_args(args[0], ",");
 	channels = getChannels(channelNames);
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
@@ -62,6 +62,7 @@ void	Server::processJoin(int fd, std::string arg)
 		else
 		{
 			std::cout << "Client " << fd << " joined the channel " << it->getName() << std::endl;
+			it->joinChannel(fd);
 			if (it->getTopic().empty())
 				send(fd, RPL_NOTOPIC(getClient(fd)->getNickname(), it->getName()).c_str(), strlen(RPL_NOTOPIC(getClient(fd)->getNickname(), it->getName()).c_str()), 0);
 			else

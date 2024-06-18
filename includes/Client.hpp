@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/14 17:01:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:28:44 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,18 @@ class Client
 		~Client();
 		Client(const Client &other);
 		Client &operator=(const Client &other);
-		
+
 		//---------Getters------------
 		int			getFd();
 		std::string	getNickname() const;
+		std::string	getRealName();
 		std::string	getPassword();
 		bool		getIsOperator();
 		std::string	getIpAdd();
 		std::string	getUsername();
 		std::string	getBuffer();
 		bool		isLogged();
+		void		setLogged(bool logged);
 		bool		isRegistered();
 
 		//---------Setters------------
@@ -44,6 +46,7 @@ class Client
 		void		setPassword(std::string password);
 		void		setIpAdd(std::string ip_add);
 		void		setUsername(std::string username);
+		void		setRealName(std::string realname);
 
 		//---------Methods------------
 		void		sendMessage(const std::string message);
@@ -53,6 +56,7 @@ class Client
 	private:
 		int							_fd;
 		std::string					_username;
+		std::string					_realname;
 		std::string					_nickname;
 		std::string					_password;
 		std::string					_ip_add;

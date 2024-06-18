@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 10:31:23 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:02:24 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,20 @@ Server::~Server()
 	std::cout << ROUGE << "ircserv off" << REINIT << std::endl;
 }
 
-std::vector<std::string>	Server::split_args(std::string str, char delim)
+std::vector<std::string>	Server::split_args(std::string s, std::string delimiter)
 {
-	std::vector<std::string> args;
-	std::istringstream iss(str);
-	std::string arg;
+	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    std::string token;
+    std::vector<std::string> res;
 
-	while (std::getline(iss, arg, delim))
-		args.push_back(arg);
-	return (args);
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+        token = s.substr (pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back (token);
+    }
+
+    res.push_back (s.substr (pos_start));
+    return res;
 }
 
 void Server::securArg(const char *port, const char *pass)
@@ -115,6 +120,7 @@ Channel&	Server::getChannelbyName(std::string name, std::string clientName)
 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
 	if (channelIt == this->_channels.end())
 	{
+		std::cout << "Channel <" << name << "> doesn't exist." << std::endl;
 		ERR_NOSUCHCHANNEL(clientName, name);
 		throw std::runtime_error("The channel doesn't exist.");
 	}
@@ -247,7 +253,6 @@ void	Server::newDataClient(int fd)
 	char buffer[BUFFER_SIZE];//buffer pour recevoir la data
 	Client *client = getClient(fd);
 	std::vector<std::string> args;
-
 	memset(buffer, 0, BUFFER_SIZE);
 	ssize_t	recevBytes = recv(fd, buffer, (BUFFER_SIZE - 1), 0);//recevoir la data
 	if (recevBytes <= 0)// si le client est deconnecte ou y a une erreur
@@ -363,7 +368,7 @@ void	Server::initServer(char *port, char *pass)
 		{
 			if (_fds[i].revents & POLLIN)
 			{
-				if (_fds[i].fd ==  _socket_fd)
+				if (_fds[i].fd == _socket_fd)
 					newClient();//accepter un client
 				else
 					newDataClient(_fds[i].fd);//recevoir une data du client

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:48:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:05:55 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 void Server::processMode(int fd, std::string strings)
 {
-	std::vector<std::string> string = split_args(strings, ' ');
+	std::vector<std::string> string = split_args(strings, " ");
 	if (string.size() < 2 || string.size() > 4)
 	{
-		std::cout << "Usage : MODE <channel> [<mode>] {[+|-]|o|p|s|i|t|n|b|v} [<parameter>]." << std::endl;
+		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "MODE").c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		return ;
 	}
 	std::string channelName = string[1];

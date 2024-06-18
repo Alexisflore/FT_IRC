@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:47:32 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:04:24 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,28 @@
 
 void Server::processPass(int fd, std::string string)
 {
-	std::vector<std::string> strings = split_args(string, ' ');
-	send(fd, "001 PASS :Welcome to the Internet Relay Network\n", 48, 0);
+	Client *client = getClient(fd);
+	std::vector<std::string> strings = split_args(string, " ");
+	std::string msg;
 	if (strings.size() != 2)
 	{
-		send(fd, "461 PASS :Not enough parameters\n", 31, 0);
-		return ;
+		msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "PASS").c_str();
+		client->setLogged(false);
 	}
-	if (getClient(fd)->getNickname() != "")
+	else if (client->isLogged())
 	{
-		send(fd, "462 PASS :You may not reregister\n", 32, 0);
-		return ;
+		msg = ERR_ALREADYREGISTERED(getClient(fd)->getNickname()).c_str();
 	}
-	if (strings[1] != this->_pass)
+	else if (strcmp(strings[1].c_str(), this->_pass.c_str()) != 0)
 	{
-		send(fd, "464 PASS :Password incorrect\n", 29, 0);
-		return ;
+		msg = ERR_PASSWDMISMATCH(getClient(fd)->getNickname()).c_str();
+		client->setLogged(false);
 	}
-	if (strings[1] == this->_pass)
+	else
 	{
-		send(fd, "001 PASS :Welcome to the Internet Relay Network\n", 48, 0);
-		getClient(fd)->setNickname("Guest");
-		getClient(fd)->setPassword(_pass);
+		client->setLogged(true);
+		msg = ":localhost 001 " + client->getNickname() + " :Welcome to the Internet Relay Network " + client->getNickname() + "!" + client->getUsername() + "@localhost\n";
 	}
+	if (!msg.empty())
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }

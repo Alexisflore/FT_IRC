@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:20:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 15:11:58 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,7 @@ std::string Server::findChannel(std::string string, std::string cmd)
 	std::string channelName;
 
 	string.erase(0, size + 1);
-	if (string[0] == '#')
-		string.erase(0, 1);
 	std::cout << string << std::endl;
-	string.find(":") == std::string::npos ? channelName = string.substr(0, string.length()) : channelName = string.substr(0, string.find(":") - 2);
+	string.find(":") == std::string::npos ? channelName = string.substr(0, string.length()) : channelName = string.substr(0, string.find(":") - 1);
 	return channelName;
 }

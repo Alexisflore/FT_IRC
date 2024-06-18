@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:05:32 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:02:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ class Server
 		Client*						getClient(int fd);
 		Channel&					getChannelbyName(std::string name, std::string clientName);
 		std::vector<Channel>		getChannels(std::vector< std::string > channelNames);
+		Client*						getClientbyNickname(std::string nickname);
 
 		/*--------------Setters--------------*/
 
@@ -70,7 +71,7 @@ class Server
 		void						closeFds();
 		void						clearClient(int fd);
 		int							isNameInChannel(const std::string& channelName, const std::string& clientName);
-		std::vector<std::string>	split_args(std::string str, char delim);
+		std::vector<std::string>	split_args(std::string str, std::string delimiter);
 		void 						displayTopic(int fd, Channel& channel);
 		void 						changeTopic(int fd, Channel& channel, std::string topic);
 		void 						displayMode(int fd, Channel& channel);

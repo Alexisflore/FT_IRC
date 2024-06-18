@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:47:09 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:06:13 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::processKick(int fd, std::string arg)
 {
-	std::vector<std::string> args = split_args(arg, ' ');
+	std::vector<std::string> args = split_args(arg, " ");
 	std::string		msg = "KICK\n";
 
 	send(fd, msg.c_str(), msg.length(), 0);
