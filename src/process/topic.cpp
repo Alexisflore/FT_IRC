@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 19:18:19 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:20:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,8 @@
 
 void Server::processTopic(int fd, std::string string)
 {
-	string.erase(0, 6); //erase the command
-	if (string[0] == '#')
-		string.erase(0, 1);
-	std::cout << string << std::endl;
-	std::string channelName;
-	string.find(":") == std::string::npos ? channelName = string.substr(0, string.length()) : channelName = string.substr(0, string.find(":") - 1);
-	Channel &channel = getChannel(channelName);
+	std::string channelName = findChannel(string, "TOPIC");
+	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
 	if (string.find(":") == std::string::npos)
 			displayTopic(fd, channel);
 	else if (channel.canClientSetTopic(fd) == true)
@@ -92,3 +87,15 @@ void Server::changeTopic(int fd, Channel& channel, std::string topic)
 		std::cout << "The client can't set the topic." << std::endl;
 }
 
+std::string Server::findChannel(std::string string, std::string cmd)
+{
+	int size = cmd.length();
+	std::string channelName;
+
+	string.erase(0, size + 1);
+	if (string[0] == '#')
+		string.erase(0, 1);
+	std::cout << string << std::endl;
+	string.find(":") == std::string::npos ? channelName = string.substr(0, string.length()) : channelName = string.substr(0, string.find(":") - 2);
+	return channelName;
+}

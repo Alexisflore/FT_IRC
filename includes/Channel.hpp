@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 19:04:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:54:16 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ private:
 	std::vector<int> 			_invited;
 	std::vector<int> 			_operators;
 	std::string					_key;
-	long long					_limit;
+	unsigned long				_limit;
 public:
     Channel();
     Channel(std::string channelName);
@@ -43,6 +43,15 @@ public:
 	std::string 				getTopic();
 	std::map<std::string, bool> getModes();
 	int							getFdFromNick(std::string nick);
+	bool 						isClientOperator(int clientFd);
+	bool 						isClientBanned(int clientFd);
+	bool 						isClientInvited(int clientFd);
+	bool 						isClientInChannel(int clientFd);
+	bool 						isChannelFull();
+	bool 						isInviteOnly();
+	bool 						isPasswordProtected();
+	bool 						isTopicProtected();
+	std::string 				getPassword();
 
 	/*--------------Setters--------------*/
 	void						setName(std::string name);
@@ -55,10 +64,6 @@ public:
 
 	/*--------------Methods--------------*/
     void    					leaveChannel(int clientFd);
-    bool    					isClientInChannel(int clientFd);
-	bool						isClientBanned(int clientFd);
-	bool						isClientInvited(int clientFd);
-	bool						isClientOperator(int clientFd);
     void 						sendMessage(const std::string message);
     void    					joinChannel(int clientFd);
 	bool						canClientSetTopic(int clientFd);

@@ -2,7 +2,7 @@
 
 void Server::processCap(int fd, std::string string)
 {
-	std::vector<std::string> strings = split_args(string);
+	std::vector<std::string> strings = split_args(string, ' ');
 	if (strings[1] == "LS")
 	{
 		std::string capabilities = "";

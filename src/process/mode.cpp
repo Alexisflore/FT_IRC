@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:00:48 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:48:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 
 void Server::processMode(int fd, std::string strings)
 {
-	std::vector<std::string> string = split_args(strings);
+	std::vector<std::string> string = split_args(strings, ' ');
 	if (string.size() < 2 || string.size() > 4)
 	{
 		std::cout << "Usage : MODE <channel> [<mode>] {[+|-]|o|p|s|i|t|n|b|v} [<parameter>]." << std::endl;
 		return ;
 	}
 	std::string channelName = string[1];
-	Channel &channel = getChannel(channelName);
+	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
 	if (channel.canClientSetMode(fd) == false)
 	{
 		std::cout << "Client " << fd << " can't set mode " << string[2] << " in channel " << channelName << std::endl;

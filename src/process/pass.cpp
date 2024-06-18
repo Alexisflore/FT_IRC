@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:02:39 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:47:32 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::processPass(int fd, std::string string)
 {
-	std::vector<std::string> strings = split_args(string);
+	std::vector<std::string> strings = split_args(string, ' ');
 	send(fd, "001 PASS :Welcome to the Internet Relay Network\n", 48, 0);
 	if (strings.size() != 2)
 	{

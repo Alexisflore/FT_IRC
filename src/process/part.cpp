@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:06 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:05:30 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:47:24 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::processPart(int fd, std::string arg)
 {
-	std::vector<std::string> args = split_args(arg);
+	std::vector<std::string> args = split_args(arg, ' ');
 	if (args.size() > 2)
 		std::cout << "Usage : \"QUIT nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
 	else if (args.size() == 2)

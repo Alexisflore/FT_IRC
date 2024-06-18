@@ -6,14 +6,14 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 19:08:13 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:59:04 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Channel.hpp"
 
 
-Channel::Channel() : _name(""), _topic(""), _key(""), _limit(-1) {
+Channel::Channel() : _name(""), _topic(""), _key(""), _limit(0) {
 	_modes["t"] = false;
 	_modes["i"] = false;
 	_modes["k"] = false;
@@ -21,14 +21,13 @@ Channel::Channel() : _name(""), _topic(""), _key(""), _limit(-1) {
 	_modes["o"] = false;
 }
 
-Channel::Channel(std::string channelName) : _name(channelName) , _limit(-1) {
+Channel::Channel(std::string channelName) : _name(channelName) , _limit(0) {
 	_modes["t"] = false;
 	_modes["i"] = false;
 	_modes["k"] = false;
 	_modes["l"] = false;
 	_modes["o"] = false;
 }
-
 
 Channel::~Channel() {}
 // Channel(const Channel &other) {}
@@ -67,7 +66,6 @@ bool    Channel::isClientInChannel(int clientFd)
 void Channel::joinChannel(int clientFd)
 {
     this->_clients.push_back(clientFd);
-    std::cout << "Client " << clientFd << " join the channel #" << this->_name << std::endl;
 }
 
 void Channel::leaveChannel(int clientFd)

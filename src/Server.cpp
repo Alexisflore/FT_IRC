@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:06:57 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 10:31:23 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ Server::~Server()
 	std::cout << ROUGE << "ircserv off" << REINIT << std::endl;
 }
 
-std::vector<std::string>	Server::split_args(std::string str)
+std::vector<std::string>	Server::split_args(std::string str, char delim)
 {
 	std::vector<std::string> args;
 	std::istringstream iss(str);
 	std::string arg;
 
-	while (iss >> arg)
+	while (std::getline(iss, arg, delim))
 		args.push_back(arg);
 	return (args);
 }
@@ -110,18 +110,48 @@ Client* Server::getClient(int fd)
 	return (NULL);
 }
 
-Channel&	Server::getChannel(std::string name)
+Channel&	Server::getChannelbyName(std::string name, std::string clientName)
 {
-	// std::cout << _channels.size() << std::endl;
-	// for (size_t i = 0; i < _channels.size(); i++)
-	// {
-	// 	std::cout << "Channel <" << _channels[i].getName() << ">" << std::endl;
-	// }
 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
 	if (channelIt == this->_channels.end())
+	{
+		ERR_NOSUCHCHANNEL(clientName, name);
 		throw std::runtime_error("The channel doesn't exist.");
+	}
 	return *channelIt;
 }
+// {
+// 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
+// 	if (channelIt == this->_channels.end())
+// 	{
+// 		throw std::runtime_error("The channel doesn't exist.");
+// 	}
+// 	return *channelIt;
+// }
+// {
+// 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
+// 	if (channelIt == this->_channels.end())
+// 	{
+// 		Channel newChannel(channelName);
+// 		this->_channels.push_back(newChannel);
+// 		channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
+// 	}
+// 	return *channelIt;
+// }
+// {
+// 	// std::cout << _channels.size() << std::endl;
+// 	// for (size_t i = 0; i < _channels.size(); i++)
+// 	// {
+// 	// 	std::cout << "Channel <" << _channels[i].getName() << ">" << std::endl;
+// 	// }
+// 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
+// 	if (channelIt == this->_channels.end())
+// 	{
+// 		ERR_NOSUCHCHANNEL(
+// 		throw std::runtime_error("The channel doesn't exist.");
+// 	}
+// 	return *channelIt;
+// }
 
 void		Server::signalHandler(int signum)
 {

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:50 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:01:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:48:58 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::processNames(int fd, std::string string)
 {
-	std::vector<std::string> strings = split_args(string);
+	std::vector<std::string> strings = split_args(string, ' ');
 	if (strings.size() > 2)
 		std::cout << "Usage : \"NAMES nameofthechannel\"" << std::endl;
 	else if (strings.size() == 2)

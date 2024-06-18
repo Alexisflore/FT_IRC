@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 17:06:34 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:05:32 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ class Server
 		/*--------------Getters--------------*/
 		std::vector<std::string>	getArgs(std::string str);
 		Client*						getClient(int fd);
-		Channel&					getChannel(std::string name);
+		Channel&					getChannelbyName(std::string name, std::string clientName);
+		std::vector<Channel>		getChannels(std::vector< std::string > channelNames);
 
 		/*--------------Setters--------------*/
 
@@ -69,7 +70,7 @@ class Server
 		void						closeFds();
 		void						clearClient(int fd);
 		int							isNameInChannel(const std::string& channelName, const std::string& clientName);
-		std::vector<std::string>	split_args(std::string str);
+		std::vector<std::string>	split_args(std::string str, char delim);
 		void 						displayTopic(int fd, Channel& channel);
 		void 						changeTopic(int fd, Channel& channel, std::string topic);
 		void 						displayMode(int fd, Channel& channel);
@@ -77,6 +78,7 @@ class Server
 		void 						createValue(std::string& mode, bool& value);
 		bool						isNicknameUsed(std::string nickname);
 		int							findFdByName(std::string clientName);
+		std::string					findChannel(std::string string, std::string cmd);
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);

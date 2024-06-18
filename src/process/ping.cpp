@@ -2,7 +2,7 @@
 
 void Server::processPing(int fd, std::string string)
 {
-	std::vector<std::string> strings = split_args(string);
+	std::vector<std::string> strings = split_args(string, ' ');
 	std::string		msg = "PONG ";
 	for (size_t i = 1; i < strings.size(); i++)
 	{
