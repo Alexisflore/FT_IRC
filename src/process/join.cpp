@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:57:39 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 13:20:12 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void	Server::processJoin(int fd, std::string arg)
 	channels = getChannels(channelNames);
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
+		if (it->isClientInChannel(fd))
+			continue;
 		if ((it->isPasswordProtected() && password.size() == 0) || (it->isPasswordProtected() && password.size() > 0 && it->getPassword() != password[0]))
 		{
 			std::string msg = ERR_BADCHANNELKEY(getClient(fd)->getNickname(), it->getName()).c_str();
@@ -59,7 +61,6 @@ void	Server::processJoin(int fd, std::string arg)
 		}
 		else
 		{
-			it->joinChannel(fd);
 			std::cout << "Client " << fd << " joined the channel " << it->getName() << std::endl;
 			if (it->getTopic().empty())
 				send(fd, RPL_NOTOPIC(getClient(fd)->getNickname(), it->getName()).c_str(), strlen(RPL_NOTOPIC(getClient(fd)->getNickname(), it->getName()).c_str()), 0);
