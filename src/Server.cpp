@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 19:15:38 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 10:41:43 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ std::vector<std::string>	Server::split_args(std::string s, std::string delimiter
 	}
 
 	res.push_back (s.substr (pos_start));
-	for (size_t i = 0; i < res.size(); i++)
-		std::cout << "Args[" << i << "]: " << res[i] << "\" " << std::endl;
+	// for (size_t i = 0; i < res.size(); i++)
+	// 	std::cout << "Args[" << i << "]: " << res[i] << "\" " << std::endl;
     return res;
 }
 
@@ -277,10 +277,9 @@ void	Server::newDataClient(int fd)
 	}
 	else
 	{
-		buffer[recevBytes - 2] = '\0';
-		client->setBuffer(buffer);//set le buffer du client
-		if (client->getBuffer().find("\r") == std::string::npos)
-			return ;
+		buffer[recevBytes] = '\0';
+		std::string stdbuffer = std::string(buffer);
+		client->setBuffer(stdbuffer);//set le buffer du client
 		std::string buffer = client->getBuffer();
 		std::cout << "Client <" << fd << "> Data: " << client->getBuffer() << std::endl;
 		args = getArgs(client->getBuffer().c_str());
@@ -288,7 +287,11 @@ void	Server::newDataClient(int fd)
 		// 	std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 		for (size_t i = 0; i < args.size(); i++)
 		{
-			std::cout << "Args[" << i << "]: " << args[i] << std::endl;
+			// for (size_t k = 0; k < args[i].size() + 1; k++)
+			// {
+			// 	std::cout << args[i].c_str() << "[" << k << "]: " << static_cast<int>(args[i][k]) << std::endl;
+			// }
+			// std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 			treatData(args[i], fd);
 		}
 		if (getClient(fd) == NULL)
@@ -305,10 +308,11 @@ std::vector<std::string>	Server::getArgs(std::string buffer)
 
 	while (std::getline(iss, str))
 	{
-		size_t pos = str.find("\n");
+		size_t pos = str.find("\r");
 
 		if (pos != std::string::npos)
 			str = str.substr(0, pos);
+		// str += "\0";
 		args.push_back(str);
 	}
 	return (args);
