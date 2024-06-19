@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:02:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/18 19:15:38 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,31 @@ Server::~Server()
 
 std::vector<std::string>	Server::split_args(std::string s, std::string delimiter)
 {
+
 	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    std::string token;
-    std::vector<std::string> res;
+	std::string token;
+	std::vector<std::string> res;
 
-    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
-        token = s.substr (pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back (token);
-    }
+	while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+		token = s.substr (pos_start, pos_end - pos_start);
+		pos_start = pos_end + delim_len;
+		if (token.size() > 2)
+		{
+		// delete \r\n
+		if (token[token.size() - 1] == '\n')
+			token[token.size() - 1] = '\0';
+		if (token[token.size() - 1] == '\r')
+			token[token.size() - 1] = '\0';
+		}
+		if (!token.empty()) {
+			token[token.size() - 1] != '\0' ? token += '\0' : 0;
+		}
+		res.push_back (token);
+	}
 
-    res.push_back (s.substr (pos_start));
+	res.push_back (s.substr (pos_start));
+	for (size_t i = 0; i < res.size(); i++)
+		std::cout << "Args[" << i << "]: " << res[i] << "\" " << std::endl;
     return res;
 }
 
@@ -263,10 +277,11 @@ void	Server::newDataClient(int fd)
 	}
 	else
 	{
-		// buffer[recevBytes] = '\0';
+		buffer[recevBytes - 2] = '\0';
 		client->setBuffer(buffer);//set le buffer du client
-		if (client->getBuffer().find("\n") == std::string::npos)
+		if (client->getBuffer().find("\r") == std::string::npos)
 			return ;
+		std::string buffer = client->getBuffer();
 		std::cout << "Client <" << fd << "> Data: " << client->getBuffer() << std::endl;
 		args = getArgs(client->getBuffer().c_str());
 		// for (size_t i = 0; i < args.size(); i++)
@@ -291,6 +306,7 @@ std::vector<std::string>	Server::getArgs(std::string buffer)
 	while (std::getline(iss, str))
 	{
 		size_t pos = str.find("\n");
+
 		if (pos != std::string::npos)
 			str = str.substr(0, pos);
 		args.push_back(str);

@@ -6,14 +6,27 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:04:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 09:57:51 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
 
+static bool passcmp(std::string pass, std::string string)
+{
+	if (pass.size() != string.size())
+		return false;
+	for (size_t i = 0; i < pass.size() - 1; i++)
+	{
+		if (pass[i] != string[i])
+			return false;
+	}
+	return true;
+}
+
 void Server::processPass(int fd, std::string string)
 {
+	std::cout << string << std::endl;
 	Client *client = getClient(fd);
 	std::vector<std::string> strings = split_args(string, " ");
 	std::string msg;
@@ -26,7 +39,7 @@ void Server::processPass(int fd, std::string string)
 	{
 		msg = ERR_ALREADYREGISTERED(getClient(fd)->getNickname()).c_str();
 	}
-	else if (strcmp(strings[1].c_str(), this->_pass.c_str()) != 0)
+	else if (passcmp(_pass, strings[1]))
 	{
 		msg = ERR_PASSWDMISMATCH(getClient(fd)->getNickname()).c_str();
 		client->setLogged(false);
