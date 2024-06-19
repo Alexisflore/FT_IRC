@@ -6,11 +6,12 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/19 10:39:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:24:37 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Server.hpp"
+# include <string>
 
 static bool passcmp(std::string pass, std::string string)
 {
@@ -36,25 +37,20 @@ void Server::processPass(int fd, std::string string)
 	Client *client = getClient(fd);
 	std::vector<std::string> strings = split_args(string, " ");
 	std::string msg;
-	if (strings.size() != 2)
-	{
-		msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "PASS").c_str();
-		client->setLogged(false);
-	}
-	else if (client->isLogged())
+	if (client->isLogged())
 	{
 		msg = ERR_ALREADYREGISTERED(getClient(fd)->getNickname()).c_str();
+	}
+	else if (strings.size() != 2)
+	{
+		msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "PASS").c_str();
 	}
 	else if (passcmp(_pass, strings[1]) == false)
 	{
 		msg = ERR_PASSWDMISMATCH(getClient(fd)->getNickname()).c_str();
-		client->setLogged(false);
 	}
 	else
-	{
 		client->setLogged(true);
-		msg = ":localhost 001 " + client->getNickname() + " :Welcome to the Internet Relay Network " + client->getNickname() + "!" + client->getUsername() + "@localhost\n";
-	}
 	if (!msg.empty())
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }

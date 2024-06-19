@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/19 10:41:43 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:47:02 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,17 @@ std::vector<std::string>	Server::split_args(std::string s, std::string delimiter
 	while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
 		token = s.substr (pos_start, pos_end - pos_start);
 		pos_start = pos_end + delim_len;
-		if (token.size() > 2)
-		{
-		// delete \r\n
-		if (token[token.size() - 1] == '\n')
-			token[token.size() - 1] = '\0';
-		if (token[token.size() - 1] == '\r')
-			token[token.size() - 1] = '\0';
-		}
-		if (!token.empty()) {
-			token[token.size() - 1] != '\0' ? token += '\0' : 0;
-		}
+		// if (token.size() > 2)
+		// {
+		// // delete \r\n
+		// if (token[token.size() - 1] == '\n')
+		// 	token[token.size() - 1] = '\0';
+		// if (token[token.size() - 1] == '\r')
+		// 	token[token.size() - 1] = '\0';
+		// }
+		// if (!token.empty()) {
+		// 	token[token.size() - 1] != '\0' ? token += '\0' : 0;
+		// }
 		res.push_back (token);
 	}
 

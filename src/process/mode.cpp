@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:55 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:47:24 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void Server::processMode(int fd, std::string strings)
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		return ;
 	}
+	// checkIfModeIsChannelOrUser(fd, string);
 	std::string channelName = string[1];
 	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
 	if (channel.canClientSetMode(fd) == false)
@@ -41,6 +42,25 @@ void Server::processMode(int fd, std::string strings)
 	createValue(mode, value);
 	channel.setMode(mode, value, params);
 }
+
+// void Server::checkIfModeIsChannelOrUser(int fd, std::vector<std::string> string)
+// {
+// 	if (string[1][0] == '#')
+// 	{
+// 		if (getChannelbyName(string[1], getClient(fd)->getNickname()).getName().empty())
+// 		{
+// 			std::string msg = ERR_NOSUCHCHANNEL(getClient(fd)->getNickname(), string[1]).c_str();
+// 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+// 			return ;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		std::string msg = ERR_USERSDONTMATCH(getClient(fd)->getNickname()).c_str();
+// 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+// 		return ;
+// 	}
+// }
 
 bool Channel::canClientSetMode(int clientFd)
 {
@@ -178,3 +198,4 @@ int		Channel::getFdFromNick(std::string nick)
 	}
 	throw std::invalid_argument("The client isn't in the channel.");
 }
+

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 16:19:51 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:29:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,16 @@ void		Client::removeInvolvedChannel(std::string channelName)
 			break ;
 		}
 	}
+}
+
+void		Client::welcomeMessage()
+{
+	if (isLogged() == false || _username.empty() || _realname.empty() || _nickname.empty())
+	{
+		return ;
+	}
+	_registered = true;
+	std::string userid = USER_ID(_nickname, _username);
+	std::string msg = RPL_WELCOME(_nickname, userid);
+	send(_fd, msg.c_str(), msg.length(), 0);
 }
