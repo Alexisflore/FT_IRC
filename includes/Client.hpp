@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/19 11:25:23 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 15:55:30 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #define CLIENT_HPP
 
 #include "Irc.hpp"
+#include "mode.hpp"
+
+class MODE;
 
 class Client
 {
@@ -27,17 +30,19 @@ class Client
 		Client &operator=(const Client &other);
 
 		//---------Getters------------
-		int			getFd();
-		std::string	getNickname() const;
-		std::string	getRealName();
-		std::string	getPassword();
-		bool		getIsOperator();
-		std::string	getIpAdd();
-		std::string	getUsername();
-		std::string	getBuffer();
-		bool		isLogged();
-		void		setLogged(bool logged);
-		bool		isRegistered();
+		int						getFd();
+		std::string				getNickname() const;
+		std::string				getRealName();
+		std::string				getPassword();
+		// bool					getIsOperator();
+		std::string				getIpAdd();
+		std::string				getUsername();
+		std::string				getBuffer();
+		bool					isLogged();
+		void					setLogged(bool logged);
+		bool					isRegistered();
+		void					displayMode(int fd);
+		std::map<char, bool>	getMode();
 
 		//---------Setters------------
 		void		setFd(int fd);
@@ -47,6 +52,8 @@ class Client
 		void		setIpAdd(std::string ip_add);
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);
+		void		setMode(t_mode* mode);
+		void 		setModeByType(char mode, char value, bool needParams, std::string params);
 
 		//---------Methods------------
 		void		sendMessage(const std::string message);
@@ -54,6 +61,8 @@ class Client
 		void		removeInvolvedChannel(std::string channelName);
 		void		clearBuffer();
 		void		welcomeMessage();
+		void		processMode(int fd, t_mode mode, int size_of_cmd);
+		void 		createCmd(t_mode *mode);
 	private:
 		int							_fd;
 		std::string					_username;
@@ -65,6 +74,7 @@ class Client
 		bool						_logged;
 		std::string					_buffer;
 		std::vector<std::string>	_channelInvolved;
+		MODE						_mode;
 		// struct sockaddr_in	_cliaddr;
 };
 

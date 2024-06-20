@@ -6,29 +6,23 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/19 11:29:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 16:52:42 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Client.hpp"
 
-Client::Client()
-{
-	// std::cout << VERT << "Default constructor are called" << REINIT << std::endl;
+Client::Client() {
 	_logged = false;
 }
-
 Client::~Client(){}
-
 Client::Client(int fd, std::string nickname, std::string password, std::string ipadd) :
 		_fd(fd),
 		_nickname(nickname),
 		_password(password),
 		_ip_add(ipadd),
 		_logged(false)
-{
-	// std::cout << VERT << "Constructor are called" << REINIT << std::endl;
-};
+{};
 
 Client::Client(const Client &other)
 {
@@ -37,13 +31,10 @@ Client::Client(const Client &other)
 	_password = other._password;
 	_ip_add = other._ip_add;
 	_logged = other._logged;
+	_mode = other._mode;
 }
 
-Client::Client(int fd)
-{
-	_fd = fd;
-}
-
+Client::Client(int fd) {_fd = fd;}
 Client 		&Client::operator=(const Client &other)
 {
 	if (this != &other)
@@ -52,19 +43,21 @@ Client 		&Client::operator=(const Client &other)
 		this->_nickname = other._nickname;
 		this->_password = other._password;
 		this->_ip_add = other._ip_add;
+		this->_mode = other._mode;
 	}
 	return (*this);
 }
 
 //----------------Getters------------
-int			Client::getFd() {return (this->_fd);}
-std::string	Client::getNickname() const {return (this->_nickname);}
-std::string Client::getBuffer() {return (this->_buffer);}
-std::string	Client::getIpAdd() {return (this->_ip_add);}
-std::string	Client::getUsername() {return (this->_username);}
-std::string	Client::getPassword() {return (this->_password);}
-bool 		Client::isLogged() {return (this->_logged);}
-bool 		Client::isRegistered() {return (this->_registered);}
+int						Client::getFd() {return (this->_fd);}
+std::string				Client::getNickname() const {return (this->_nickname);}
+std::string 			Client::getBuffer() {return (this->_buffer);}
+std::string				Client::getIpAdd() {return (this->_ip_add);}
+std::string				Client::getUsername() {return (this->_username);}
+std::string				Client::getPassword() {return (this->_password);}
+bool 					Client::isLogged() {return (this->_logged);}
+bool 					Client::isRegistered() {return (this->_registered);}
+std::map<char, bool>	Client::getMode() {return (_mode.getModes());}
 
 //----------------Setters------------
 void		Client::setFd(int fd) {this->_fd = fd;}
@@ -77,14 +70,8 @@ void		Client::setLogged(bool logged) {this->_logged = logged;}
 
 //----------------Methods------------
 void		Client::clearBuffer() {_buffer.clear();}
-void		Client::sendMessage(const std::string message)
-{std::cout << "Message sent: " << message << std::endl;}
-
-void		Client::addInvolvedChannel(std::string channelName)
-{
-	_channelInvolved.push_back(channelName);
-}
-
+void		Client::sendMessage(const std::string message) {std::cout << "Message sent: " << message << std::endl;}
+void		Client::addInvolvedChannel(std::string channelName) {_channelInvolved.push_back(channelName);}
 void		Client::removeInvolvedChannel(std::string channelName)
 {
 	for (size_t i = 0; i < _channelInvolved.size(); i++)

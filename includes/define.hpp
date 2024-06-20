@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 17:26:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/19 12:22:19 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@
 #define ERR_UMODEUNKNOWNFLAG(client) (":localhost 501 " + client + " :Unknown MODE flag\r\n")
 #define ERR_USERSDONTMATCH(client) ("502 " + client + " :Cant change mode for other users\r\n")
 #define RPL_UMODEIS(client, mode) (":localhost 221 " + client + " " + mode + "\r\n")
+# define ERR_UNKNOWNMODE(client, mode) (":localhost 472 " + client + " " + mode + " :is unknown mode char to me\r\n")
 /* channel mode */
 #define MODE_CHANNELMSG(channel, mode) (":localhost MODE #" + channel + " " + mode + "\r\n")
 #define MODE_CHANNELMSGWITHPARAM(channel, mode, param) (":localhost MODE #" + channel + " " + mode + " " + param + "\r\n")

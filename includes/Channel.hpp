@@ -6,20 +6,21 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:54:16 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 16:15:44 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CHANNEL_HPP
-#define CHANNEL_HPP
-
+#pragma once
 #include "Irc.hpp"
+#include "mode.hpp"
 
+class MODE;
 class Client;
 
 class Channel
 {
 private:
+	MODE						_mode;
     std::string 				_name;
     std::vector<int> 			_clients;
 	std::string 				_topic;
@@ -41,7 +42,9 @@ public:
 	Client*						getClient(int fd);
 	std::vector<int>			getClients() const;
 	std::string 				getTopic();
-	std::map<std::string, bool> getModes();
+	std::map<std::string, bool> getModesAsString();
+	bool						getMode(char mode);
+	std::string					getParams(char mode);
 	int							getFdFromNick(std::string nick);
 	bool 						isClientOperator(int clientFd);
 	bool 						isClientBanned(int clientFd);
@@ -52,29 +55,27 @@ public:
 	bool 						isPasswordProtected();
 	bool 						isTopicProtected();
 	std::string 				getPassword();
+	void						displayMode(int _clientFd);
 
 	/*--------------Setters--------------*/
 	void						setName(std::string name);
 	void						setTopic(std::string topic);
+	void						setMode(t_mode *mode);
+	void						setModeByType(char mode, char value, bool needParams, std::string params);
 	void						clearTopic();
-	void						setMode(std::string mode, bool value, std::string params);
 	void						setClientasOperator(int clientFd);
 	void						setClientasBanned(int clientFd);
 	void						setClientasInvited(int clientFd);
+	void						setClientasNotOperator(int clientFd);
 
 	/*--------------Methods--------------*/
     void    					leaveChannel(int clientFd);
     void 						sendMessage(const std::string message);
     void    					joinChannel(int clientFd);
 	bool						canClientSetTopic(int clientFd);
-	bool						canClientSetMode(int clientFd);
 	void						removeClientfromList(int clientFd, std::vector<int> &_clients);
-	void						topicMode(bool value, std::string topic);
-	void						inviteMode(bool value, std::string clientName);
-	void						keyMode(bool value, std::string key);
-	void						limitMode(bool value, std::string limit);
-	void						operatorMode(bool value, std::string clientName);
-
+	void						processMode(int fd, t_mode mode, int size_of_cmd);
+	// void						createCmd(t_mode* mode);
 	/*--------------Exceptions--------------*/
     class SendException : public std::exception
     {
@@ -83,5 +84,4 @@ public:
     };
 };
 
-#endif
 

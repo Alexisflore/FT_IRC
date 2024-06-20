@@ -6,29 +6,18 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 11:59:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 15:54:52 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Channel.hpp"
 
 
-Channel::Channel() : _name(""), _topic(""), _key(""), _limit(0) {
-	_modes["t"] = false;
-	_modes["i"] = false;
-	_modes["k"] = false;
-	_modes["l"] = false;
-	_modes["o"] = false;
+Channel::Channel() {
+	_mode = MODE();
 }
 
-Channel::Channel(std::string channelName) : _name(channelName) , _limit(0) {
-	_modes["t"] = false;
-	_modes["i"] = false;
-	_modes["k"] = false;
-	_modes["l"] = false;
-	_modes["o"] = false;
-}
-
+Channel::Channel(std::string channelName) : _name(channelName) {}
 Channel::~Channel() {}
 // Channel(const Channel &other) {}
 // Channel &operator=(const Channel &other) {}
@@ -37,7 +26,18 @@ Channel::~Channel() {}
 std::string     			Channel::getName() const {return this->_name;}
 std::vector<int>    		Channel::getClients() const {return this->_clients;}
 std::string					Channel::getTopic() {return this->_topic;}
-std::map<std::string, bool> Channel::getModes() {return this->_modes;}
+std::map<std::string, bool> Channel::getModesAsString() {return this->_modes;}
+bool						Channel::getMode(char mode) {return _mode.getModeValue(mode);}
+std::string					Channel::getParams(char mode) {return _mode.getParams(mode);}
+int							Channel::getFdFromNick(std::string nick)
+{
+	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (getClient(*it)->getNickname() == nick)
+			return (*it);
+	}
+	return (-1);
+}
 Client*						Channel::getClient(int fd)
 {
 	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
@@ -55,6 +55,7 @@ void						Channel::clearTopic() {this->_topic.clear();}
 void						Channel::setClientasBanned(int clientFd) {this->_banned.push_back(clientFd);}
 void						Channel::setClientasInvited(int clientFd) {this->_invited.push_back(clientFd);}
 void						Channel::setClientasOperator(int clientFd) {this->_operators.push_back(clientFd);}
+void 						Channel::setClientasNotOperator(int clientFd) {removeClientfromList(clientFd, _operators);}
 
 /*--------------Methods--------------*/
 bool    Channel::isClientInChannel(int clientFd)

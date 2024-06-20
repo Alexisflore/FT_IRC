@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:02:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 17:03:59 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Client.hpp"
 
 class Client;
+class MODE;
 
 class Channel;
 
@@ -80,6 +81,7 @@ class Server
 		bool						isNicknameUsed(std::string nickname);
 		int							findFdByName(std::string clientName);
 		std::string					findChannel(std::string string, std::string cmd);
+		int							createModeAndParams(int fd, std::string cmd, t_mode& mode);
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
@@ -92,6 +94,8 @@ class Server
 		void						processPrivmsg(int fd, std::string);
 		void						processInvite(int fd, std::string);
 		void						processMode(int fd, std::string);
+		void						processModeChannel(int fd, std::vector<std::string> string, Channel &channel);
+		void						processModeUser(Client *client, std::vector<std::string> string);
 		void						processNick(int fd, std::string);
 		void						processUser(int fd, std::string);
 		void						processPart(int fd, std::string);
