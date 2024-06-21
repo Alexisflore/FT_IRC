@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:06:13 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:37:46 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,50 +15,45 @@
 void Server::processKick(int fd, std::string arg)
 {
 	std::vector<std::string> args = split_args(arg, " ");
-	std::string		msg = "KICK\n";
-
-	send(fd, msg.c_str(), msg.length(), 0);
-
-	if (args.size() < 3 || args.size() > 4)
+	if (args.size() < 4)
 	{
-		std::cout << "Usage : KICK <channel> <clientName> [<comment>]." << std::endl;
+		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "KICK").c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		std::cout << "Client " << fd << " needs to specify the channel name and the client name" << std::endl;
 		return ;
 	}
 	std::string channelName = args[1];
 	std::string clientName = args[2];
-	// std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(channelName));
-	// if (channelIt == this->_channels.end()) // le canal n existe pas
-	// {
-	// 	std::cout << "the channel " << channelName << " doesn t exist." << std::endl;
-	// 	return ;
-	// }
-	try {
-		Channel &channel = getChannelbyName(channelName, clientName);
-
-		if (!channel.isClientInChannel(fd))
-		{
-			std::cout << "Client requesting the kick isn t in the canal " << channelName << std::endl;
-			return;
-		}
-
-		int fdToKick = isNameInChannel(channelName, clientName);
-		if (fdToKick == 0)
-		{
-			std::cout << "Client isn t in the channel " << channelName << std::endl;
-			return ;
-		}
-		else
-		{
-			channel.leaveChannel(fdToKick);
-			std::string str = "You have been kicked from " + channelName;
-			if (args.size() == 4)
-				str = str + "\nComment : " + args[3];
-			send(fdToKick, str.c_str(), str.size(), 0);
-		}
-	}
-	catch (std::exception &e)
+	std::string comment = args[3].substr(1);
+	Channel channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	if (!channel.isClientInChannel(fd))
 	{
-		std::cout << e.what() << std::endl;
+		std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channel.getName()).c_str();
+		std::cout << "Client " << fd << " isn t in the channel " << channel.getName() << std::endl;
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		return ;
 	}
+	Client *client = channel.getClientByNick(clientName);
+	if (client == NULL)
+	{
+		std::string msg = ERR_NOSUCHNICK(getClient(fd)->getNickname(), clientName).c_str();
+		std::cout << "Client " << fd << " isn t in the channel " << channel.getName() << std::endl;
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		return ;
+	}
+	if (!channel.isClientOperator(fd))
+	{
+		std::string msg = ERR_CHANOPRIVSNEEDED(getClient(fd)->getNickname(), channel.getName()).c_str();
+		std::cout << "Client " << fd << " isn t operator in the channel " << channel.getName() << std::endl;
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		return ;
+	}
+	if (args.size() > 4)
+	{
+		for (std::vector<std::string>::iterator it = args.begin() + 4; it != args.end(); it++)
+			comment += " " + *it;
+	}
+	removeClientFromChannel(client->getFd(), &channel);
+	std::string msg = RPL_KICK(getClient(fd)->getNickname(), channel.getName(), client->getNickname(), comment).c_str();
+	std::cout << "Client " << fd << " has kicked " << client->getNickname() << " from the channel " << channel.getName() << std::endl;
 }

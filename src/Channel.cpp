@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 15:43:39 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:29:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,15 @@ int							Channel::getFdFromNick(std::string nick)
 			return (it->first->getFd());
 	}
 	return (-1);
+}
+Client*						Channel::getClientByNick(std::string nick)
+{
+	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first->getNickname() == nick)
+			return (it->first);
+	}
+	return (NULL);
 }
 
 /*--------------Setters--------------*/

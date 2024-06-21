@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 15:38:43 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:29:23 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ public:
 	bool						getMode(char mode);
 	std::string					getParams(char mode);
 	int							getFdFromNick(std::string nick);
+	Client*						getClientByNick(std::string nick);
 	bool 						isClientOperator(int clientFd);
 	bool 						isClientBanned(int clientFd);
 	bool 						isClientInvited(int clientFd);

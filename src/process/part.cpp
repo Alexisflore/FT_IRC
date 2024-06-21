@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:06 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 15:53:07 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:21:01 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void Server::processPart(int fd, std::string arg)
 {
 	std::vector<std::string> args = split_args(arg, " ");
+	std::string channelIn;
 	if (args.size() < 2)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "PART").c_str();
@@ -22,10 +23,7 @@ void Server::processPart(int fd, std::string arg)
 		std::cout << "Client " << fd << " needs to specify the channel name" << std::endl;
 		return ;
 	}
-	if (args[1][0] == '#' || args[1][0] == '&')
-	{
-		args[1].erase(0, 1);
-	}
+
 	std::vector<std::string> channelNames = split_args(args[1], ",");
 	for (std::vector<std::string>::iterator it = channelNames.begin(); it != channelNames.end(); it++)
 	{
@@ -43,6 +41,13 @@ void Server::processPart(int fd, std::string arg)
 		{
 			std::cout << "you are still in the channel" << std::endl;
 		}
+	}
+	if (args[1][0] == '#' || args[1][0] == '&')
+	{
+		if (args[2][0] == ':')
+			channelIn = args[2];
+		else
+			channelIn = args[1];
 	}
 }
 
