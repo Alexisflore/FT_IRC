@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 11:36:47 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:15:46 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,28 +22,20 @@ class Channel
 private:
 	MODE						_modes;
     std::string 				_name;
-    std::vector<int> 			_clients;
-	std::map<int, std::string>	_nicks;
-	std::vector<int> 			_banned;
-	std::vector<int> 			_invited;
-	std::vector<int> 			_operators;
+	std::map<Client*, char>	_clients;
 	std::string 				_topic;
-	// std::map<std::string, bool> _modes;
-	// std::string					_key;
-	// unsigned long				_limit;
 public:
     Channel();
     Channel(std::string channelName);
     ~Channel();
     Channel(const Channel &other);
-	// Channel &operator=(const Channel &other);
 
 	/*--------------Getters--------------*/
     std::string 				getName() const;
 	Client*						getClient(int fd);
-	std::vector<int>			getClients() const;
+	std::vector<int>			getClientsFd();
+	// int							getClientbyFd(int fd);
 	std::string 				getTopic();
-	std::map<std::string, bool> getModesAsString();
 	bool						getMode(char mode);
 	std::string					getParams(char mode);
 	int							getFdFromNick(std::string nick);
@@ -67,16 +59,14 @@ public:
 	void						setClientasOperator(int clientFd);
 	void						setClientasBanned(int clientFd);
 	void						setClientasInvited(int clientFd);
-	void						setClientasNotOperator(int clientFd);
+	void						setClientasNormal(int clientFd);
 
 	/*--------------Methods--------------*/
     void    					leaveChannel(int clientFd);
     void 						sendMessage(const std::string message);
-    void    					joinChannel(int clientFd, std::string nickname);
+    void    					joinChannel(Client *client);
 	bool						canClientSetTopic(int clientFd);
-	void						removeClientfromList(int clientFd, std::vector<int> &_clients);
 	void						processMode(int fd, t_mode mode, int size_of_cmd);
-	// void						createCmd(t_mode* mode);
 	/*--------------Exceptions--------------*/
     class SendException : public std::exception
     {

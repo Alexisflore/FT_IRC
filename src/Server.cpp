@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 17:14:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 12:23:07 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,16 @@ Client* Server::getClient(int fd)
 	{
 		if (_clients[i].getFd() == fd)
 			return (&_clients[i]);
+	}
+	throw std::runtime_error("The client doesn't exist.");
+}
+
+Client* Channel::getClient(int fd)
+{
+	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first->getFd() == fd)
+			return (it->first);
 	}
 	return (NULL);
 }

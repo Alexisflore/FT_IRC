@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:50 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:11 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 12:20:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void Server::processNames(int fd, std::string string)
 		if (it != this->_channels.end())
 		{
 			Channel& channel = *it;
-			std::vector<int> clients = channel.getClients();
+			std::vector<int> clients = channel.getClientsFd();
 			for (std::vector<int>::iterator it = clients.begin(); it != clients.end(); it++)
 			{
 				std::cout << "Client " << getClient(*it)->getNickname() << std::endl;

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 11:03:17 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:15:49 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ bool Channel::canClientSetTopic(int clientFd)
 	//check if the client is in the channel
 	if (!isClientInChannel(clientFd))
 	{
-		std::cout << "Client " << clientFd << " isn t in the channel #" << this->_name << std::endl;
+		std::cout << "Client " << clientFd << " isn t in the channel " << this->_name << std::endl;
 		return false;
 	}
 	//check if the client is the channel operator
@@ -80,7 +80,7 @@ void Server::changeTopic(int fd, Channel& channel, std::string topic)
 	if (channel.canClientSetTopic(fd) == true)
 	{
 		channel.setTopic(topic);
-		std::string msg = "TOPIC " + channel.getName() + " :" + topic + "\n";
+		std::string msg = RPL_TOPIC(getClient(fd)->getNickname(), channel.getName(), topic).c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
 	}
 	else

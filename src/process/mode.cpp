@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 11:44:33 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 12:10:36 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ void Channel::setModeByType(char mode, char value, bool needParams, std::string 
 		else
 		{
 			for (unsigned long i = 0; i < params.size(); i++)
-				setClientasNotOperator(getFdFromNick(params));
+				setClientasNormal(getFdFromNick(params));
 		}
 	}
 	else
@@ -247,7 +247,7 @@ void Server::processMode(int fd, std::string string)
 	if ( mode.type == CHANNEL_MODE)
 	{
 		Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
-		std::vector<int> clients = channel.getClients();
+		std::vector<int> clients = channel.getClientsFd();
 		std::cout << mode.name << std::endl;
 		if (clients.empty() == true)
 		{
