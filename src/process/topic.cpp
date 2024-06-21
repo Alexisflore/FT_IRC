@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 14:15:49 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 17:21:25 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,13 @@ void Server::processTopic(int fd, std::string string)
 		else if (topic.empty())
 		{
 			channel.clearTopic();
-			topic = "No topic is set\n";
+			topic = RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str();
 		}
 		else
 			channel.setTopic(topic);
 		std::string msg = "TOPIC " + channel.getName() + " :" + topic + "\n";
-		channel.sendMessage(msg);
+		// channel.sendMessage(msg);
+		send(fd, msg.c_str(), msg.length(), 0);
 	}
 }
 

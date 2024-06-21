@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 15:39:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:56:50 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class Server
 		Client*						getClientbyNickname(std::string nickname);
 
 		/*--------------Setters--------------*/
-
+		void						setClientasInvited(int fd, Channel *channel);
 
 		/*--------------Methods--------------*/
 		void						securArg(const char *port, const char *pass);
