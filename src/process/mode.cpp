@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 11:01:54 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:44:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,28 @@ MODE 		&MODE::operator=(const MODE &other)
 bool					MODE::getModeValue(char mode) {return _mode[mode];}
 std::string				MODE::getParams(char mode) {return _params[mode];}
 std::map<char, bool>	MODE::getModes() {return _mode;}
+long long				MODE::getLimit()
+{
+	if (_params.find('l') != _params.end())
+	{
+		std::string limitStr = _params['l'];
+		long long limit = 0;
+		for (unsigned long i = 0; i < limitStr.size(); i++)
+		{
+			if (isdigit(limitStr[i]))
+			{
+				limit = limit * 10 + (limitStr[i] - '0');
+				if (limit > MAX_INT)
+					return -1;
+			}
+			else
+				return -1;
+		}
+		return limit;
+	}
+	return -1;
+}
+
 std::string				MODE::getParamsNeeded(int Type)
 {
 	if (Type == USER_MODE)
@@ -111,10 +133,10 @@ void Channel::setMode(t_mode* mode)
 					throw std::invalid_argument("The mode needs parameters.");
 				}
 				else
-					setModeByType(mode->mode[i], lastOperator, true, mode->params[0]);
+					setModeByType(mode->mode[i], lastOperator, true, mode->params[0], mode->clientNick);
 				return ;
 			}
-			setModeByType(mode->mode[i], lastOperator, false, "");
+			setModeByType(mode->mode[i], lastOperator, false, "", mode->clientNick);
 		}
 	}
 }
@@ -141,10 +163,16 @@ void	Client::setMode(t_mode* mode)
 	}
 }
 
-void MODE::setModeByType(char mode, char value, bool needParams, std::string params)
+void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
 	if (needParams == true)
 		_params[mode] = params;
+	if (mode == 'l' && getLimit() == -1)
+	{
+		std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
+		send(1, msg.c_str(), strlen(msg.c_str()), 0);
+		throw std::invalid_argument("The limit is invalid.");
+	}
 	_mode[mode] = (value == '+') ? true : false;
 }
 
@@ -153,13 +181,13 @@ void Client::setModeByType(char mode, char value, bool needParams, std::string p
 	if (mode == 'o')
 	{
 		if (value == '-')
-			_mode.setModeByType(mode, value, needParams, params);
+			_mode.setModeByType(mode, value, needParams, params, "");
 	}
 	else
-		_mode.setModeByType(mode, value, needParams, params);
+		_mode.setModeByType(mode, value, needParams, params, "");
 }
 
-void Channel::setModeByType(char mode, char value, bool needParams, std::string params)
+void Channel::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
 	if (mode == 'o')
 	{
@@ -175,7 +203,7 @@ void Channel::setModeByType(char mode, char value, bool needParams, std::string 
 		}
 	}
 	else
-		_modes.setModeByType(mode, value, needParams, params);
+		_modes.setModeByType(mode, value, needParams, params, nick);
 }
 
 void Channel::processMode(int fd, t_mode mode, int size_of_cmd)

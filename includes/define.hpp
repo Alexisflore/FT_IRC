@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 18:53:42 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:28:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_mode
 
 #define PENDING_QUEUE_MAXLENGTH 1 // a changer => nombre de client qui peuvent se connecte
 #define BUFFER_SIZE 1024
+#define MAX_INT 2147483647
 
 /* ++ NUMERIC REPLY ++ */
 

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 11:07:09 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:43:59 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	Server::processJoin(int fd, std::string arg)
 		return ;
 	}
 	std::vector<std::string> channelNames;
-	std::vector<Channel*> channels;
 	std::vector<std::string> password;
 	if (args.size() == 2)
 		password = split_args(args[1], " ");
@@ -101,18 +100,7 @@ void Server::selectChannels(std::vector< std::string > channelNames, std::vector
 
 bool Channel::isChannelFull()
 {
-	if (_modes.getModeValue('l') == false)
-		return false;
-	unsigned long limit;
-	std::string limitStr = _modes.getParams('l');
-	if (limitStr.empty())
-		limit = 0;
-	else
-	{
-		std::istringstream iss(limitStr);
-		iss >> limit;
-	}
-	if (_clients.size() >= limit)
+	if (_modes.getModeValue('l') == true && _clients.size() >= static_cast<unsigned long>(_modes.getLimit()))
 		return true;
 	return false;
 }

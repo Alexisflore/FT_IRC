@@ -19,10 +19,11 @@ class MODE {
 		std::string					getModesAsString();
 		void 						isModeAuthorized(char mode, t_mode* modes);
 		std::map<char, std::string>	getParams();
+		long long					getLimit();
 		std::string					getParamsNeeded(int Type);
 
 		/*--------------Setters--------------*/
-		void					setModeByType(char mode, char value, bool needParams, std::string params);
+		void					setModeByType(char mode, char value, bool needParams, std::string params, std::string nick);
 	private:
 		std::map<char, bool>		_mode;
 		std::map<char, std::string>	_params;
