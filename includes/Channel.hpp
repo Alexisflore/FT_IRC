@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 14:15:46 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 15:38:43 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ public:
     void    					leaveChannel(int clientFd);
     void 						sendMessage(const std::string message);
     void    					joinChannel(Client *client);
+	void						removeClient(Client *client);
 	bool						canClientSetTopic(int clientFd);
 	void						processMode(int fd, t_mode mode, int size_of_cmd);
 	/*--------------Exceptions--------------*/

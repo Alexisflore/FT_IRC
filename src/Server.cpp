@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 12:23:07 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:10:14 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,8 @@ Client* Channel::getClient(int fd)
 {
 	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (it->first->getFd() == fd)
+		// check if the pointer Client * points to a non-freed memory
+		if (it->first && it->first->getFd() == fd)
 			return (it->first);
 	}
 	return (NULL);
@@ -146,6 +147,7 @@ Channel&	Server::getChannelbyName(std::string name, std::string clientName)
 	{
 		std::string msg = ERR_NOSUCHCHANNEL(clientName, name);
 		send(findFdByName(clientName), msg.c_str(), strlen(msg.c_str()), 0);
+		std::cout << "Client " << clientName << " no such channel " << name << std::endl;
 		throw std::runtime_error("The channel doesn't exist.");
 	}
 	return *channelIt;
@@ -348,7 +350,7 @@ void	Server::treatData(std::string arg, int fd)
 
 	void	(Server::*commandFunc[15])(int, std::string) = {
 		&Server::processJoin, &Server::processQuit, &Server::processNames, &Server::processBong,
-		&Server::processPass, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
+		&Server::processPart, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
 		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser,
 		&Server::processPass, &Server::processCap, &Server::processPing};
 

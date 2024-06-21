@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 13:58:13 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 15:39:36 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ class Server
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
 		void						addClientToChannel(int fd, Channel *channel);
+		void						removeClientFromChannel(int fd, Channel *channel);
 		Channel&					findChannel(std::string channelName);
 		void						joinChannel(Channel& channel, std::vector<std::string>* password, int fd);
 		void						processQuit(int fd, std::string);

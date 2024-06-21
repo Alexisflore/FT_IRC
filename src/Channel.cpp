@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 12:40:11 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 15:43:39 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,6 @@ int							Channel::getFdFromNick(std::string nick)
 	}
 	return (-1);
 }
-// Client*						Server::getClient(int fd)
-// {
-// 	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
-// 	{
-// 		if (*it == fd)
-// 			return (getClientbyFd(fd));
-// 	}
-// 	return (NULL);
-// }
 
 /*--------------Setters--------------*/
 void						Channel::setName(std::string name) {this->_name = name;}
@@ -73,22 +64,22 @@ std::vector<int>			Channel::getClientsFd()
 /*--------------Methods--------------*/
 bool    Channel::isClientInChannel(int clientFd)
 {
-	if (_clients.empty() == true)
-	{
-		std::cout << "No clients in channel " << this->_name << std::endl;
+	Client *client = getClient(clientFd);
+	if (client == NULL)
 		return false;
-	}
-	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
-		if (it->first->getFd() == clientFd)
-			return true;
-	}
-    return (false);
+	if (_clients.find(client) != _clients.end())
+		return true;
+	return false;
 }
 
 void Channel::joinChannel(Client *client)
 {
 	this->_clients[client] = 'n';
+}
+
+void Channel::removeClient(Client *client)
+{
+	_clients.erase(client);
 }
 
 void Channel::leaveChannel(int clientFd)
