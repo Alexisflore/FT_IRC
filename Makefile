@@ -6,7 +6,7 @@
 #    By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/13 09:48:39 by alfloren          #+#    #+#              #
-#    Updated: 2024/06/19 16:35:55 by alfloren         ###   ########.fr        #
+#    Updated: 2024/06/20 18:03:15 by alfloren         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ SRC_DIR :=			./src
 
 CC =				c++
 
-SRC_FILES :=		Channel.cpp \
+SRC_FILES :=		process/mode.cpp \
+					Channel.cpp \
 					Client.cpp \
 					main.cpp \
 					Server.cpp \
@@ -28,7 +29,6 @@ SRC_FILES :=		Channel.cpp \
 					process/invite.cpp \
 					process/join.cpp \
 					process/kick.cpp \
-					process/mode.cpp \
 					process/names.cpp \
 					process/nick.cpp \
 					process/part.cpp \

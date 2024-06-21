@@ -6,9 +6,39 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/19 12:22:19 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:53:42 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
+#include <iostream>
+#include <csignal>
+#include <cstring>
+#include <string>
+#include <vector>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <exception>
+#include <arpa/inet.h>
+#include <limits.h>
+#include <sstream>
+#include <unistd.h>
+#include <cstdlib> //pour atoi()
+#include <poll.h>
+#include <fcntl.h>//pour fnctl()
+#include <algorithm>
+#include <map>
+#include <sstream>
+
+typedef struct s_mode
+{
+	std::string					mode;
+	std::vector<std::string>	params;
+	int							type;
+	int							client_fd;
+	std::string					clientNick;
+	std::string					name;
+}				t_mode;
 
 /* +++ COLORS +++ */
 #define REINIT "\033[0m"

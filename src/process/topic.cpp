@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 15:11:58 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:03:17 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool Channel::canClientSetTopic(int clientFd)
 	//check if the client is the channel operator
 	if (isClientOperator(clientFd))
 		return true;
-	if (this->_modes["t"] == true)
+	if (_modes.getModeValue('t') && !isClientOperator(clientFd))
 	{
 		std::cout << "Client " << clientFd << " isn t the channel operator in the channel #" << this->_name << std::endl;
 		return false;

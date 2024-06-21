@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 16:49:18 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:01:54 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,12 @@ void Channel::setMode(t_mode* mode)
 	lastOperator = mode->mode[0];
 	for (unsigned long i = 1; i < mode->mode.size(); i++)
 	{
-		_mode.isModeAuthorized(mode->mode[i], mode);
+		_modes.isModeAuthorized(mode->mode[i], mode);
 		if (mode->mode[i] == '+' || mode->mode[i] == '-')
 			lastOperator = mode->mode[i];
 		else
 		{
-			if (_mode.getParamsNeeded(CHANNEL_MODE).find(mode->mode[i]) != std::string::npos)
+			if (_modes.getParamsNeeded(CHANNEL_MODE).find(mode->mode[i]) != std::string::npos)
 			{
 				if (mode->params.empty() == true)
 				{
@@ -175,7 +175,7 @@ void Channel::setModeByType(char mode, char value, bool needParams, std::string 
 		}
 	}
 	else
-		_mode.setModeByType(mode, value, needParams, params);
+		_modes.setModeByType(mode, value, needParams, params);
 }
 
 void Channel::processMode(int fd, t_mode mode, int size_of_cmd)
@@ -185,16 +185,14 @@ void Channel::processMode(int fd, t_mode mode, int size_of_cmd)
 		std::string msg = ERR_NOTONCHANNEL(mode.clientNick, getName()).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		throw std::invalid_argument("The client isn't in the channel.");
-		return ;
 	}
 	if (size_of_cmd == 2)
-		displayMode(fd);
+		displayMode(fd, mode.clientNick);
 	else if (isClientOperator(fd) == false)
 	{
 		std::string msg = ERR_CHANOPRIVSNEEDED(mode.clientNick, getName()).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		throw std::invalid_argument("The client isn't an operator.");
-		return ;
 	}
 	else
 		setMode(&mode);
@@ -203,7 +201,7 @@ void Channel::processMode(int fd, t_mode mode, int size_of_cmd)
 void	Client::processMode(int fd, t_mode mode, int size_of_cmd)
 {
 	if (size_of_cmd == 2)
-		displayMode(fd);
+		displayMode(fd, mode.clientNick);
 	else if (getFd() != fd)
 	{
 		std::string msg = ERR_USERSDONTMATCH(mode.clientNick).c_str();
@@ -221,6 +219,16 @@ void Server::processMode(int fd, std::string string)
 	if ( mode.type == CHANNEL_MODE)
 	{
 		Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
+		std::vector<int> clients = channel.getClients();
+		std::cout << mode.name << std::endl;
+		if (clients.empty() == true)
+		{
+			throw std::invalid_argument("NIQUE TA MERE");
+		}
+		for (std::vector<int>::iterator it = clients.begin(); it != clients.end(); it++)
+		{
+			std::cout << getClient(*it)->getNickname() << std::endl;
+		}
 		channel.processMode(fd, mode, size_of_cmd);
 	}
 	else
@@ -245,7 +253,7 @@ int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(mode.clientNick, "MODE").c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The mode must start with + or -");
+		throw std::invalid_argument("Not enough parameters.");
 		return (0);
 	}
 	(splitcmd[1][0] == '#' || splitcmd[1][0] == '&') ? mode.type = CHANNEL_MODE : mode.type = USER_MODE;
@@ -269,14 +277,14 @@ int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
 	return (size);
 }
 
-void	Channel::displayMode(int fd)
+void	Channel::displayMode(int fd, std::string nick)
 {
-	std::string msg = RPL_CHANNELMODEIS(getClient(fd)->getNickname(), getName(), _mode.getModesAsString()).c_str();
+	std::string msg = RPL_CHANNELMODEIS(nick, getName(), _modes.getModesAsString()).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
 }
 
-void Client::displayMode(int fd)
+void Client::displayMode(int fd, std::string nick)
 {
-	std::string msg = RPL_UMODEIS(getNickname(), _mode.getModesAsString()).c_str();
+	std::string msg = RPL_UMODEIS(nick, _mode.getModesAsString()).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
 }

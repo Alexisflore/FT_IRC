@@ -6,10 +6,11 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 16:52:42 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:14:08 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/define.hpp"
 #include "../includes/Client.hpp"
 
 Client::Client() {

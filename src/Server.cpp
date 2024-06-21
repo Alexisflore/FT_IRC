@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 17:04:50 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/20 17:14:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,15 +283,9 @@ void	Server::newDataClient(int fd)
 		std::string buffer = client->getBuffer();
 		std::cout << "Client <" << fd << "> Data: " << client->getBuffer() << std::endl;
 		args = getArgs(client->getBuffer().c_str());
-		// for (size_t i = 0; i < args.size(); i++)
-		// 	std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 		for (size_t i = 0; i < args.size(); i++)
 		{
-			// for (size_t k = 0; k < args[i].size() + 1; k++)
-			// {
-			// 	std::cout << args[i].c_str() << "[" << k << "]: " << static_cast<int>(args[i][k]) << std::endl;
-			// }
-			// std::cout << "Args[" << i << "]: " << args[i] << std::endl;
+			std::cout << "Args[" << i << "]: " << args[i] << std::endl;
 			treatData(args[i], fd);
 		}
 		if (getClient(fd) == NULL)
@@ -356,7 +350,7 @@ void	Server::treatData(std::string arg, int fd)
 		if (strcmp(cmd.c_str(), command[i].c_str()) == 0)
 		{
 
-			std::cout << "Command " << cmd << " found." << std::endl;
+			std::cout << "Command " << cmd << std::endl;
 			try{(this->*commandFunc[i])(fd, arg);
 			return;}
 			catch (std::exception &e)

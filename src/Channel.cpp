@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 15:54:52 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:10:11 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,47 @@
 
 
 Channel::Channel() {
-	_mode = MODE();
+	_modes = MODE();
 }
 
 Channel::Channel(std::string channelName) : _name(channelName) {}
 Channel::~Channel() {}
-// Channel(const Channel &other) {}
+Channel::Channel(const Channel &other) {
+	_name = other._name;
+	_clients = other._clients;
+	_topic = other._topic;
+	_modes = other._modes;
+	_banned = other._banned;
+	_invited = other._invited;
+	_operators = other._operators;
+}
 // Channel &operator=(const Channel &other) {}
 
 /*--------------Getters--------------*/
 std::string     			Channel::getName() const {return this->_name;}
 std::vector<int>    		Channel::getClients() const {return this->_clients;}
 std::string					Channel::getTopic() {return this->_topic;}
-std::map<std::string, bool> Channel::getModesAsString() {return this->_modes;}
-bool						Channel::getMode(char mode) {return _mode.getModeValue(mode);}
-std::string					Channel::getParams(char mode) {return _mode.getParams(mode);}
+// std::map<std::string, bool> Channel::getModesAsString() {return this->_modes;}
+bool						Channel::getMode(char mode) {return _modes.getModeValue(mode);}
+std::string					Channel::getParams(char mode) {return _modes.getParams(mode);}
 int							Channel::getFdFromNick(std::string nick)
 {
-	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::map<int, std::string>::iterator it = _nicks.begin(); it != _nicks.end(); it++)
 	{
-		if (getClient(*it)->getNickname() == nick)
-			return (*it);
+		if (it->second == nick)
+			return (it->first);
 	}
 	return (-1);
 }
-Client*						Channel::getClient(int fd)
-{
-	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
-		if (*it == fd)
-			return (getClient(fd));
-	}
-	return (NULL);
-}
+// Client*						Server::getClient(int fd)
+// {
+// 	for (std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
+// 	{
+// 		if (*it == fd)
+// 			return (getClientbyFd(fd));
+// 	}
+// 	return (NULL);
+// }
 
 /*--------------Setters--------------*/
 void						Channel::setName(std::string name) {this->_name = name;}
@@ -60,13 +68,19 @@ void 						Channel::setClientasNotOperator(int clientFd) {removeClientfromList(c
 /*--------------Methods--------------*/
 bool    Channel::isClientInChannel(int clientFd)
 {
-    bool res = std::find(this->_clients.begin(), this->_clients.end(), clientFd) != this->_clients.end();
+	if (_clients.empty() == true)
+	{
+		std::cout << "No clients in channel" << this->_name << std::endl;
+		return false;
+	}
+	bool res = std::find(this->_clients.begin(), this->_clients.end(), clientFd) != this->_clients.end();
     return (res);
 }
 
-void Channel::joinChannel(int clientFd)
+void Channel::joinChannel(int clientFd, std::string nick)
 {
     this->_clients.push_back(clientFd);
+	_nicks[clientFd] = nick;
 }
 
 void Channel::leaveChannel(int clientFd)

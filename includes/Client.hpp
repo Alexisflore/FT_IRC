@@ -6,14 +6,12 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 15:55:30 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 10:46:22 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#pragma once
 
-#include "Irc.hpp"
 #include "mode.hpp"
 
 class MODE;
@@ -41,7 +39,7 @@ class Client
 		bool					isLogged();
 		void					setLogged(bool logged);
 		bool					isRegistered();
-		void					displayMode(int fd);
+		void					displayMode(int fd, std::string nickname);
 		std::map<char, bool>	getMode();
 
 		//---------Setters------------
@@ -62,7 +60,6 @@ class Client
 		void		clearBuffer();
 		void		welcomeMessage();
 		void		processMode(int fd, t_mode mode, int size_of_cmd);
-		void 		createCmd(t_mode *mode);
 	private:
 		int							_fd;
 		std::string					_username;
@@ -78,4 +75,3 @@ class Client
 		// struct sockaddr_in	_cliaddr;
 };
 
-#endif

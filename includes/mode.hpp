@@ -1,12 +1,8 @@
 #pragma once
-#include "Irc.hpp"
-#include "Server.hpp"
 
+#include "define.hpp"
 # define CHANNEL_MODE 1
 # define USER_MODE 2
-
-class Server;
-class Channel;
 
 class MODE {
 	public:

@@ -6,20 +6,16 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 17:03:59 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/21 10:34:39 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#pragma once
 
 #include "Irc.hpp"
-#include "Channel.hpp"
-#include "Client.hpp"
 
 class Client;
 class MODE;
-
 class Channel;
 
 struct ChannelNameComparator
@@ -55,7 +51,7 @@ class Server
 		std::vector<std::string>	getArgs(std::string str);
 		Client*						getClient(int fd);
 		Channel&					getChannelbyName(std::string name, std::string clientName);
-		std::vector<Channel>		getChannels(std::vector< std::string > channelNames);
+		void						selectChannels(std::vector< std::string > channelNames, std::vector<std::string>* password, int fd);
 		Client*						getClientbyNickname(std::string nickname);
 
 		/*--------------Setters--------------*/
@@ -85,6 +81,7 @@ class Server
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
+		void						joinChannel(Channel channel, std::vector<std::string>* password, int fd);
 		void						processQuit(int fd, std::string);
 		void						processNames(int fd, std::string);
 		void						processPass(int fd, std::string);
@@ -112,4 +109,3 @@ class Server
 		struct sockaddr_in			_socket_add;
 };
 
-#endif
