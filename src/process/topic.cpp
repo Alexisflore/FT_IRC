@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 17:21:25 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 12:26:14 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,51 @@
 
 void Server::processTopic(int fd, std::string string)
 {
-	std::string channelName = findChannel(string, "TOPIC");
+	std::vector<std::string> args = split_args(string, " ");
+	if (args.size() < 2)
+	{
+		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "TOPIC").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		std::cout << "Need more params" << std::endl;
+		return ;
+	}
+	std::string channelName = args[1];
 	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
-	if (string.find(":") == std::string::npos)
+	if (args.size() == 2)
 			displayTopic(fd, channel);
 	else if (channel.canClientSetTopic(fd) == true)
 	{
-		std::string topic = string.substr(string.find(":") + 1, string.length());
+		if (args[2][0] != ':')
+		{
+			std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "TOPIC").c_str();
+			send(fd, msg.c_str(), msg.length(), 0);
+			std::cout << "No : in the topic" << std::endl;
+			return ;
+		}
+		if (args[2].length() == 1 || args[2][1] == '\n' || args[2][1] == '\r')
+		{
+			channel.clearTopic();
+			std::string msg = RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str();
+			send(fd, msg.c_str(), msg.length(), 0);
+			return ;
+		}
+		std::string topic = args[2].substr(1);
+		for (size_t i = 3; i < args.size(); i++)
+			topic += " " + args[i];
 		if (topic.length() > 50)
 		{
 			send(fd, "The topic is too long.\n", 23, 0);
 			return ;
 		}
-		else if (topic.empty())
-		{
-			channel.clearTopic();
-			topic = RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str();
-		}
+		// else if (topic.empty())
+		// {
+		// 	channel.clearTopic();
+		// 	topic = RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str();
+		// }
 		else
 			channel.setTopic(topic);
-		std::string msg = "TOPIC " + channel.getName() + " :" + topic + "\n";
-		// channel.sendMessage(msg);
+		std::string msg = "TOPIC " + channel.getName() + " :" + channel.getTopic() + "\n";
+		channel.sendMessage(msg);
 		send(fd, msg.c_str(), msg.length(), 0);
 	}
 }

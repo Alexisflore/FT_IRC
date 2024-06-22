@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 12:17:12 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Server::processNick(int fd, std::string string)
 		return ;
 	}
 	std::string nickname = strings[1];
-	if (nickname.size() > 9)
+	if (nickname.size() > 50)
 	{
 		std::cout << "Nickname is too long" << std::endl;
 		return ;

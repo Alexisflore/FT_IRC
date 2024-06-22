@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:22 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 10:34:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 12:19:59 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::processUser(int fd, std::string string)
 {
-	if (split_args(string, " ").size() < 6)
+	if (split_args(string, " ").size() < 5)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "USER").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
