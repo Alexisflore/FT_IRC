@@ -101,6 +101,7 @@ class Server
 		void						processPart(int fd, std::string);
 		void						processCap(int fd, std::string);
 		void						processPing(int fd, std::string);
+		void						closeConnection(int fd, std::string quitMessage);
 	private:
 		int							_port;
 		int							_socket_fd;

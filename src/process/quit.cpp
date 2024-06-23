@@ -14,30 +14,70 @@
 
 void	Server::processQuit(int fd, std::string arg)
 {
-
 	std::vector<std::string> args = split_args(arg, " ");
-	if (args.size() > 2)
-		std::cout << "Usage : \"QUIT nameofthechannel\"" << std::endl; // a envoyer au client a la place de l ecrire cote serveur
-	else if (args.size() == 2)
-	{
-		std::cout << "Client " << fd << " is trying to quit channel #" << args[1] << std::endl;
-		std::string channelName = args[1];
+	std::string quitMessage;
 
-		std::vector<Channel>::iterator it = std::find_if(
-			this->_channels.begin(),
-			this->_channels.end(),
-			ChannelNameComparator(channelName));
-		if (it != this->_channels.end()) // le canal existe
+	if (args.size() > 1)
+	{
+		quitMessage = args[1];
+		for (size_t i = 2; i < args.size(); i++)
 		{
-			Channel& channel = *it;
-			if (channel.isClientInChannel(fd))
-				channel.leaveChannel(fd);
-			else
-				std::cout << "Client " << fd << " isn't in the channel " << channelName << std::endl;
+			quitMessage += " " + args[i];
 		}
-		else
-			std::cout << "Channel " << channelName << " doesnt exist yet!" << std::endl;
 	}
-	else
-		std::cout << "need to specify the channel name" << std::endl;
+	else 
+	{
+		for (size_t i = 0; i < this->_clients.size(); i++)
+		{
+			if (_clients[i].getFd() == fd)
+			{
+				quitMessage = _clients[i].getNickname();
+			}
+			break;
+		}
+	}
+
+	std::cout << "Client " << fd << " has quit: " << quitMessage << std::endl;
+
+	closeConnection(fd, quitMessage);
+}
+
+void	Server::closeConnection(int fd, std::string quitMessage)
+{
+	std::stringstream ss;
+	ss << fd;
+	std::string fdStr = ss.str();
+
+	std::string disconectMessage = "Client " + fdStr + " has quit: " + quitMessage;
+	for (size_t i = 0; i < this->_clients.size(); i++)
+	{
+		if (_clients[i].getFd() != fd)
+			send(_clients[i].getFd(), disconectMessage.c_str(), disconectMessage.size(), 0);
+	}
+	
+	for (size_t i = 0; i < _channels.size(); i++)
+	{
+		_channels[i].leaveChannel(fd);
+	}
+
+	close(fd);
+
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i].getFd() == fd)
+		{
+			_clients.erase(_clients.begin() + i);
+			break;
+		}
+	}
+	
+	for (size_t i = 0; i < _fds.size(); i++)
+	{
+		if (_fds[i].fd == fd)
+		{
+			_fds.erase(_fds.begin() + i);
+			break;
+		}
+	}
+	
 }
