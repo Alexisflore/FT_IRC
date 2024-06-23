@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 13:56:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 14:40:52 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ MODE 		&MODE::operator=(const MODE &other)
 }
 
 /*--------------Getters--------------*/
+long long				MODE::getLimit() {return _limit;}
+std::string				MODE::getPassword() {return _password;}
 bool					MODE::getModeValue(char mode) {
 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
@@ -52,40 +54,43 @@ bool					MODE::getModeValue(char mode) {
 }
 
 std::string				MODE::getParams(char mode) {
-	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+	if (mode == 'l')
 	{
-		if (it->first == mode)
-			return it->second;
+		for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+		{
+			if (it->first == mode)
+				return it->second;
+		}
 	}
 	return "";
 }
 
 std::vector<std::pair<char, bool> >	MODE::getMode() {return _mode;}
 
-long long				MODE::getLimit()
-{
-	std::string limitStr = getParams('l');
-	if (limitStr.empty() == true)
-		return -1;
-	long long limit = 0;
-	if (limitStr[0] == '-')
-		return -1;
-	unsigned long i = 0;
-	if (limitStr[0] == '+')
-		i = 1;
-	for (; i < limitStr.size(); i++)
-	{
-		if (isdigit(limitStr[i]))
-		{
-			limit = limit * 10 + (limitStr[i] - '0');
-			if (limit > MAX_INT)
-				return -1;
-		}
-		else
-			return -1;
-	}
-	return limit;
-}
+// long long				MODE::getLimit()
+// {
+// 	std::string limitStr = getParams('l');
+// 	if (limitStr.empty() == true)
+// 		return -1;
+// 	long long limit = 0;
+// 	if (limitStr[0] == '-')
+// 		return -1;
+// 	unsigned long i = 0;
+// 	if (limitStr[0] == '+')
+// 		i = 1;
+// 	for (; i < limitStr.size(); i++)
+// 	{
+// 		if (isdigit(limitStr[i]))
+// 		{
+// 			limit = limit * 10 + (limitStr[i] - '0');
+// 			if (limit > MAX_INT)
+// 				return -1;
+// 		}
+// 		else
+// 			return -1;
+// 	}
+// 	return limit;
+// }
 
 std::string				MODE::getParamsNeeded(int Type)
 {
@@ -183,26 +188,51 @@ void	Client::setMode(t_mode* mode)
 	}
 }
 
+long long ft_atol(const char *str)
+{
+	long long res = 0;
+	int sign = 1;
+	int i = 0;
+	if (str[0] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	for (; str[i] != '\0'; i++)
+	{
+		res = res * 10 + str[i] - '0';
+	}
+	return res * sign;
+}
+
 void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
-	if (needParams == true)
-	{
-		for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+	// if (needParams == true)
+	// {
+	// 	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+	// 	{
+	// 		if (it->first == mode)
+	// 		{
+	// 			it->second = params;
+	// 			return ;
+	// 		}
+	// 	}
+	// }
+	(void)needParams;
+	if (mode == 'l') {
+		if (ft_atol(params.c_str()) < 0)
 		{
-			if (it->first == mode)
-			{
-				it->second = params;
-				return ;
-			}
+			std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
+			send(1, msg.c_str(), strlen(msg.c_str()), 0);
+			throw std::invalid_argument("The limit is invalid.");
 		}
+		else
+			_limit = ft_atol(params.c_str());
 	}
-	if (mode == 'l' && getLimit() == -1 && value =='+')
+	else if (mode == 'k')
+		_password = params;
+	else
 	{
-		std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
-		send(1, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The limit is invalid.");
-	}
-	else { 
 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
 		if (it->first == mode)
