@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 13:56:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:43:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ MODE::~MODE() {}
 MODE::MODE(const MODE &other) {*this = other;}
 MODE 		&MODE::operator=(const MODE &other)
 {
+	_password = other._password;
+	_limit = other._limit;
 	_mode = other._mode;
 	_params = other._params;
 	_needParams = other._needParams;
@@ -42,6 +44,18 @@ MODE 		&MODE::operator=(const MODE &other)
 }
 
 /*--------------Getters--------------*/
+long long 				MODE::getLimit() {return _limit;}
+void					MODE::setLimit(std::string limit) {
+	_limit = ft_atoll(limit.c_str());
+	if (_limit == -1)
+	{
+		// std::string msg = ERR_KEYSET(
+		// send(1, msg.c_str(), strlen(msg.c_str()), 0);
+		throw std::invalid_argument("The limit is invalid.");
+	}
+}
+void					MODE::setPassword(std::string password) {_password = password;}
+std::string				MODE::getPassword() {return _password;}
 bool					MODE::getModeValue(char mode) {
 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
@@ -49,6 +63,30 @@ bool					MODE::getModeValue(char mode) {
 			return it->second;
 	}
 	return false;
+}
+
+long long 				ft_atoll(const char *str)
+{
+	long long res = 0;
+	int i = 0;
+	if (str == NULL)
+		return -1;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-')
+		return -1;
+	else if (str[i] == '+')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		if (isdigit(str[i]) == 0)
+			return -1;
+		res = res * 10 + str[i] - '0';
+		if (res > MAX_INT)
+			return -1;
+		i++;
+	}
+	return (res);
 }
 
 std::string				MODE::getParams(char mode) {
@@ -185,24 +223,33 @@ void	Client::setMode(t_mode* mode)
 
 void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
-	if (needParams == true)
+	if (mode == 'k' && value =='+')
 	{
-		for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
-		{
-			if (it->first == mode)
-			{
-				it->second = params;
-				return ;
-			}
-		}
+		setPassword(params);
 	}
-	if (mode == 'l' && getLimit() == -1 && value =='+')
+	else if (mode == 'l' && value == '+')
 	{
-		std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
-		send(1, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The limit is invalid.");
+		setLimit(params);
 	}
-	else { 
+	// else {
+	// if (needParams == true)
+	// {
+	// 	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+	// 	{
+	// 		if (it->first == mode)
+	// 		{
+	// 			it->second = params;
+	// 			return ;
+	// 		}
+	// 	}
+	// }
+	// if (mode == 'l' && getLimit() == -1 && value =='+')
+	// {
+	// 	std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
+	// 	send(1, msg.c_str(), strlen(msg.c_str()), 0);
+	// 	throw std::invalid_argument("The limit is invalid.");
+	// }
+	// else {
 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
 		if (it->first == mode)
@@ -210,7 +257,6 @@ void MODE::setModeByType(char mode, char value, bool needParams, std::string par
 			it->second = (value == '+') ? true : false;
 			return ;
 		}
-	}
 	}
 }
 
