@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:50 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 12:20:00 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 14:15:22 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,16 @@
 
 void Server::processNames(int fd, std::string string)
 {
+	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		std::cout << "Client " << it->getFd() << " has nickname " << it->getNickname() << std::endl;
+	}
 	std::vector<std::string> strings = split_args(string, " ");
 	if (strings.size() > 2)
 		std::cout << "Usage : \"NAMES nameofthechannel\"" << std::endl;
 	else if (strings.size() == 2)
 	{
-		std::cout << "Client " << fd << " is trying to get the list of clients in channel #" << strings[1] << std::endl;
+		std::cout << "Client " << fd << " is trying to get the list of clients in channel " << strings[1] << std::endl;
 		std::string channelName = strings[1];
 
 		std::vector<Channel>::iterator it = std::find_if(
@@ -29,6 +33,7 @@ void Server::processNames(int fd, std::string string)
 		if (it != this->_channels.end())
 		{
 			Channel& channel = *it;
+			std::cout << "Channel " << channelName << " exists!" << std::endl;
 			std::vector<int> clients = channel.getClientsFd();
 			for (std::vector<int>::iterator it = clients.begin(); it != clients.end(); it++)
 			{

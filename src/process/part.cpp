@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:06 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 16:21:01 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 23:44:44 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void Server::processPart(int fd, std::string arg)
 	std::vector<std::string> channelNames = split_args(args[1], ",");
 	for (std::vector<std::string>::iterator it = channelNames.begin(); it != channelNames.end(); it++)
 	{
-		Channel channel = getChannelbyName(*it, getClient(fd)->getNickname());
+		Channel& channel = getChannelbyName(*it, getClient(fd)->getNickname());
 		if (!channel.isClientInChannel(fd))
 		{
 			std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channel.getName()).c_str();
@@ -35,9 +35,9 @@ void Server::processPart(int fd, std::string arg)
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 			return ;
 		}
-		removeClientFromChannel(fd, &channel);
+		channel.removeClient(*getClient(fd));
 		std::cout << "Client " << fd << " has left the channel " << channel.getName() << std::endl;
-		if (channel.getClient(fd) != NULL)
+		if (channel.getClient(fd).getFd() == -1)
 		{
 			std::cout << "you are still in the channel" << std::endl;
 		}
@@ -51,7 +51,7 @@ void Server::processPart(int fd, std::string arg)
 	}
 }
 
-void Server::removeClientFromChannel(int fd, Channel *channel)
-{
-	channel->removeClient(getClient(fd));
-}
+// void Server::removeClientFromChannel(int fd, Channel *channel)
+// {
+// 	channel->removeClient(fd);
+// }

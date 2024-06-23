@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 17:20:27 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 10:31:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,37 +35,78 @@ bool						Channel::getMode(char mode) {return _modes.getModeValue(mode);}
 std::string					Channel::getParams(char mode) {return _modes.getParams(mode);}
 int							Channel::getFdFromNick(std::string nick)
 {
-	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (it->first->getNickname() == nick)
-			return (it->first->getFd());
+		if (it->first.getNickname() == nick)
+			return (it->first.getFd());
 	}
 	return (-1);
 }
-Client*						Channel::getClientByNick(std::string nick)
+Client						Channel::getClientByNick(std::string nick)
 {
-	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (it->first->getNickname() == nick)
+		if (it->first.getNickname() == nick)
 			return (it->first);
 	}
-	return (NULL);
+	throw std::invalid_argument("Client not found");
 }
 
 /*--------------Setters--------------*/
 void						Channel::setName(std::string name) {this->_name = name;}
 void						Channel::setTopic(std::string topic) {this->_topic = topic;}
 void						Channel::clearTopic() {this->_topic.clear();}
-void						Channel::setClientasBanned(int clientFd) {_clients[getClient(clientFd)] = 'b';}
-void						Channel::setClientasInvited(int clientFd) {_clients[getClient(clientFd)] = 'i';}
-void						Channel::setClientasOperator(int clientFd) {_clients[getClient(clientFd)] = 'o';}
-void						Channel::setClientasNormal(int clientFd) {_clients[getClient(clientFd)] = 'n';}
+void						Channel::setClientasBanned(int clientFd) {
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd)
+		{
+			it->second = 'b';
+			break ;
+		}
+	}
+}
+
+void						Channel::setClientasInvited(int clientFd) {
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd)
+		{
+			it->second = 'i';
+			break ;
+		}
+	}
+}
+
+void						Channel::setClientasOperator(int clientFd) {
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd)
+		{
+			it->second = 'o';
+			break ;
+		}
+	}
+}
+void						Channel::setClientasNormal(int clientFd) {
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd)
+		{
+			it->second = 'n';
+			break ;
+		}
+	}
+}
 std::vector<int>			Channel::getClientsFd()
 {
 	std::vector<int> clientsFd;
-	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		clientsFd.push_back(it->first->getFd());
+		//show the adress of the client
+		// std::cout << "Client address: " << it->first << std::endl;
+		std::cout << "HERE"	<< std::endl;
+		clientsFd.push_back(it->first.getFd());
 	}
 	return clientsFd;
 }
@@ -73,55 +114,87 @@ std::vector<int>			Channel::getClientsFd()
 /*--------------Methods--------------*/
 bool    Channel::isClientInChannel(int clientFd)
 {
-	Client *client = getClient(clientFd);
-	if (client == NULL)
-		return false;
-	if (_clients.find(client) != _clients.end())
-		return true;
+	// for (std::map<Client, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	// {
+	// 	if (it->first.getFd() == clientFd)
+	// 		return true;
+	// }
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if ((it)->first.getFd() == clientFd)
+		{
+			std::cout << "Client " << clientFd << " is in the channel " << this->_name << std::endl;
+			return true;
+		}
+	}
 	return false;
 }
-
-void Channel::joinChannel(Client *client)
+void Channel::joinChannel(Client client)
 {
-	this->_clients[client] = 'n';
+	_clients.push_back(std::make_pair(client, 'n'));
+	this->_client.push_back(client);
 }
 
-void Channel::removeClient(Client *client)
+void Channel::removeClient(Client client)
 {
-	_clients.erase(client);
+	int fd = client.getFd();
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == fd)
+		{
+			_clients.erase(it);
+			break ;
+		}
+	}
 }
 
 void Channel::leaveChannel(int clientFd)
 {
-	_clients.erase(getClient(clientFd));
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd)
+		{
+			_clients.erase(it);
+			break ;
+		}
+	}
 }
 
 void Channel::sendMessage(const std::string message)
 {
-	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		send(it->first->getFd(), message.c_str(), strlen(message.c_str()), 0);
+		send(it->first.getFd(), message.c_str(), message.length(), 0);
 	}
 }
 
 bool Channel::isClientBanned(int clientFd)
 {
-	if (_clients[getClient(clientFd)] == 'b')
-		return true;
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd && it->second == 'b')
+			return true;
+	}
 	return false;
 }
 
 bool Channel::isClientInvited(int clientFd)
 {
-	if (_clients[getClient(clientFd)] == 'i')
-		return true;
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd && it->second == 'i')
+			return true;
+	}
 	return false;
 }
 
 bool Channel::isClientOperator(int clientFd)
 {
-	if (_clients[getClient(clientFd)] == 'o')
-		return true;
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() == clientFd && it->second == 'o')
+			return true;
+	}
 	return false;
 }
 
@@ -157,3 +230,8 @@ std::string Channel::getPassword()
 {
 	return _modes.getParams('k');
 }
+
+bool Client::operator<(const Client& other) const {
+        // Compare the clients based on their nicknames, for example
+        return this->getNickname() < other.getNickname();
+    }

@@ -14,7 +14,7 @@ class MODE {
 		/*--------------Getters--------------*/
 		bool						getModeValue(char mode);
 		std::string					getParams(char mode);
-		std::map<char, bool>		getModes();
+		std::vector<std::pair<char, bool> >	getMode();
 		std::string					getAuthorizedMode(int type);
 		std::string					getModesAsString();
 		void 						isModeAuthorized(char mode, t_mode* modes);
@@ -25,8 +25,8 @@ class MODE {
 		/*--------------Setters--------------*/
 		void					setModeByType(char mode, char value, bool needParams, std::string params, std::string nick);
 	private:
-		std::map<char, bool>		_mode;
-		std::map<char, std::string>	_params;
+		std::vector<std::pair<char, bool> >			_mode;
+		std::vector<std::pair<char, std::string> >	_params;
 		std::string					_modesUser;
 		std::string					_modesChannel;
 		std::string					_needParams;

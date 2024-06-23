@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/20 18:14:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 10:31:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 Client::Client() {
 	_logged = false;
 }
-Client::~Client(){}
+Client::~Client(){
+	std::cout << "Client " << _fd << " has been disconnected" << std::endl;
+}
 Client::Client(int fd, std::string nickname, std::string password, std::string ipadd) :
 		_fd(fd),
 		_nickname(nickname),
@@ -50,7 +52,7 @@ Client 		&Client::operator=(const Client &other)
 }
 
 //----------------Getters------------
-int						Client::getFd() {return (this->_fd);}
+int						Client::getFd() const {return (this->_fd);}
 std::string				Client::getNickname() const {return (this->_nickname);}
 std::string 			Client::getBuffer() {return (this->_buffer);}
 std::string				Client::getIpAdd() {return (this->_ip_add);}
@@ -58,7 +60,7 @@ std::string				Client::getUsername() {return (this->_username);}
 std::string				Client::getPassword() {return (this->_password);}
 bool 					Client::isLogged() {return (this->_logged);}
 bool 					Client::isRegistered() {return (this->_registered);}
-std::map<char, bool>	Client::getMode() {return (_mode.getModes());}
+// std::map<char, bool>	Client::getMode() {return (_mode.getModes());}
 
 //----------------Setters------------
 void		Client::setFd(int fd) {this->_fd = fd;}

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 16:10:14 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 10:32:21 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,25 +119,25 @@ void	Server::clearClient(int fd)
 	}
 }
 
-Client* Server::getClient(int fd)
+Client *Server::getClient(int fd)
 {
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].getFd() == fd)
-			return (&_clients[i]);
+			return (&this->_clients[i]);
 	}
 	throw std::runtime_error("The client doesn't exist.");
 }
 
-Client* Channel::getClient(int fd)
+Client Channel::getClient(int fd)
 {
-	for (std::map<Client*, char>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		// check if the pointer Client * points to a non-freed memory
-		if (it->first && it->first->getFd() == fd)
+		if (it->first.getFd() == fd)
 			return (it->first);
 	}
-	return (NULL);
+	// return nothing if the client is not found
+	return (Client());
 }
 
 Channel&	Server::getChannelbyName(std::string name, std::string clientName)
@@ -148,7 +148,7 @@ Channel&	Server::getChannelbyName(std::string name, std::string clientName)
 		std::string msg = ERR_NOSUCHCHANNEL(clientName, name);
 		send(findFdByName(clientName), msg.c_str(), strlen(msg.c_str()), 0);
 		std::cout << "Client " << clientName << " no such channel " << name << std::endl;
-		throw std::runtime_error("The channel doesn't exist.");
+		return *channelIt;
 	}
 	return *channelIt;
 }
@@ -356,7 +356,6 @@ void	Server::treatData(std::string arg, int fd)
 
 	std::string cmd;
 	arg.find(" ") != std::string::npos ? cmd = arg.substr(0, arg.find(" ")) : cmd = arg;
-
 	for (size_t i = 0; i < 15; i++)
 	{
 		if (strcmp(cmd.c_str(), command[i].c_str()) == 0)

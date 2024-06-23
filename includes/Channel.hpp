@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 16:29:23 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 10:28:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ class Client;
 class Channel
 {
 private:
-	MODE						_modes;
-    std::string 				_name;
-	std::map<Client*, char>	_clients;
-	std::string 				_topic;
+	MODE								_modes;
+    std::string 						_name;
+	std::vector<std::pair<Client, char> > _clients;
+	std::vector<Client> 				_client;
+	std::string 						_topic;
 public:
     Channel();
     Channel(std::string channelName);
@@ -32,14 +33,14 @@ public:
 
 	/*--------------Getters--------------*/
     std::string 				getName() const;
-	Client*						getClient(int fd);
+	Client						getClient(int fd);
 	std::vector<int>			getClientsFd();
 	// int							getClientbyFd(int fd);
 	std::string 				getTopic();
 	bool						getMode(char mode);
 	std::string					getParams(char mode);
 	int							getFdFromNick(std::string nick);
-	Client*						getClientByNick(std::string nick);
+	Client						getClientByNick(std::string nick);
 	bool 						isClientOperator(int clientFd);
 	bool 						isClientBanned(int clientFd);
 	bool 						isClientInvited(int clientFd);
@@ -65,10 +66,12 @@ public:
 	/*--------------Methods--------------*/
     void    					leaveChannel(int clientFd);
     void 						sendMessage(const std::string message);
-    void    					joinChannel(Client *client);
-	void						removeClient(Client *client);
+    void    					joinChannel(Client client);
+	void						removeClient(Client client);
 	bool						canClientSetTopic(int clientFd);
 	void						processMode(int fd, t_mode mode, int size_of_cmd);
+
+
 	/*--------------Exceptions--------------*/
     class SendException : public std::exception
     {

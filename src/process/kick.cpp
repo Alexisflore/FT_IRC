@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 17:07:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 23:43:03 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void Server::processKick(int fd, std::string arg)
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		return ;
 	}
-	Client *client = channel.getClientByNick(clientName);
-	if (client == NULL)
+	Client client = channel.getClientByNick(clientName);
+	if (client.getFd() == -1)
 	{
 		std::string msg = ERR_NOSUCHNICK(getClient(fd)->getNickname(), clientName).c_str();
 		std::cout << "Client " << fd << " isn t in the channel " << channel.getName() << std::endl;
@@ -53,7 +53,7 @@ void Server::processKick(int fd, std::string arg)
 		for (std::vector<std::string>::iterator it = args.begin() + 4; it != args.end(); it++)
 			comment += " " + *it;
 	}
-	removeClientFromChannel(client->getFd(), &channel);
-	std::string msg = RPL_KICK(getClient(fd)->getNickname(), channel.getName(), client->getNickname(), comment).c_str();
-	std::cout << "Client " << fd << " has kicked " << client->getNickname() << " from the channel " << channel.getName() << std::endl;
+	channel.removeClient(client);
+	std::string msg = RPL_KICK(getClient(fd)->getNickname(), channel.getName(), client.getNickname(), comment).c_str();
+	std::cout << "Client " << fd << " has kicked " << client.getNickname() << " from the channel " << channel.getName() << std::endl;
 }

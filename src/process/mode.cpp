@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 12:10:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 10:23:11 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 
 MODE::MODE()
 {
-	_mode['i'] = false;
-	_mode['o'] = false;
-	_mode['w'] = false;
-	_mode['s'] = false;
-	_mode['t'] = false;
-	_mode['k'] = false;
-	_mode['l'] = false;
+	_mode.push_back(std::make_pair('i', false));
+	_mode.push_back(std::make_pair('o', false));
+	_mode.push_back(std::make_pair('s', false));
+	_mode.push_back(std::make_pair('w', false));
+	_mode.push_back(std::make_pair('k', false));
+	_mode.push_back(std::make_pair('l', false));
+	_mode.push_back(std::make_pair('t', false));
 	_modesUser = "iosw";
 	_modesChannel = "iotkl";
 	_needParams = "klo";
@@ -42,29 +42,49 @@ MODE 		&MODE::operator=(const MODE &other)
 }
 
 /*--------------Getters--------------*/
-bool					MODE::getModeValue(char mode) {return _mode[mode];}
-std::string				MODE::getParams(char mode) {return _params[mode];}
-std::map<char, bool>	MODE::getModes() {return _mode;}
+bool					MODE::getModeValue(char mode) {
+	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
+	{
+		if (it->first == mode)
+			return it->second;
+	}
+	return false;
+}
+
+std::string				MODE::getParams(char mode) {
+	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+	{
+		if (it->first == mode)
+			return it->second;
+	}
+	return "";
+}
+
+std::vector<std::pair<char, bool> >	MODE::getMode() {return _mode;}
+
 long long				MODE::getLimit()
 {
-	if (_params.find('l') != _params.end())
+	std::string limitStr = getParams('l');
+	if (limitStr.empty() == true)
+		return -1;
+	long long limit = 0;
+	if (limitStr[0] == '-')
+		return -1;
+	unsigned long i = 0;
+	if (limitStr[0] == '+')
+		i = 1;
+	for (; i < limitStr.size(); i++)
 	{
-		std::string limitStr = _params['l'];
-		long long limit = 0;
-		for (unsigned long i = 0; i < limitStr.size(); i++)
+		if (isdigit(limitStr[i]))
 		{
-			if (isdigit(limitStr[i]))
-			{
-				limit = limit * 10 + (limitStr[i] - '0');
-				if (limit > MAX_INT)
-					return -1;
-			}
-			else
+			limit = limit * 10 + (limitStr[i] - '0');
+			if (limit > MAX_INT)
 				return -1;
 		}
-		return limit;
+		else
+			return -1;
 	}
-	return -1;
+	return limit;
 }
 
 std::string				MODE::getParamsNeeded(int Type)
@@ -95,7 +115,7 @@ void	MODE::isModeAuthorized(char mode, t_mode* modes)
 std::string MODE::getModesAsString()
 {
 	std::string mode;
-	for (std::map<char, bool>::iterator it = _mode.begin(); it != _mode.end(); it++)
+	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
 		if (it->second == true)
 			mode += "+" + std::string(1, it->first) + " ";
@@ -166,14 +186,14 @@ void	Client::setMode(t_mode* mode)
 void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
 	if (needParams == true)
-		_params[mode] = params;
+		_params.push_back(std::make_pair(mode, params));
 	if (mode == 'l' && getLimit() == -1)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
 		send(1, msg.c_str(), strlen(msg.c_str()), 0);
 		throw std::invalid_argument("The limit is invalid.");
 	}
-	_mode[mode] = (value == '+') ? true : false;
+	_mode.push_back(std::make_pair(mode, value == '+'));
 }
 
 void Client::setModeByType(char mode, char value, bool needParams, std::string params)

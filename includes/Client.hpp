@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 11:37:15 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/22 23:38:51 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ class Client
 		~Client();
 		Client(const Client &other);
 		Client &operator=(const Client &other);
+		bool operator<(const Client& other) const;
 
 		//---------Getters------------
-		int						getFd();
+		int						getFd() const;
 		std::string				getNickname() const;
 		std::string				getRealName();
 		std::string				getPassword();

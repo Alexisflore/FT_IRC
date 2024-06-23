@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 15:36:42 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 01:47:38 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	Server::processJoin(int fd, std::string arg)
 	}
 	std::vector<std::string> channelNames;
 	std::vector<std::string> password;
+	std::string topic;
 	if (args.size() == 2)
 		password = split_args(args[1], " ");
 	Channel newChannel;
@@ -50,45 +51,70 @@ void	Server::processJoin(int fd, std::string arg)
 				std::string msg = ERR_BADCHANNELKEY(getClient(fd)->getNickname(), channel.getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				std::cout << "Client " << fd << " needs to provide a password to join the channel " << channel.getName() << std::endl;
+				return ;
 			}
 			else if (channel.isInviteOnly() && !channel.isClientInvited(fd))
 			{
 				std::string msg = ERR_INVITEONLYCHAN(getClient(fd)->getNickname(), channel.getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				std::cout << "Client " << fd << " needs to be invchanneled to join the channel " << channel.getName() << std::endl;
+				return ;
 			}
 			else if (channel.isClientBanned(fd))
 			{
 				std::string msg = ERR_BANNEDFROMCHAN(getClient(fd)->getNickname(), channel.getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				std::cout << "Client " << fd << " is banned from the channel " << channel.getName() << std::endl;
+				return ;
 			}
 			else if (channel.isChannelFull())
 			{
 				std::string msg = ERR_CHANNELISFULL(getClient(fd)->getNickname(), channel.getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				std::cout << "Channel " << channel.getName() << " is full" << std::endl;
+				return ;
 			}
 			else
 			{
 				std::cout << "Client " << fd << " joined the channel " << channel.getName() << std::endl;
-				addClientToChannel(fd, &channel);
-				std::cout << "Client " << channel.getClient(fd)->getNickname() << " joined the channel " << channel.getName() << std::endl;
-				if (channel.getTopic().empty())
-					send(fd, RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str(), strlen(RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str()), 0);
+				channel.joinChannel(*getClient(fd));
+				topic = channel.getTopic();
 			}
+		}
+		else 
+		{
+			Channel newChannel(*it);
+
+			this->_channels.push_back(newChannel);
+			for (std::vector<Channel>::iterator it2 = this->_channels.begin(); it2 != this->_channels.end(); it2++)
+			{
+				if (it2->getName() == *it)
+				{
+					Channel& channel = *it2;
+					channel.joinChannel(*getClient(fd));
+					break;
+				}
+			}
+			topic = newChannel.getTopic();
+		}
+		std::string msg = RPL_JOIN(getClient(fd)->getNickname(), (*it)).c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		std::cout << "Client " << fd << " has joined the channel " << *it << std::endl;
+		if (topic.empty() == false)
+		{
+			std::string msg = RPL_TOPIC(getClient(fd)->getNickname(), (*it), topic).c_str();
+			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		}
 		else
 		{
-			Channel newChannel(*it);
-			addClientToChannel(fd, &newChannel);
-			this->_channels.push_back(newChannel);
+			std::string msg = RPL_NOTOPIC(getClient(fd)->getNickname(), (*it)).c_str();
+			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		}
 	}
 }
 
-void Server::addClientToChannel(int fd, Channel *channel)
-{
-	channel->joinChannel(getClient(fd));
-}
+// void Server::addClientToChannel(int fd, Channel *channel)
+// {
+// 	channel->joinChannel(getClient(fd));
+// }
 
