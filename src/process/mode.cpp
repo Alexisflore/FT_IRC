@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 19:43:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 23:15:29 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,28 +43,6 @@ MODE 		&MODE::operator=(const MODE &other)
 	return (*this);
 }
 
-/*--------------Getters--------------*/
-long long 				MODE::getLimit() {return _limit;}
-void					MODE::setLimit(std::string limit) {
-	_limit = ft_atoll(limit.c_str());
-	if (_limit == -1)
-	{
-		// std::string msg = ERR_KEYSET(
-		// send(1, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The limit is invalid.");
-	}
-}
-void					MODE::setPassword(std::string password) {_password = password;}
-std::string				MODE::getPassword() {return _password;}
-bool					MODE::getModeValue(char mode) {
-	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
-	{
-		if (it->first == mode)
-			return it->second;
-	}
-	return false;
-}
-
 long long 				ft_atoll(const char *str)
 {
 	long long res = 0;
@@ -89,6 +67,29 @@ long long 				ft_atoll(const char *str)
 	return (res);
 }
 
+/*--------------Getters--------------*/
+long long 				MODE::getLimit() {return _limit;}
+void					MODE::setLimit(std::string limit) {
+	_limit = ft_atoll(limit.c_str());
+	if (_limit == -1)
+	{
+		// std::string msg = ERR_KEYSET(
+		// send(1, msg.c_str(), strlen(msg.c_str()), 0);
+		throw std::invalid_argument("The limit is invalid.");
+	}
+}
+void					MODE::setPassword(std::string password) {_password = password;}
+std::string				MODE::getPassword() {return _password;}
+bool					MODE::getModeValue(char mode) {
+	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
+	{
+		if (it->first == mode)
+			return it->second;
+	}
+	return false;
+}
+
+
 std::string				MODE::getParams(char mode) {
 	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
 	{
@@ -100,30 +101,30 @@ std::string				MODE::getParams(char mode) {
 
 std::vector<std::pair<char, bool> >	MODE::getMode() {return _mode;}
 
-long long				MODE::getLimit()
-{
-	std::string limitStr = getParams('l');
-	if (limitStr.empty() == true)
-		return -1;
-	long long limit = 0;
-	if (limitStr[0] == '-')
-		return -1;
-	unsigned long i = 0;
-	if (limitStr[0] == '+')
-		i = 1;
-	for (; i < limitStr.size(); i++)
-	{
-		if (isdigit(limitStr[i]))
-		{
-			limit = limit * 10 + (limitStr[i] - '0');
-			if (limit > MAX_INT)
-				return -1;
-		}
-		else
-			return -1;
-	}
-	return limit;
-}
+// long long				MODE::getLimit()
+// {
+// 	std::string limitStr = getParams('l');
+// 	if (limitStr.empty() == true)
+// 		return -1;
+// 	long long limit = 0;
+// 	if (limitStr[0] == '-')
+// 		return -1;
+// 	unsigned long i = 0;
+// 	if (limitStr[0] == '+')
+// 		i = 1;
+// 	for (; i < limitStr.size(); i++)
+// 	{
+// 		if (isdigit(limitStr[i]))
+// 		{
+// 			limit = limit * 10 + (limitStr[i] - '0');
+// 			if (limit > MAX_INT)
+// 				return -1;
+// 		}
+// 		else
+// 			return -1;
+// 	}
+// 	return limit;
+// }
 
 std::string				MODE::getParamsNeeded(int Type)
 {
@@ -223,14 +224,14 @@ void	Client::setMode(t_mode* mode)
 
 void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
-	if (mode == 'k' && value =='+')
-	{
-		setPassword(params);
-	}
-	else if (mode == 'l' && value == '+')
-	{
-		setLimit(params);
-	}
+	// if (mode == 'k' && value =='+')
+	// {
+	// 	setPassword(params);
+	// }
+	// else if (mode == 'l' && value == '+')
+	// {
+	// 	setLimit(params);
+	// }
 	// else {
 	// if (needParams == true)
 	// {
@@ -285,6 +286,14 @@ void Channel::setModeByType(char mode, char value, bool needParams, std::string 
 			for (unsigned long i = 0; i < params.size(); i++)
 				setClientasNormal(getFdFromNick(params));
 		}
+	}
+	else if (mode == 'k' && value =='+')
+	{
+		_modes.setPassword(params);
+	}
+	else if (mode == 'l' && value == '+')
+	{
+		_modes.setLimit(params);
 	}
 	else
 		_modes.setModeByType(mode, value, needParams, params, nick);
