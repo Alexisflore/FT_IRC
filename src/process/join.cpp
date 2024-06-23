@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 01:47:38 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 10:53:52 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	Server::processJoin(int fd, std::string arg)
 		if (it2 != this->_channels.end())
 		{
 			Channel& channel = *it2;
+			std::cout << "channe is invite only: " << channel.isInviteOnly() << std::endl;
 			if (channel.isClientInChannel(fd))
 				return ;
 			if ((channel.isPasswordProtected() && password.size() == 0) || (channel.isPasswordProtected() && password.size() > 0 && channel.getPassword() != password[0]))
@@ -83,6 +84,7 @@ void	Server::processJoin(int fd, std::string arg)
 		}
 		else 
 		{
+			std::cout << "Channel " << *it << " doesn't exist" << std::endl;
 			Channel newChannel(*it);
 
 			this->_channels.push_back(newChannel);
@@ -92,6 +94,7 @@ void	Server::processJoin(int fd, std::string arg)
 				{
 					Channel& channel = *it2;
 					channel.joinChannel(*getClient(fd));
+					channel.setClientasOperator(fd);
 					break;
 				}
 			}

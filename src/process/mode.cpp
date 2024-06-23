@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 10:23:11 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/23 13:56:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,14 +186,32 @@ void	Client::setMode(t_mode* mode)
 void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
 {
 	if (needParams == true)
-		_params.push_back(std::make_pair(mode, params));
-	if (mode == 'l' && getLimit() == -1)
+	{
+		for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+		{
+			if (it->first == mode)
+			{
+				it->second = params;
+				return ;
+			}
+		}
+	}
+	if (mode == 'l' && getLimit() == -1 && value =='+')
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
 		send(1, msg.c_str(), strlen(msg.c_str()), 0);
 		throw std::invalid_argument("The limit is invalid.");
 	}
-	_mode.push_back(std::make_pair(mode, value == '+'));
+	else { 
+	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
+	{
+		if (it->first == mode)
+		{
+			it->second = (value == '+') ? true : false;
+			return ;
+		}
+	}
+	}
 }
 
 void Client::setModeByType(char mode, char value, bool needParams, std::string params)
@@ -278,6 +296,7 @@ void Server::processMode(int fd, std::string string)
 			std::cout << getClient(*it)->getNickname() << std::endl;
 		}
 		channel.processMode(fd, mode, size_of_cmd);
+		channel.displayMode(fd, mode.clientNick);
 	}
 	else
 	{
@@ -290,6 +309,8 @@ void Server::processMode(int fd, std::string string)
 		}
 		client->processMode(fd, mode, size_of_cmd);
 	}
+	std::string msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), mode.name.c_str());
+	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }
 
 int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
