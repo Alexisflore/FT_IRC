@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 14:44:51 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 15:04:50 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void Server::processKick(int fd, std::string arg)
 	{
 		std::string comment = args[3];
 	}
-	Channel channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
 	if (!channel.isClientInChannel(fd))
 	{
 		std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channel.getName()).c_str();

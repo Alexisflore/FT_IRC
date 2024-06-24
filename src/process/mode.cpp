@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 14:00:49 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 15:07:36 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,10 +360,11 @@ int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
 	}
 	(splitcmd[1][0] == '#' || splitcmd[1][0] == '&') ? mode.type = CHANNEL_MODE : mode.type = USER_MODE;
 	mode.name = splitcmd[1];
+	unsigned long i = 2;
 	unsigned long j;
 	std::vector<std::string> params;
 	if (size > 2) {
-		for (unsigned long i = 2; i < size; i++)
+		while (i < size)
 		{
 			if (splitcmd[i][0] == '+' || splitcmd[i][0] == '-')
 			{
@@ -376,6 +377,12 @@ int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
 					}
 					mode.mode.push_back(std::make_pair(splitcmd[i], params));
 					i = j;
+			}
+			else
+			{
+				std::string msg = ERR_UNKNOWNMODE(mode.clientNick, splitcmd[i]).c_str();
+				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+				throw std::invalid_argument("The mode doesn't exist.");
 			}
 		}
 		if (mode.mode.empty())
@@ -390,8 +397,4 @@ int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
 	return (size);
 }
 
-void Client::displayMode(int fd, std::string nick)
-{
-	std::string msg = RPL_UMODEIS(nick, _mode.getModesAsString()).c_str();
-	send(fd, msg.c_str(), msg.length(), 0);
-}
+

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 10:47:43 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:59:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,10 @@ void		Client::welcomeMessage()
 	std::string userid = USER_ID(_nickname, _username);
 	std::string msg = RPL_WELCOME(_nickname, userid);
 	send(_fd, msg.c_str(), msg.length(), 0);
+}
+
+void Client::displayMode(int fd, std::string nick)
+{
+	std::string msg = RPL_UMODEIS(nick, _mode.getModesAsString()).c_str();
+	send(fd, msg.c_str(), msg.length(), 0);
 }
