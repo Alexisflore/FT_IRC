@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 17:55:46 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 18:07:08 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,19 +116,16 @@ void	MODE::isModeAuthorized(char mode, t_mode* modes)
 	}
 }
 
-std::string MODE::getModesAsString()
-{
-	std::string mode;
-	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
-	{
-		if (it->second == true)
-			mode += "+" + std::string(1, it->first) + " ";
-		else
-			mode += "-" + std::string(1, it->first) + " ";
-	}
-	mode += "\n";
-	return mode;
-}
+// std::string MODE::getModesAsString()
+// {
+// 	std::string modes;
+// 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
+// 	{
+// 		if (it->second == true)
+// 			modes += it->first;
+// 	}
+// 	return modes;
+// }
 
 void Channel::setMode(t_mode* mode)
 {

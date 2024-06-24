@@ -15,7 +15,7 @@ class MODE {
 		bool						getModeValue(char mode);
 		std::vector<std::pair<char, bool> >	getMode();
 		std::string					getAuthorizedMode(int type);
-		std::string					getModesAsString();
+		// std::string					getModesAsString();
 		void 						isModeAuthorized(char mode, t_mode* modes);
 		long long					getLimit();
 		std::string					getPassword();

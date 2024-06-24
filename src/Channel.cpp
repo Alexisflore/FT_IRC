@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 17:19:21 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 18:18:05 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,35 @@ std::string Channel::getPassword() {return _modes.getPassword();}
 bool Client::operator<(const Client& other) const {return this->getNickname() < other.getNickname();}
 void	Channel::displayMode(int fd, std::string nick)
 {
-	std::string msg = RPL_CHANNELMODEIS(nick, getName(), _modes.getModesAsString()).c_str();
+	std::string msg;
+	std::string mode = "+";
+	std::vector<std::pair<char, bool> > modes = _modes.getMode();
+	for (std::vector<std::pair<char, bool> >::iterator it = modes.begin(); it != modes.end(); it++)
+	{
+		if (it->second == true)
+		{
+			mode += it->first;
+			if (it->first == 'l')
+			{
+				std::stringstream ss;
+    			ss << _modes.getLimit();
+				mode += " " + ss.str();
+				mode += " +";
+			}
+			if (it->first == 'k')
+				mode += " " + _modes.getPassword();
+			if (it->first == 'o')
+			{
+				for (std::vector<std::pair<Client, char> >::iterator it2 = _clients.begin(); it2 != _clients.end(); it2++)
+				{
+					if (it2->second == 'o')
+						mode += " " + it2->first.getNickname();
+				}
+				mode += " +";
+			}
+		}
+	}
+	msg = RPL_CHANNELMODEIS(nick, _name, mode).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
 }
 
