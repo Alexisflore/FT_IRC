@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 10:31:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:19:49 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Channel::Channel(const Channel &other) {
 /*--------------Getters--------------*/
 std::string     			Channel::getName() const {return this->_name;}
 std::string					Channel::getTopic() {return this->_topic;}
+std::vector<std::pair<Client, char> >	Channel::getClients() {return this->_clients;}
 // std::map<std::string, bool> Channel::getModesAsString() {return this->_modes;}
 bool						Channel::getMode(char mode) {return _modes.getModeValue(mode);}
 std::string					Channel::getParams(char mode) {return _modes.getParams(mode);}
@@ -49,7 +50,7 @@ Client						Channel::getClientByNick(std::string nick)
 		if (it->first.getNickname() == nick)
 			return (it->first);
 	}
-	throw std::invalid_argument("Client not found");
+	return (Client());
 }
 
 /*--------------Setters--------------*/
@@ -123,7 +124,6 @@ bool    Channel::isClientInChannel(int clientFd)
 	{
 		if ((it)->first.getFd() == clientFd)
 		{
-			std::cout << "Client " << clientFd << " is in the channel " << this->_name << std::endl;
 			return true;
 		}
 	}
@@ -205,33 +205,13 @@ bool Channel::isChannelFull()
 	return false;
 }
 
-bool Channel::isInviteOnly()
+bool Channel::isInviteOnly() {return _modes.getModeValue('i');}
+bool Channel::isPasswordProtected(){return _modes.getModeValue('k');}
+bool Channel::isTopicProtected(){return _modes.getModeValue('t');}
+std::string Channel::getPassword() {return _modes.getParams('k');}
+bool Client::operator<(const Client& other) const {return this->getNickname() < other.getNickname();}
+void	Channel::displayMode(int fd, std::string nick)
 {
-	if (_modes.getModeValue('i') == false)
-		return false;
-	return true;
+	std::string msg = RPL_CHANNELMODEIS(nick, getName(), _modes.getModesAsString()).c_str();
+	send(fd, msg.c_str(), msg.length(), 0);
 }
-
-bool Channel::isPasswordProtected()
-{
-	if (_modes.getModeValue('k') == false)
-		return false;
-	return true;
-}
-
-bool Channel::isTopicProtected()
-{
-	if (_modes.getModeValue('t') == false)
-		return false;
-	return true;
-}
-
-std::string Channel::getPassword()
-{
-	return _modes.getParams('k');
-}
-
-bool Client::operator<(const Client& other) const {
-        // Compare the clients based on their nicknames, for example
-        return this->getNickname() < other.getNickname();
-    }

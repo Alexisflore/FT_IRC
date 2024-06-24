@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 13:56:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:00:49 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ MODE::~MODE() {}
 MODE::MODE(const MODE &other) {*this = other;}
 MODE 		&MODE::operator=(const MODE &other)
 {
+	_password = other._password;
+	_limit = other._limit;
 	_mode = other._mode;
 	_params = other._params;
 	_needParams = other._needParams;
@@ -40,8 +42,43 @@ MODE 		&MODE::operator=(const MODE &other)
 	_modesChannel = other._modesChannel;
 	return (*this);
 }
+void MODE::clearLimit() {_limit = -1;}
+void MODE::clearPassword() {_password.clear();}
+
+long long 				ft_atoll(const char *str)
+{
+	long long res = 0;
+	int i = 0;
+	if (str == NULL)
+		return -1;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-')
+		return -1;
+	else if (str[i] == '+')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		if (isdigit(str[i]) == 0)
+			return -1;
+		res = res * 10 + str[i] - '0';
+		if (res > MAX_INT)
+			return -1;
+		i++;
+	}
+	return (res);
+}
 
 /*--------------Getters--------------*/
+long long 				MODE::getLimit() {return _limit;}
+bool					MODE::setLimit(std::string limit) {
+	_limit = ft_atoll(limit.c_str());
+	if (_limit == -1)
+		return false;
+	return true;
+}
+void					MODE::setPassword(std::string password) {_password = password;}
+std::string				MODE::getPassword() {return _password;}
 bool					MODE::getModeValue(char mode) {
 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
@@ -61,40 +98,7 @@ std::string				MODE::getParams(char mode) {
 }
 
 std::vector<std::pair<char, bool> >	MODE::getMode() {return _mode;}
-
-long long				MODE::getLimit()
-{
-	std::string limitStr = getParams('l');
-	if (limitStr.empty() == true)
-		return -1;
-	long long limit = 0;
-	if (limitStr[0] == '-')
-		return -1;
-	unsigned long i = 0;
-	if (limitStr[0] == '+')
-		i = 1;
-	for (; i < limitStr.size(); i++)
-	{
-		if (isdigit(limitStr[i]))
-		{
-			limit = limit * 10 + (limitStr[i] - '0');
-			if (limit > MAX_INT)
-				return -1;
-		}
-		else
-			return -1;
-	}
-	return limit;
-}
-
-std::string				MODE::getParamsNeeded(int Type)
-{
-	if (Type == USER_MODE)
-		return "";
-	else
-		return _needParams;
-}
-
+std::string				MODE::getParamsNeeded(int Type) {return (Type == CHANNEL_MODE) ? _needParams : "";}
 std::string				MODE::getAuthorizedMode(int type)
 {
 	if (type == CHANNEL_MODE)
@@ -130,118 +134,152 @@ void Channel::setMode(t_mode* mode)
 {
 	char lastOperator;
 	std::string msg;
-	if (mode->mode[0] != '+' && mode->mode[0] != '-')
+	if (mode->mode[mode->index].first[0] != '+' && mode->mode[mode->index].first[0] != '-')
 	{
-		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode + " ").c_str();
+		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode[mode->index].first + " ").c_str();
 		send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
 		throw std::invalid_argument("The mode must start with + or -");
 	}
-	lastOperator = mode->mode[0];
-	for (unsigned long i = 1; i < mode->mode.size(); i++)
+	lastOperator = mode->mode[mode->index].first[0];
+	for (unsigned long i = 1; i < mode->mode[mode->index].first.size(); i++)
 	{
-		_modes.isModeAuthorized(mode->mode[i], mode);
-		if (mode->mode[i] == '+' || mode->mode[i] == '-')
-			lastOperator = mode->mode[i];
-		else
+		if (mode->mode[mode->index].first[i] == '+' || mode->mode[mode->index].first[i] == '-')
+			lastOperator = mode->mode[mode->index].first[i];
+		else if (_modes.getAuthorizedMode(CHANNEL_MODE).find(mode->mode[mode->index].first[i]) == std::string::npos)
 		{
-			if (_modes.getParamsNeeded(CHANNEL_MODE).find(mode->mode[i]) != std::string::npos)
+			msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode[mode->index].first + " ").c_str();
+			send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
+			throw std::invalid_argument("The mode doesn't exist.");
+		}
+		else if (_modes.getParamsNeeded(CHANNEL_MODE).find(mode->mode[mode->index].first[i]) != std::string::npos)
 			{
-				if (mode->params.empty() == true)
+				if (mode->mode[mode->index].second.empty())
 				{
 					msg = ERR_NEEDMOREPARAMS(mode->clientNick, "MODE").c_str();
 					send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
 					throw std::invalid_argument("The mode needs parameters.");
 				}
 				else
-					setModeByType(mode->mode[i], lastOperator, true, mode->params[0], mode->clientNick);
+					setModeByType(mode->client_fd, mode->mode[mode->index].first[i], lastOperator, mode->mode[mode->index].second);
 				return ;
 			}
-			setModeByType(mode->mode[i], lastOperator, false, "", mode->clientNick);
+		else
+		{
+			std::cout << "mode: " << mode->mode[mode->index].first[i] << " value: " << lastOperator << std::endl;
+			_modes.setModeByType(mode->mode[mode->index].first[i], lastOperator);
 		}
 	}
 }
 
-/*--------------Setters--------------*/
+MODE 	Client::getMode() {return _mode;}
 void	Client::setMode(t_mode* mode)
 {
 	char lastOperator;
 	std::string msg;
-	if (mode->mode[0] != '+' && mode->mode[0] != '-')
+	if (mode->mode[mode->index].first[0] != '+' && mode->mode[mode->index].first[0] != '-')
 	{
-		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode + " ").c_str();
+		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode[mode->index].first + " ").c_str();
 		send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
 		throw std::invalid_argument("The mode must start with + or -");
 	}
-	lastOperator = mode->mode[0];
+	lastOperator = mode->mode[mode->index].first[0];
 	for (unsigned long i = 1; i < mode->mode.size(); i++)
 	{
-		_mode.isModeAuthorized(mode->mode[i], mode);
-		if (mode->mode[i] == '+' || mode->mode[i] == '-')
-			lastOperator = mode->mode[i];
-		setModeByType(mode->mode[i], lastOperator, false, "");
-		return ;
+		if (mode->mode[mode->index].first[i] == '+' || mode->mode[mode->index].first[i] == '-')
+			lastOperator = mode->mode[mode->index].first[i];
+		else
+			_mode.isModeAuthorized(mode->mode[mode->index].first[i], mode);
+		setModeByType(mode->client_fd, mode->mode[mode->index].first[i], lastOperator);
 	}
 }
 
-void MODE::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
+void MODE::setModeByType(char mode, char value)
 {
-	if (needParams == true)
-	{
-		for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
-		{
-			if (it->first == mode)
-			{
-				it->second = params;
-				return ;
-			}
-		}
-	}
-	if (mode == 'l' && getLimit() == -1 && value =='+')
-	{
-		std::string msg = ERR_NEEDMOREPARAMS(nick, "MODE").c_str();
-		send(1, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The limit is invalid.");
-	}
-	else { 
 	for (std::vector<std::pair<char, bool> >::iterator it = _mode.begin(); it != _mode.end(); it++)
 	{
 		if (it->first == mode)
 		{
+			std::cout << "mode: " << mode << " value: " << value << std::endl;
 			it->second = (value == '+') ? true : false;
 			return ;
 		}
 	}
+}
+
+void Client::setModeByType(int fd, char mode, char value)
+{
+	if (value == '-')
+		_mode.setModeByType(mode, value);
+	else if (value == '+')
+	{
+		if (_mode.getModeValue('o') == true)
+			_mode.setModeByType(mode, value);
+		else
+		{
+			std::string msg = ERR_USERSDONTMATCH(getNickname()).c_str();
+			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+			throw std::invalid_argument("The client doesn't match.");
+		}
 	}
 }
 
-void Client::setModeByType(char mode, char value, bool needParams, std::string params)
+void Channel::setModeByType(int fd, char mode, char value, std::vector<std::string> params)
 {
+	std::string param;
+	Client client;
+	param = params[0];
 	if (mode == 'o')
 	{
-		if (value == '-')
-			_mode.setModeByType(mode, value, needParams, params, "");
+		for (unsigned long i = 0; i < params.size(); i++)
+		{
+			client = getClientByNick(params[i]);
+			if (client.getFd() == -1)
+			{
+				std::string msg = ERR_NOSUCHNICK(getClient(fd).getNickname(), params[i]).c_str();
+				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+				throw std::invalid_argument("The client doesn't exist.");
+			}
+			if (value == '+')
+				setClientasOperator(client.getFd());
+			else
+				setClientasNormal(client.getFd());
+		}
+		return ;
 	}
-	else
-		_mode.setModeByType(mode, value, needParams, params, "");
-}
-
-void Channel::setModeByType(char mode, char value, bool needParams, std::string params, std::string nick)
-{
-	if (mode == 'o')
+	else if (mode == 'k')
+	{
+		if (value == '+')
+		{
+			if (_modes.getPassword().empty() == false)
+			{
+				std::string msg = ERR_KEYSET(getClient(fd).getNickname(), getName()).c_str();
+				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+				throw std::invalid_argument("The password is already set.");
+			}
+			for (unsigned long i = 0; i < params.size(); i++)
+				param += " " + params[i];
+			_modes.setPassword(param);
+		}
+		else
+			_modes.clearPassword();
+	}
+	else if (mode == 'l')
 	{
 		if (value == '+')
 		{
 			for (unsigned long i = 0; i < params.size(); i++)
-				setClientasOperator(getFdFromNick(params));
+				param += " " + params[i];
+			if (_modes.setLimit(param) == false)
+			{
+				std::string msg = ERR_UNKNOWNMODE(getClient(fd).getNickname(), mode + " ").c_str();
+				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+				throw std::invalid_argument("The limit is invalid.");
+			}
 		}
 		else
-		{
-			for (unsigned long i = 0; i < params.size(); i++)
-				setClientasNormal(getFdFromNick(params));
-		}
+			_modes.clearLimit();
 	}
-	else
-		_modes.setModeByType(mode, value, needParams, params, nick);
+	_modes.setModeByType(mode, value);
 }
 
 void Channel::processMode(int fd, t_mode mode, int size_of_cmd)
@@ -254,7 +292,7 @@ void Channel::processMode(int fd, t_mode mode, int size_of_cmd)
 	}
 	if (size_of_cmd == 2)
 		displayMode(fd, mode.clientNick);
-	else if (isClientOperator(fd) == false)
+	else if (isClientOperator(fd) == false && getClient(fd).getMode().getModeValue('o') == false)
 	{
 		std::string msg = ERR_CHANOPRIVSNEEDED(mode.clientNick, getName()).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
@@ -268,7 +306,7 @@ void	Client::processMode(int fd, t_mode mode, int size_of_cmd)
 {
 	if (size_of_cmd == 2)
 		displayMode(fd, mode.clientNick);
-	else if (getFd() != fd)
+	else if (getFd() != fd && _mode.getModeValue('o') == false)
 	{
 		std::string msg = ERR_USERSDONTMATCH(mode.clientNick).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
@@ -282,35 +320,30 @@ void Server::processMode(int fd, std::string string)
 {
 	t_mode mode;
 	int size_of_cmd = createModeAndParams(fd, string, mode);
-	if ( mode.type == CHANNEL_MODE)
+	for (unsigned long i = 0; i < mode.mode.size(); i++)
 	{
-		Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
-		std::vector<int> clients = channel.getClientsFd();
-		std::cout << mode.name << std::endl;
-		if (clients.empty() == true)
+		std::cout << "mode: " << mode.mode[i].first << std::endl;
+		mode.index = i;
+		if ( mode.type == CHANNEL_MODE)
 		{
-			throw std::invalid_argument("NIQUE TA MERE");
+			Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
+			channel.processMode(fd, mode, size_of_cmd);
+			channel.displayMode(fd, mode.clientNick);
 		}
-		for (std::vector<int>::iterator it = clients.begin(); it != clients.end(); it++)
+		else
 		{
-			std::cout << getClient(*it)->getNickname() << std::endl;
+			Client *client = getClientbyNickname(mode.name);
+			if (client == NULL)
+			{
+				std::string msg = ERR_NOSUCHNICK(getClient(fd)->getNickname(), mode.name).c_str();
+				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+				throw std::invalid_argument("The client doesn't exist.");
+			}
+			client->processMode(fd, mode, size_of_cmd);
 		}
-		channel.processMode(fd, mode, size_of_cmd);
-		channel.displayMode(fd, mode.clientNick);
+		std::string msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), mode.name.c_str());
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
-	else
-	{
-		Client *client = getClientbyNickname(mode.name);
-		if (client == NULL)
-		{
-			std::string msg = ERR_NOSUCHNICK(getClient(fd)->getNickname(), mode.name).c_str();
-			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-			throw std::invalid_argument("The client doesn't exist.");
-		}
-		client->processMode(fd, mode, size_of_cmd);
-	}
-	std::string msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), mode.name.c_str());
-	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }
 
 int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
@@ -327,29 +360,34 @@ int	Server::createModeAndParams(int fd, std::string cmd, t_mode& mode)
 	}
 	(splitcmd[1][0] == '#' || splitcmd[1][0] == '&') ? mode.type = CHANNEL_MODE : mode.type = USER_MODE;
 	mode.name = splitcmd[1];
-	splitcmd.erase(splitcmd.begin(), splitcmd.begin() + 2);
-	for (unsigned long i = 2; i < size; i++)
-	{
-		if (splitcmd[i][0] == '+' || splitcmd[i][0] == '-')
-			mode.mode += splitcmd[i];
-		else
-			mode.params.push_back(splitcmd[i]);
-	}
-	if (mode.mode.empty())
-	{
-		std::string msg = ERR_NEEDMOREPARAMS(mode.clientNick, "MODE").c_str();
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The mode must start with + or -");
-		return (0);
+	unsigned long j;
+	std::vector<std::string> params;
+	if (size > 2) {
+		for (unsigned long i = 2; i < size; i++)
+		{
+			if (splitcmd[i][0] == '+' || splitcmd[i][0] == '-')
+			{
+					j = i + 1;
+					params.clear();
+					while (j < size && splitcmd[j][0] != '+' && splitcmd[j][0] != '-')
+					{
+						params.push_back(splitcmd[j]);
+						j++;
+					}
+					mode.mode.push_back(std::make_pair(splitcmd[i], params));
+					i = j;
+			}
+		}
+		if (mode.mode.empty())
+		{
+			std::string msg = ERR_NEEDMOREPARAMS(mode.clientNick, "MODE").c_str();
+			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+			throw std::invalid_argument("The mode is empty.");
+			return (0);
+		}
 	}
 	mode.client_fd = fd;
 	return (size);
-}
-
-void	Channel::displayMode(int fd, std::string nick)
-{
-	std::string msg = RPL_CHANNELMODEIS(nick, getName(), _modes.getModesAsString()).c_str();
-	send(fd, msg.c_str(), msg.length(), 0);
 }
 
 void Client::displayMode(int fd, std::string nick)

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 10:32:21 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:07:01 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ Channel&	Server::getChannelbyName(std::string name, std::string clientName)
 		std::string msg = ERR_NOSUCHCHANNEL(clientName, name);
 		send(findFdByName(clientName), msg.c_str(), strlen(msg.c_str()), 0);
 		std::cout << "Client " << clientName << " no such channel " << name << std::endl;
+		throw std::runtime_error("The channel doesn't exist.");
 		return *channelIt;
 	}
 	return *channelIt;

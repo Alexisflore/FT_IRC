@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 09:59:58 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 13:16:03 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@
 
 typedef struct s_mode
 {
-	std::string					mode;
-	std::vector<std::string>	params;
+	std::vector<std::pair<std::string, std::vector<std::string> > >		mode;
 	int							type;
 	int							client_fd;
 	std::string					clientNick;
 	std::string					name;
+	int							index;
 }				t_mode;
 
 /* +++ COLORS +++ */
@@ -98,6 +98,8 @@ typedef struct s_mode
 #define ERR_USERSDONTMATCH(client) ("502 " + client + " :Cant change mode for other users\r\n")
 #define RPL_UMODEIS(client, mode) (":localhost 221 " + client + " " + mode + "\r\n")
 # define ERR_UNKNOWNMODE(client, mode) (":localhost 472 " + client + " " + mode + " :is unknown mode char to me\r\n")
+# define ERR_KEYSET(client, channel) ("467 " + client + " " + channel + " :Channel key already set\r\n")
+# define ERR_L
 /* channel mode */
 #define MODE_CHANNELMSG(channel, mode) (":localhost MODE " + channel + " " + mode + "\r\n")
 #define MODE_CHANNELMSGWITHPARAM(channel, mode, param) (":localhost MODE " + channel + " " + mode + " " + param + "\r\n")

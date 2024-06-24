@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 17:00:23 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:38:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void Server::processInvite(int fd, std::string string)
 	}
 	std::string channelName = args[2];
 	std::string clientName = args[1];
-	Channel channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
 	if (!channel.isClientInChannel(fd))
 	{
 		std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channel.getName()).c_str();
@@ -37,6 +37,8 @@ void Server::processInvite(int fd, std::string string)
 		std::string msg = ERR_CHANOPRIVSNEEDED(getClient(fd)->getNickname(), channel.getName()).c_str();
 		std::cout << "Client " << fd << " isn t operator in the channel " << channel.getName() << std::endl;
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		return ;
+
 	}
 	Client *client = getClientbyNickname(clientName);
 	if (client == NULL)
@@ -53,16 +55,28 @@ void Server::processInvite(int fd, std::string string)
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		return ;
 	}
-	if (channel.isClientInChannel(client->getFd()))
+	if (channel.isClientInChannel(client->getFd()) && channel.isClientInvited(client->getFd()) == false)
 	{
 		std::string msg = ERR_USERONCHANNEL(getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
 		std::cout << "Client " << fd << " is already in the channel " << channel.getName() << std::endl;
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		return ;
 	}
-	setClientasInvited(client->getFd(), &channel);
+	channel.joinChannel(*client);
+	channel.setClientasInvited(client->getFd());
+	std::vector <std::pair<Client, char> > clients = channel.getClients();
 	std::string localhost = "localhost";
+	for (std::vector<std::pair<Client, char> >::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second == 'o')
+		{
+			std::string msg = RPL_INVITING(localhost, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
+			send(it->first.getFd(), msg.c_str(), strlen(msg.c_str()), 0);
+		}
+	}
 	std::string msg = RPL_INVITING(localhost, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
+	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+	std::cout << "Client " << fd << " has invited " << client->getNickname() << " to the channel " << channel.getName() << std::endl;
 }
 
 void Server::setClientasInvited(int fd, Channel *channel)
