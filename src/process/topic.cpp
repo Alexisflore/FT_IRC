@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/21 17:21:25 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:33:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void Server::processTopic(int fd, std::string string)
 		}
 		else
 			channel.setTopic(topic);
+		std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
 		std::string msg = "TOPIC " + channel.getName() + " :" + topic + "\n";
-		// channel.sendMessage(msg);
-		send(fd, msg.c_str(), msg.length(), 0);
+		channel.sendMessage(userid + " " + msg);
 	}
 }
 
@@ -63,11 +63,11 @@ bool Channel::canClientSetTopic(int clientFd)
 void Server::displayTopic(int fd, Channel& channel)
 {
 	std::string topic = channel.getTopic();
-	std::string msg = "TOPIC " + channel.getName() + " :";
+	std::string msg;
 	if (topic.empty())
-		msg += "No topic is set\n";
+		msg = RPL_NOTOPIC(getClient(fd)->getNickname(), channel.getName()).c_str();
 	else
-		msg += topic + "\n";
+		msg = RPL_TOPIC(getClient(fd)->getNickname(), channel.getName(), topic).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
 }
 

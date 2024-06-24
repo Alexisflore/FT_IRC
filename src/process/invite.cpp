@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 16:12:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:13:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,12 @@ void Server::processInvite(int fd, std::string string)
 	}
 	channel.joinChannel(*client);
 	channel.setClientasInvited(client->getFd());
+	std::string localhost = "localhost";
 	std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
-	std::string msg = RPL_INVITING(userid, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
-	channel.sendMessage(msg);
+	std::string msg = RPL_INVITING(localhost, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
+	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+	msg = RPL_INVITING(userid, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
+	send(client->getFd(), msg.c_str(), strlen(msg.c_str()), 0);
 	std::cout << "Client " << fd << " has invited " << client->getNickname() << " to the channel " << channel.getName() << std::endl;
 }
 

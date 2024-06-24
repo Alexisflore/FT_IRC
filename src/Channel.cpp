@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:17:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:19:21 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,16 @@ std::vector<int>			Channel::getClientsFd()
 	return clientsFd;
 }
 
+std::string					Channel::getUsers()
+{
+	std::string users;
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		users += it->first.getNickname() + " ";
+	}
+	return users;
+}
+
 /*--------------Methods--------------*/
 bool    Channel::isClientInChannel(int clientFd)
 {
@@ -214,4 +224,13 @@ void	Channel::displayMode(int fd, std::string nick)
 {
 	std::string msg = RPL_CHANNELMODEIS(nick, getName(), _modes.getModesAsString()).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
+}
+
+void Channel::sendNotification(const std::string message, int fd)
+{
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() != fd)
+			send(fd, message.c_str(), message.length(), 0);
+	}
 }

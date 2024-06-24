@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 16:30:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:25:55 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ typedef struct s_mode
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " " + message + "\r\n")
 
 // TOPIC
-# define RPL_TOPIC(client, channel, topic) (":localhost 332 :" + client + " " + channel + " " + topic + "\r\n")
+# define RPL_TOPIC(client, channel, topic) (":localhost 332 :" + client + " " + channel + " :" + topic + "\r\n")
 # define RPL_NOTOPIC(client, channel) (":localhost 331 " + client + " " + channel + " :No topic is set\r\n")
 
 // USER

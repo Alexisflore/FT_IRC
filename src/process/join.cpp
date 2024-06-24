@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 16:17:15 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:37:03 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,19 +113,16 @@ void	Server::processJoin(int fd, std::string arg)
 			topic = newChannel.getTopic();
 		}
 		std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
-		std::string msg = RPL_JOIN(userid, getClient(fd)->getNickname()).c_str();
-		newChannel.sendMessage(msg);
+		std::string msg = "JOIN " + newChannel.getName() + "\n";
+		newChannel.sendMessage(userid + " " + msg);
 		std::cout << "Client " << fd << " has joined the channel " << (*it).first << std::endl;
 		if (topic.empty() == false)
-		{
-			std::string msg = RPL_TOPIC(getClient(fd)->getNickname(), (*it).first, topic).c_str();
-			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		}
+			msg = RPL_TOPIC(getClient(fd)->getNickname(), newChannel.getName(), topic).c_str();
 		else
-		{
-			std::string msg = RPL_NOTOPIC(getClient(fd)->getNickname(), (*it).first).c_str();
-			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		}
+			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), newChannel.getName()).c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), " = ", newChannel.getName(), newChannel.getUsers()).c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
 }
 

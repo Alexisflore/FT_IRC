@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:17:56 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:18:01 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ public:
 	/*--------------Getters--------------*/
     std::string 				getName() const;
 	Client						getClient(int fd);
+	std::string					getUsers();
 	std::vector<std::pair<Client, char> >	getClients();
 	std::vector<int>			getClientsFd();
 	// int							getClientbyFd(int fd);
@@ -67,6 +68,7 @@ public:
 	/*--------------Methods--------------*/
     void    					leaveChannel(int clientFd);
     void 						sendMessage(const std::string message);
+	void						sendNotification(const std::string message, int fd);
     void    					joinChannel(Client client);
 	void						removeClient(Client client);
 	bool						canClientSetTopic(int clientFd);
