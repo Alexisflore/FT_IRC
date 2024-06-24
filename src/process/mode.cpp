@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 18:07:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 01:05:49 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,15 +333,17 @@ void Server::processMode(int fd, std::string string)
 {
 	t_mode mode;
 	int size_of_cmd = createModeAndParams(fd, string, mode);
-	for (unsigned long i = 0; i < mode.mode.size(); i++)
+	unsigned long size = mode.mode.size();
+	if (mode.mode.size() == 0)
+		size = 1;
+	for (unsigned long i = 0; i < size; i++)
 	{
-		std::cout << "mode: " << mode.mode[i].first << std::endl;
 		mode.index = i;
 		if ( mode.type == CHANNEL_MODE)
 		{
 			Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
 			channel.processMode(fd, mode, size_of_cmd);
-			channel.displayMode(fd, mode.clientNick);
+			// channel.displayMode(fd, mode.clientNick);
 		}
 		else
 		{
