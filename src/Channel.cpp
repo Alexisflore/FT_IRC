@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 01:10:03 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 01:13:11 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,9 +235,13 @@ void	Channel::displayMode(int fd, std::string nick)
 				std::stringstream ss;
     			ss << _modes.getLimit();
 				mode += " " + ss.str();
+				mode += " +";
 			}
 			if (it->first == 'k')
+			{
 				mode += " " + _modes.getPassword();
+				mode += " +";
+			}
 			if (it->first == 'o')
 			{
 				for (std::vector<std::pair<Client, char> >::iterator it2 = _clients.begin(); it2 != _clients.end(); it2++)
