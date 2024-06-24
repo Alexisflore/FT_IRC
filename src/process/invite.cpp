@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 16:05:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 16:09:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ void Server::processInvite(int fd, std::string string)
 		std::string msg = ERR_USERONCHANNEL(getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
 		std::cout << "Client " << fd << " is already in the channel " << channel.getName() << std::endl;
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		return ;
+	}
+	if (channel.isClientInvited(client->getFd()))
+	{
 		return ;
 	}
 	channel.joinChannel(*client);
