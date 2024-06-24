@@ -24,9 +24,11 @@ class MODE {
 		std::string					getParamsNeeded(int type);
 
 		/*--------------Setters--------------*/
-		void					setModeByType(char mode, char value, bool needParams, std::string params, std::string nick);
+		void					setModeByType(char mode, char value);
 		void					setPassword(std::string password);
-		void					setLimit(std::string limit);
+		bool					setLimit(std::string limit);
+		void					clearLimit();
+		void					clearPassword();
 	private:
 		std::vector<std::pair<char, bool> >			_mode;
 		std::vector<std::pair<char, std::string> >	_params;

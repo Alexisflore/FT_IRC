@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 10:53:52 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:30:04 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,38 @@ void	Server::processJoin(int fd, std::string arg)
 		return ;
 	}
 	std::vector<std::string> channelNames;
-	std::vector<std::string> password;
+	std::vector<std::string> passwords;
 	std::string topic;
 	if (args.size() == 2)
-		password = split_args(args[1], " ");
+		passwords = split_args(args[1], ",");
 	Channel newChannel;
 	channelNames = split_args(args[0], ",");
+	std::string pass;
+	std::vector<std::pair<std::string, std::string > > channels;
+	for (unsigned int i = 0; i < channelNames.size(); i++)
+	{
+		pass.clear();
+		if (i < passwords.size())
+			pass = passwords[i];
+		channels.push_back(std::make_pair(channelNames[i], pass));
+	}
 	// selectChannels(channelNames, &password, fd);
 	if (channelNames.size() == 0)
 		return ;
-	std::vector< Channel> channels;
-	for (std::vector< std::string >::iterator it = channelNames.begin(); it != channelNames.end(); it++)
+	for (std::vector< std::pair<std::string, std::string > >::iterator it = channels.begin(); it != channels.end(); it++)
 	{
 		// joinChannel(findChannel(*it), &password, fd);
 		std::vector<Channel>::iterator it2 = std::find_if(
 		this->_channels.begin(),
 		this->_channels.end(),
-		ChannelNameComparator(*it));
+		ChannelNameComparator((*it).first));
 		if (it2 != this->_channels.end())
 		{
 			Channel& channel = *it2;
 			std::cout << "channe is invite only: " << channel.isInviteOnly() << std::endl;
-			if (channel.isClientInChannel(fd))
+			if (channel.isClientInChannel(fd) && channel.isClientInvited(fd) == false)
 				return ;
-			if ((channel.isPasswordProtected() && password.size() == 0) || (channel.isPasswordProtected() && password.size() > 0 && channel.getPassword() != password[0]))
+			if ((channel.isPasswordProtected() && (*it).second.size() == 0) || (channel.isPasswordProtected() && (*it).second.size() > 0 && channel.getPassword() != (*it).second))
 			{
 				std::string msg = ERR_BADCHANNELKEY(getClient(fd)->getNickname(), channel.getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
@@ -78,19 +86,22 @@ void	Server::processJoin(int fd, std::string arg)
 			else
 			{
 				std::cout << "Client " << fd << " joined the channel " << channel.getName() << std::endl;
-				channel.joinChannel(*getClient(fd));
+				if (channel.isClientInChannel(fd) == true)
+					channel.setClientasNormal(fd);
+				else
+					channel.joinChannel(*getClient(fd));
 				topic = channel.getTopic();
 			}
 		}
-		else 
+		else
 		{
-			std::cout << "Channel " << *it << " doesn't exist" << std::endl;
-			Channel newChannel(*it);
+			std::cout << "Channel " << (*it).first << " does not exist" << std::endl;
+			Channel newChannel((*it).first);
 
 			this->_channels.push_back(newChannel);
 			for (std::vector<Channel>::iterator it2 = this->_channels.begin(); it2 != this->_channels.end(); it2++)
 			{
-				if (it2->getName() == *it)
+				if (it2->getName() == (*it).first)
 				{
 					Channel& channel = *it2;
 					channel.joinChannel(*getClient(fd));
@@ -100,17 +111,17 @@ void	Server::processJoin(int fd, std::string arg)
 			}
 			topic = newChannel.getTopic();
 		}
-		std::string msg = RPL_JOIN(getClient(fd)->getNickname(), (*it)).c_str();
+		std::string msg = RPL_JOIN(getClient(fd)->getNickname(), (*it).first).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		std::cout << "Client " << fd << " has joined the channel " << *it << std::endl;
+		std::cout << "Client " << fd << " has joined the channel " << (*it).first << std::endl;
 		if (topic.empty() == false)
 		{
-			std::string msg = RPL_TOPIC(getClient(fd)->getNickname(), (*it), topic).c_str();
+			std::string msg = RPL_TOPIC(getClient(fd)->getNickname(), (*it).first, topic).c_str();
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		}
 		else
 		{
-			std::string msg = RPL_NOTOPIC(getClient(fd)->getNickname(), (*it)).c_str();
+			std::string msg = RPL_NOTOPIC(getClient(fd)->getNickname(), (*it).first).c_str();
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		}
 	}

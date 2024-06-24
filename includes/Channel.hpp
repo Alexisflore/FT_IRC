@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 10:28:00 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:17:13 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ public:
 	/*--------------Getters--------------*/
     std::string 				getName() const;
 	Client						getClient(int fd);
+	std::vector<std::pair<Client, char> >	getClients();
 	std::vector<int>			getClientsFd();
 	// int							getClientbyFd(int fd);
 	std::string 				getTopic();
@@ -56,7 +57,7 @@ public:
 	void						setName(std::string name);
 	void						setTopic(std::string topic);
 	void						setMode(t_mode *mode);
-	void						setModeByType(char mode, char value, bool needParams, std::string params, std::string nickname);
+	void						setModeByType(int fd, char mode, char value, std::vector<std::string> params);
 	void						clearTopic();
 	void						setClientasOperator(int clientFd);
 	void						setClientasBanned(int clientFd);

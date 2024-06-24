@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/22 23:38:51 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 11:10:44 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Client
 		void					setLogged(bool logged);
 		bool					isRegistered();
 		void					displayMode(int fd, std::string nickname);
-		std::map<char, bool>	getMode();
+		MODE					getMode();
 
 		//---------Setters------------
 		void		setFd(int fd);
@@ -52,7 +52,7 @@ class Client
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);
 		void		setMode(t_mode* mode);
-		void 		setModeByType(char mode, char value, bool needParams, std::string params);
+		void 		setModeByType(int fd, char mode, char value);
 
 		//---------Methods------------
 		void		sendMessage(const std::string message);

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/23 10:31:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 10:47:43 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 Client::Client() {
 	_logged = false;
+	_fd = -1;
 }
 Client::~Client(){
 	std::cout << "Client " << _fd << " has been disconnected" << std::endl;
