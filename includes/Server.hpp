@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/22 22:32:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 15:25:21 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ class Server
 		std::vector<std::string>	getArgs(std::string str);
 		Client						*getClient(int fd);
 		Channel&					getChannelbyName(std::string name, std::string clientName);
-		void						selectChannels(std::vector< std::string > channelNames, std::vector<std::string>* password, int fd);
+		// void						selectChannels(std::vector< std::string > channelNames, std::vector<std::string>* password, int fd);
 		Client*						getClientbyNickname(std::string nickname);
 
 		/*--------------Setters--------------*/
@@ -71,9 +71,9 @@ class Server
 		std::vector<std::string>	split_args(std::string str, std::string delimiter);
 		void 						displayTopic(int fd, Channel& channel);
 		void 						changeTopic(int fd, Channel& channel, std::string topic);
-		void 						displayMode(int fd, Channel& channel);
-		void 						changeMode(int fd, Channel& channel);
-		void 						createValue(std::string& mode, bool& value);
+		// void 						displayMode(int fd, Channel& channel);
+		// void 						changeMode(int fd, Channel& channel);
+		// void 						createValue(std::string& mode, bool& value);
 		bool						isNicknameUsed(std::string nickname);
 		int							findFdByName(std::string clientName);
 		std::string					findChannel(std::string string, std::string cmd);
@@ -81,10 +81,10 @@ class Server
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
-		void						addClientToChannel(int fd, Channel *channel);
-		void						removeClientFromChannel(int fd, Channel *channel);
-		Channel&					findChannel(std::string channelName);
-		void						joinChannel(Channel& channel, std::vector<std::string>* password, int fd);
+		// void						addClientToChannel(int fd, Channel *channel);
+		// void						removeClientFromChannel(int fd, Channel *channel);
+		// Channel&					findChannel(std::string channelName);
+		// void						joinChannel(Channel& channel, std::vector<std::string>* password, int fd);
 		void						processQuit(int fd, std::string);
 		void						processNames(int fd, std::string);
 		void						processPass(int fd, std::string);
@@ -94,8 +94,8 @@ class Server
 		void						processPrivmsg(int fd, std::string);
 		void						processInvite(int fd, std::string);
 		void						processMode(int fd, std::string);
-		void						processModeChannel(int fd, std::vector<std::string> string, Channel &channel);
-		void						processModeUser(Client *client, std::vector<std::string> string);
+		// void						processModeChannel(int fd, std::vector<std::string> string, Channel &channel);
+		// void						processModeUser(Client *client, std::vector<std::string> string);
 		void						processNick(int fd, std::string);
 		void						processUser(int fd, std::string);
 		void						processPart(int fd, std::string);
