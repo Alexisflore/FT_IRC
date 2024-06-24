@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 14:17:13 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 15:17:56 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ public:
 	// int							getClientbyFd(int fd);
 	std::string 				getTopic();
 	bool						getMode(char mode);
-	std::string					getParams(char mode);
+	// std::string					getParams(char mode);
 	int							getFdFromNick(std::string nick);
 	Client						getClientByNick(std::string nick);
 	bool 						isClientOperator(int clientFd);

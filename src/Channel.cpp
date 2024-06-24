@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 14:19:49 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 15:17:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ std::string					Channel::getTopic() {return this->_topic;}
 std::vector<std::pair<Client, char> >	Channel::getClients() {return this->_clients;}
 // std::map<std::string, bool> Channel::getModesAsString() {return this->_modes;}
 bool						Channel::getMode(char mode) {return _modes.getModeValue(mode);}
-std::string					Channel::getParams(char mode) {return _modes.getParams(mode);}
+// std::string					Channel::getParams(char mode) {return _modes.getParams(mode);}
 int							Channel::getFdFromNick(std::string nick)
 {
 	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
@@ -208,7 +208,7 @@ bool Channel::isChannelFull()
 bool Channel::isInviteOnly() {return _modes.getModeValue('i');}
 bool Channel::isPasswordProtected(){return _modes.getModeValue('k');}
 bool Channel::isTopicProtected(){return _modes.getModeValue('t');}
-std::string Channel::getPassword() {return _modes.getParams('k');}
+std::string Channel::getPassword() {return _modes.getPassword();}
 bool Client::operator<(const Client& other) const {return this->getNickname() < other.getNickname();}
 void	Channel::displayMode(int fd, std::string nick)
 {

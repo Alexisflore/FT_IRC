@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:07:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 15:16:50 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ MODE 		&MODE::operator=(const MODE &other)
 	_password = other._password;
 	_limit = other._limit;
 	_mode = other._mode;
-	_params = other._params;
+	// _params = other._params;
 	_needParams = other._needParams;
 	_modesUser = other._modesUser;
 	_modesChannel = other._modesChannel;
@@ -88,14 +88,14 @@ bool					MODE::getModeValue(char mode) {
 	return false;
 }
 
-std::string				MODE::getParams(char mode) {
-	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
-	{
-		if (it->first == mode)
-			return it->second;
-	}
-	return "";
-}
+// std::string				MODE::getParams(char mode) {
+// 	for (std::vector<std::pair<char, std::string> >::iterator it = _params.begin(); it != _params.end(); it++)
+// 	{
+// 		if (it->first == mode)
+// 			return it->second;
+// 	}
+// 	return "";
+// }
 
 std::vector<std::pair<char, bool> >	MODE::getMode() {return _mode;}
 std::string				MODE::getParamsNeeded(int Type) {return (Type == CHANNEL_MODE) ? _needParams : "";}
