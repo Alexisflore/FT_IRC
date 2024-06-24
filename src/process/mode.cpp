@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 17:50:32 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:55:46 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 	std::string msg;
 	Client client;
 	param = params[0];
-	msg = "MODE " + getName() + " " + std::string(1, value) + mode + " " + param + "\n";
+	msg = "MODE " + getName() + " " + std::string(1, value) + mode + " ";
 	if (mode == 'o')
 	{
 		for (unsigned long i = 0; i < params.size(); i++)
@@ -271,6 +271,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 			for (unsigned long i = 0; i < params.size(); i++)
 				param += " " + params[i];
 			_modes.setPassword(param);
+			msg += param;
 		}
 		else
 			_modes.clearPassword();
@@ -287,11 +288,12 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				throw std::invalid_argument("The limit is invalid.");
 			}
+			msg += param;
 		}
 		else
 			_modes.clearLimit();
-		msg = "MODE " + getName() + " " + std::string(1, value) + mode + " " + param + "\n";
 	}
+	msg += "\n";
 	sendMessage(userid + " " + msg);
 	_modes.setModeByType(mode, value);
 }
