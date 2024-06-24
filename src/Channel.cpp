@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 01:13:11 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 01:28:06 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ Channel::Channel() {
 	_modes = MODE();
 }
 
-Channel::Channel(std::string channelName) : _name(channelName) {}
+Channel::Channel(std::string channelName) : _name(channelName) {
+	_modes = MODE();
+}
 Channel::~Channel() {}
 Channel::Channel(const Channel &other) {
 	_name = other._name;
@@ -30,10 +32,8 @@ Channel::Channel(const Channel &other) {
 /*--------------Getters--------------*/
 std::string     			Channel::getName() const {return this->_name;}
 std::string					Channel::getTopic() {return this->_topic;}
-std::vector<std::pair<Client, char> >	Channel::getClients() {return this->_clients;}
 // std::map<std::string, bool> Channel::getModesAsString() {return this->_modes;}
 bool						Channel::getMode(char mode) {return _modes.getModeValue(mode);}
-// std::string					Channel::getParams(char mode) {return _modes.getParams(mode);}
 int							Channel::getFdFromNick(std::string nick)
 {
 	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
@@ -50,7 +50,7 @@ Client						Channel::getClientByNick(std::string nick)
 		if (it->first.getNickname() == nick)
 			return (it->first);
 	}
-	return (Client());
+	throw std::invalid_argument("Client not found");
 }
 
 /*--------------Setters--------------*/
@@ -112,16 +112,6 @@ std::vector<int>			Channel::getClientsFd()
 	return clientsFd;
 }
 
-std::string					Channel::getUsers()
-{
-	std::string users;
-	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
-		users += it->first.getNickname() + " ";
-	}
-	return users;
-}
-
 /*--------------Methods--------------*/
 bool    Channel::isClientInChannel(int clientFd)
 {
@@ -134,6 +124,7 @@ bool    Channel::isClientInChannel(int clientFd)
 	{
 		if ((it)->first.getFd() == clientFd)
 		{
+			std::cout << "Client " << clientFd << " is in the channel " << this->_name << std::endl;
 			return true;
 		}
 	}
@@ -194,17 +185,14 @@ bool Channel::isClientInvited(int clientFd)
 	{
 		if (it->first.getFd() == clientFd && it->second == 'i')
 			return true;
-	}
-	return false;
+		return true;
+		
 }
 
 bool Channel::isClientOperator(int clientFd)
 {
-	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
-		if (it->first.getFd() == clientFd && it->second == 'o')
-			return true;
-	}
+	if (_clients[getClient(clientFd)] == 'o')
+		return true;
 	return false;
 }
 
@@ -215,55 +203,33 @@ bool Channel::isChannelFull()
 	return false;
 }
 
-bool Channel::isInviteOnly() {return _modes.getModeValue('i');}
-bool Channel::isPasswordProtected(){return _modes.getModeValue('k');}
-bool Channel::isTopicProtected(){return _modes.getModeValue('t');}
-std::string Channel::getPassword() {return _modes.getPassword();}
-bool Client::operator<(const Client& other) const {return this->getNickname() < other.getNickname();}
-void	Channel::displayMode(int fd, std::string nick)
+bool Channel::isInviteOnly()
 {
-	std::string msg;
-	std::string mode = "+";
-	std::vector<std::pair<char, bool> > modes = _modes.getMode();
-	for (std::vector<std::pair<char, bool> >::iterator it = modes.begin(); it != modes.end(); it++)
-	{
-		if (it->second == true)
-		{
-			mode += it->first;
-			if (it->first == 'l')
-			{
-				std::stringstream ss;
-    			ss << _modes.getLimit();
-				mode += " " + ss.str();
-				mode += " +";
-			}
-			if (it->first == 'k')
-			{
-				mode += " " + _modes.getPassword();
-				mode += " +";
-			}
-			if (it->first == 'o')
-			{
-				for (std::vector<std::pair<Client, char> >::iterator it2 = _clients.begin(); it2 != _clients.end(); it2++)
-				{
-					if (it2->second == 'o')
-						mode += " " + it2->first.getNickname();
-				}
-			}
-			mode += " +";
-		}
-	}
-	if (mode == "+")
-		mode += "";
-	msg = RPL_CHANNELMODEIS(nick, _name, mode).c_str();
-	send(fd, msg.c_str(), msg.length(), 0);
+	if (_modes.getModeValue('i') == false)
+		return false;
+	return true;
 }
 
-void Channel::sendNotification(const std::string message, int fd)
+bool Channel::isPasswordProtected()
 {
-	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
-		if (it->first.getFd() != fd)
-			send(fd, message.c_str(), message.length(), 0);
-	}
+	if (_modes.getModeValue('k') == false)
+		return false;
+	return true;
 }
+
+bool Channel::isTopicProtected()
+{
+	if (_modes.getModeValue('t') == false)
+		return false;
+	return true;
+}
+
+std::string Channel::getPassword()
+{
+	return _modes.getParams('k');
+}
+
+bool Client::operator<(const Client& other) const {
+        // Compare the clients based on their nicknames, for example
+        return this->getNickname() < other.getNickname();
+    }
