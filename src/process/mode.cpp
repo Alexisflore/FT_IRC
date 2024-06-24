@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:16:50 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 16:47:57 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ void Channel::setMode(t_mode* mode)
 {
 	char lastOperator;
 	std::string msg;
+	std::string userid;
 	if (mode->mode[mode->index].first[0] != '+' && mode->mode[mode->index].first[0] != '-')
 	{
 		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode[mode->index].first + " ").c_str();
@@ -166,6 +167,9 @@ void Channel::setMode(t_mode* mode)
 		else
 		{
 			std::cout << "mode: " << mode->mode[mode->index].first[i] << " value: " << lastOperator << std::endl;
+			userid = USER_ID(mode->clientNick, getClient(mode->client_fd).getUsername());
+			msg = RPL_UMODEIS(userid, mode->name, std::string(1, lastOperator) + mode->mode[mode->index].first[i]).c_str();
+			sendMessage(msg);
 			_modes.setModeByType(mode->mode[mode->index].first[i], lastOperator);
 		}
 	}
@@ -226,8 +230,11 @@ void Client::setModeByType(int fd, char mode, char value)
 void Channel::setModeByType(int fd, char mode, char value, std::vector<std::string> params)
 {
 	std::string param;
+	std::string userid = USER_ID(getClient(fd).getNickname(), getClient(fd).getUsername());
+	std::string msg;
 	Client client;
 	param = params[0];
+	msg = RPL_UMODEIS(userid, getName(), std::string(1, value) + mode).c_str();
 	if (mode == 'o')
 	{
 		for (unsigned long i = 0; i < params.size(); i++)
@@ -243,6 +250,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 				setClientasOperator(client.getFd());
 			else
 				setClientasNormal(client.getFd());
+			msg = RPL_UMODEIS(userid, getName(), std::string(1, value) + mode + " " + client.getNickname()).c_str();
 		}
 		return ;
 	}
@@ -252,7 +260,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 		{
 			if (_modes.getPassword().empty() == false)
 			{
-				std::string msg = ERR_KEYSET(getClient(fd).getNickname(), getName()).c_str();
+				msg = ERR_KEYSET(getClient(fd).getNickname(), getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				throw std::invalid_argument("The password is already set.");
 			}
@@ -278,7 +286,9 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 		}
 		else
 			_modes.clearLimit();
+		msg = RPL_UMODEIS(userid, getName(), std::string(1, value) + mode + " " + param).c_str();
 	}
+	sendMessage(msg);
 	_modes.setModeByType(mode, value);
 }
 
