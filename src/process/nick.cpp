@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 00:07:05 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void Server::processNick(int fd, std::string string)
 {
+	std::cout << "Processing NICK command" << std::endl;
 	std::vector<std::string> strings = split_args(string, " ");
 	if (strings.size() != 2)
 	{
@@ -31,8 +32,11 @@ void Server::processNick(int fd, std::string string)
 		std::cout << "Nickname is already used" << std::endl;
 		return ;
 	}
-	getClient(fd)->setNickname(nickname);
+	Client *client = getClient(fd);
+	client->setNickname(nickname);
 	std::cout << "Client " << fd << " changed nickname to " << nickname << std::endl;
+	std::string msg = ":" + getClient(fd)->getNickname() + " NICK " + getClient(fd)->getNickname() + "\r\n";
+	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }
 
 bool Server::isNicknameUsed(std::string nickname)

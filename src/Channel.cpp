@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:25 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 18:18:05 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 00:47:05 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ Channel::Channel() {
 	_modes = MODE();
 }
 
-Channel::Channel(std::string channelName) : _name(channelName) {}
+Channel::Channel(std::string channelName) : _name(channelName) {
+	_modes = MODE();
+}
 Channel::~Channel() {}
 Channel::Channel(const Channel &other) {
 	_name = other._name;
@@ -252,6 +254,7 @@ void	Channel::displayMode(int fd, std::string nick)
 	}
 	msg = RPL_CHANNELMODEIS(nick, _name, mode).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
+	std::cout << msg << std::endl;
 }
 
 void Channel::sendNotification(const std::string message, int fd)

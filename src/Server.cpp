@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:02:30 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 00:05:54 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ bool NicknameComparator::operator()(const Client& client) const
 {
 	return client.getNickname() == this->nickname;
 }
-
 Server::Server()
 {
 	_socket_fd = -1;
