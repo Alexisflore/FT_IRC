@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/22 23:43:03 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:44:51 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void Server::processKick(int fd, std::string arg)
 {
 	std::vector<std::string> args = split_args(arg, " ");
-	if (args.size() < 4)
+	if (args.size() < 3)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "KICK").c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
@@ -24,7 +24,11 @@ void Server::processKick(int fd, std::string arg)
 	}
 	std::string channelName = args[1];
 	std::string clientName = args[2];
-	std::string comment = args[3].substr(1);
+	std::string comment;
+	if (args.size() > 3)
+	{
+		std::string comment = args[3];
+	}
 	Channel channel = getChannelbyName(channelName, getClient(fd)->getNickname());
 	if (!channel.isClientInChannel(fd))
 	{
