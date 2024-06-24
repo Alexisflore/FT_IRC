@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 14:30:04 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/24 16:17:15 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	Server::processJoin(int fd, std::string arg)
 				else
 					channel.joinChannel(*getClient(fd));
 				topic = channel.getTopic();
+				newChannel = channel;
 			}
 		}
 		else
@@ -111,8 +112,9 @@ void	Server::processJoin(int fd, std::string arg)
 			}
 			topic = newChannel.getTopic();
 		}
-		std::string msg = RPL_JOIN(getClient(fd)->getNickname(), (*it).first).c_str();
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
+		std::string msg = RPL_JOIN(userid, getClient(fd)->getNickname()).c_str();
+		newChannel.sendMessage(msg);
 		std::cout << "Client " << fd << " has joined the channel " << (*it).first << std::endl;
 		if (topic.empty() == false)
 		{
