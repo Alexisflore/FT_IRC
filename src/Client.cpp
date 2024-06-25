@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 13:39:18 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 17:00:40 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ Client::Client(const Client &other)
 	_ip_add = other._ip_add;
 	_logged = other._logged;
 	_mode = other._mode;
+	_buffer = other._buffer;
 }
 
 Client::Client(int fd) {_fd = fd;}

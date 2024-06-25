@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 16:49:34 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 17:02:17 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,7 @@ void	Server::newClient()
 void	Server::newDataClient(int fd)
 {
 	char buffer[BUFFER_SIZE];//buffer pour recevoir la data
-	Client *client = getClient(fd);
+	Client &client = getClientbyRef(fd);
 	std::vector<std::string> args;
 	memset(buffer, 0, BUFFER_SIZE);
 	ssize_t	recevBytes = recv(fd, buffer, (BUFFER_SIZE - 1), 0);//recevoir la data
@@ -263,20 +263,19 @@ void	Server::newDataClient(int fd)
 	}
 	else
 	{
-		std::string stdbuffer = std::string(buffer);
-		client->setBuffer(stdbuffer);//set le buffer du client
-		if (client->getBuffer().find_first_of("\r\n") == std::string::npos)
+		std::string stdbuffer = buffer;
+		client.setBuffer(stdbuffer);//set le buffer du client
+		if (client.getBuffer().find_first_of("\r\n") == std::string::npos)
 			return ;
-		std::cout << "Client <" << fd << "> Data: " << client->getBuffer() << std::endl;
-		args = getArgs(client->getBuffer().c_str());
+		args = getArgs(client.getBuffer().c_str());
 		for (size_t i = 0; i < args.size(); i++)
 		{
-			std::cout << "Args[" << i << "]: " << args[i] << std::endl;
+			std::cout << "CMD[" << i << "]: " << args[i] << std::endl;
 			treatData(args[i], fd);
 		}
 		if (getClient(fd) == NULL)
 			return ;
-		client->clearBuffer();
+		client.clearBuffer();
 	}
 }
 
