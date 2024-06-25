@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:43:39 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:24:49 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void Server::processTopic(int fd, std::string string)
 {
 	if (getClient(fd)->isLogged() == false)
 	{
+		std::cout << "Client " << fd << " isn t logged." << std::endl;
 		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "TOPIC").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;

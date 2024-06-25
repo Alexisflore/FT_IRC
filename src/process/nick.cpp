@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 12:56:07 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:22:39 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void Server::processNick(int fd, std::string string)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	getClient(fd)->setNickname(nickname);
+	getClientbyRef(fd).setNickname(nickname);
 	std::cout << "Client " << fd << " changed nickname to " << nickname << std::endl;
 	getClient(fd)->welcomeMessage(_creationTime);
 }

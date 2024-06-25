@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 12:49:48 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:20:48 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,16 @@ void	Server::clearClient(int fd)
 			break ;
 		}
 	}
+}
+
+Client	&Server::getClientbyRef(int fd)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i].getFd() == fd)
+			return (_clients[i]);
+	}
+	throw std::runtime_error("The client doesn't exist.");
 }
 
 Client *Server::getClient(int fd)

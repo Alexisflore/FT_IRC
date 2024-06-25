@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:22 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 12:51:09 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:34:57 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,9 @@ void Server::processUser(int fd, std::string string)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	Client *client = getClient(fd);
-	if (!client->isRegistered())
-	{
-		std::string cmd = "USER";
-		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), cmd).c_str();
-		send(fd, msg.c_str(), msg.length(), 0);
-		return ;
-	}
-	client->setUsername(strings[1]);
+	// Client &client = getClientbyRef(fd);
+	std::string username = strings[1];
+	getClientbyRef(fd).setUsername(username);
 	std::string realName;
 	if (strings[4][0] == ':')
 		realName += strings[4].erase(0, 1);
@@ -44,9 +38,9 @@ void Server::processUser(int fd, std::string string)
 	if (strings.size() > 5)
 		realName += " " + strings[5];
 	// std::cout << "Realname: " << realName << std::endl;
-	client->setRealName(realName);
-	client->welcomeMessage(_creationTime);
-	std::cout << "Client " << fd << " has set his username to " << client->getUsername() << " and his realname to " << client->getRealName() << std::endl;
+	getClientbyRef(fd).setRealName(realName);
+	getClientbyRef(fd).welcomeMessage(_creationTime);
+	std::cout << "Client " << fd << " has set his username to " << getClientbyRef(fd).getUsername() << " and his realname to " << getClientbyRef(fd).getRealName() << std::endl;
 }
 
 Client* Server::getClientbyNickname(std::string nickname)

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:42:49 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:24:38 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,6 +332,7 @@ void Server::processMode(int fd, std::string string)
 {
 	if (getClient(fd)->isLogged() == false)
 	{
+		std::cout << "Client " << fd << " isn't logged." << std::endl;
 		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "MODE").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
@@ -346,12 +347,13 @@ void Server::processMode(int fd, std::string string)
 		mode.index = i;
 		if ( mode.type == CHANNEL_MODE)
 		{
+			std::cout << "channel mode" << std::endl;
 			Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
 			channel.processMode(fd, mode, size_of_cmd);
-			// channel.displayMode(fd, mode.clientNick);
 		}
 		else
 		{
+			std::cout << "channel mode" << std::endl;
 			Client *client = getClientbyNickname(mode.name);
 			if (client == NULL)
 			{

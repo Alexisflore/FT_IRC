@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 12:50:27 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:39:18 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ Client::Client(const Client &other)
 {
 	_fd = other._fd;
 	_nickname = other._nickname;
+	_username = other._username;
+	_realname = other._realname;
+	_registered = other._registered;
 	_password = other._password;
 	_ip_add = other._ip_add;
 	_logged = other._logged;
@@ -59,12 +62,29 @@ std::string 			Client::getBuffer() {return (this->_buffer);}
 std::string				Client::getIpAdd() {return (this->_ip_add);}
 std::string				Client::getUsername() {return (this->_username);}
 std::string				Client::getPassword() {return (this->_password);}
-bool 					Client::isLogged() {return (
-	!_nickname.empty() &&
-	!_username.empty() &&
-	!_realname.empty() &&
-	_registered
-);}
+bool 					Client::isLogged() {
+	if (_nickname.empty())
+	{
+		std::cout << "Client " << _fd << " no nickname." << std::endl;
+		return false;
+	}
+	if (_username.empty())
+	{
+		std::cout << "Client " << _fd << " no username." << std::endl;
+		return false;
+	}
+	if (_realname.empty())
+	{
+		std::cout << "Client " << _fd << " no realname." << std::endl;
+		return false;
+	}
+	if (!_registered)
+	{
+		std::cout << "Client " << _fd << " isn t logged." << std::endl;
+		return false;
+	}
+	return true;
+}
 bool 					Client::isRegistered() {return (_registered);}
 
 MODE	Client::getMode() {return _mode;}

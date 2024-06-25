@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:45:01 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 13:32:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void Server::processPass(int fd, std::string string)
 	}
 	else
 	{
-		client->setRegistered(true);
+		getClientbyRef(fd).setRegistered(true);
 	}
 	if (!msg.empty())
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
