@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 01:34:39 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:54:53 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:57:39 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ std::string					Channel::getUsers()
 	{
 		if (it->second != 'o')
 			users += '@';
-		else if (it->second == 'i')
+		else if (it->second == 'i' || it->second == 'b')
 			continue;
 		users += it->first.getNickname() + " ";
 	}

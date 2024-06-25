@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 18:22:06 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:12:58 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,21 @@ void		Client::removeInvolvedChannel(std::string channelName)
 void		Client::welcomeMessage()
 {
 	if (isLogged() == false || _username.empty() || _realname.empty() || _nickname.empty())
-	{
 		return ;
-	}
 	_registered = true;
 	std::string userid = USER_ID(_nickname, _username);
+	std::string localhost = "localhost";
 	std::string msg = RPL_WELCOME(_nickname, userid);
+	send(_fd, msg.c_str(), msg.length(), 0);
+	msg = RPL_YOURHOST(_nickname, localhost, "1.0");
+	send(_fd, msg.c_str(), msg.length(), 0);
+	std::string datetime;
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
+	std::stringstream ss;
+	ss << ltm->tm_mday << "/" << (ltm->tm_mon + 1) << "/" << (ltm->tm_year + 1900) << " " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec;
+	datetime = ss.str();
+	msg = RPL_CREATED(_nickname, datetime);
 	send(_fd, msg.c_str(), msg.length(), 0);
 }
 
