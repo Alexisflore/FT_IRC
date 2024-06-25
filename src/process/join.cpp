@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:05:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:21:29 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	Server::processJoin(int fd, std::string arg)
 		else
 			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), newChannel.getName()).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), " = ", newChannel.getName(), newChannel.getUsers()).c_str();
+		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), "=", newChannel.getName(), newChannel.getUsers()).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
 }

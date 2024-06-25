@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 01:05:49 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:24:13 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,7 +265,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 				throw std::invalid_argument("The password is already set.");
 			}
-			for (unsigned long i = 0; i < params.size(); i++)
+			for (unsigned long i = 1; i < params.size(); i++)
 				param += " " + params[i];
 			_modes.setPassword(param);
 			msg += param;
