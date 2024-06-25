@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:22 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:48:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:08:18 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 void Server::processUser(int fd, std::string string)
 {
+	std::vector<std::string> strings = split_args(string, " ");
 	if (getClient(fd)->isRegistered() == false)
 	{
 		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "USER").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	if (split_args(string, " ").size() < 5)
+	if (strings.size() < 6)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "USER").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
@@ -34,11 +35,13 @@ void Server::processUser(int fd, std::string string)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	string.erase(0, 5);
-	std::vector<std::string> strings = split_args(string, " ");
-	client->setUsername(strings[0]);
+	client->setUsername(strings[1]);
 	std::string realName;
-	realName += strings[3].erase(0, 1) + " " + strings[4];
+	if (strings[4][0] == ':')
+		realName += strings[4].erase(0, 1);
+	else
+		realName += strings[4];
+	realName += " " + strings[5];
 	// std::cout << "Realname: " << realName << std::endl;
 	client->setRealName(realName);
 	client->welcomeMessage();
