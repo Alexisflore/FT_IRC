@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 01:34:39 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:57:39 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:16:47 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ std::string					Channel::getUsers()
 	std::string users;
 	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (it->second != 'o')
+		if (it->second == 'o')
 			users += '@';
 		else if (it->second == 'i' || it->second == 'b')
 			continue;
@@ -268,5 +268,14 @@ void Channel::sendNotification(const std::string message, int fd)
 	{
 		if (it->first.getFd() != fd)
 			send(fd, message.c_str(), message.length(), 0);
+	}
+}
+
+void Channel::sendprivmsg(int fd, std::string message)
+{
+	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->first.getFd() != fd)
+			send(it->first.getFd(), message.c_str(), message.length(), 0);
 	}
 }

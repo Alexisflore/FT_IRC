@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 14:42:57 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:16:17 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,24 @@ void Server::processPrivmsg(int fd, std::string string)
 		messageToSend += args[2];
 	for (size_t i = 3; i < args.size(); i++)
 		messageToSend += " " + args[i];
+	messageToSend += "\n";
 	std::vector<std::string> wheretoSend = split_args(args[1], ",");
 	for (std::vector<std::string>::iterator it = wheretoSend.begin(); it != wheretoSend.end(); it++)
 	{
 		if (it->empty())
 			continue ;
 		if (it->at(0) != '#' && it->at(0) != '&')
-			sendToClient(fd, *it, user + it->c_str() + " :" + messageToSend);
+			sendToClient(fd, *it, user + *it + " :" + messageToSend);
 		else
-			sendToChannel(fd, *it, user + it->c_str() + " :" + messageToSend);
+			sendToChannel(fd, *it, user + *it + " :" + messageToSend);
 	}
 }
 
 void Server::sendToChannel(int fd, std::string channelName, std::string message)
 {
 	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
-	channel.sendMessage(message);
-	std::cout << "Client " << fd << " has sent " << message << " to channel " << channelName << std::endl;
+	channel.sendprivmsg(fd, message);
+	std::cout << "Client " << fd << " has sent " << message << "to " << channelName << std::endl;
 }
 
 void Server::sendToClient(int fd, std::string clientName, std::string message)
@@ -68,5 +69,5 @@ void Server::sendToClient(int fd, std::string clientName, std::string message)
 		return ;
 	}
 	send(client->getFd(), message.c_str(), message.length(), 0);
-		std::cout << "Client " << fd << " has sent " << message << " to " << clientName << std::endl;
+		std::cout << "Client " << fd << " has sent " << message << "to " << clientName << std::endl;
 }
