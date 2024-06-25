@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 17:37:03 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:05:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	Server::processJoin(int fd, std::string arg)
 					channel.setClientasNormal(fd);
 				else
 					channel.joinChannel(*getClient(fd));
+				std::cout << "Client " << channel.getClient(fd).getNickname() << " joined the channel " << channel.getName() << std::endl;
 				topic = channel.getTopic();
 				newChannel = channel;
 			}
