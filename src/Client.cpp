@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 17:00:40 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 18:05:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ Client::Client() {
 	_logged = false;
 	_fd = -1;
 }
-Client::~Client(){
-	std::cout << "Client " << _fd << " has been disconnected" << std::endl;
-}
+Client::~Client(){}
 Client::Client(int fd, std::string nickname, std::string password, std::string ipadd) :
 		_fd(fd),
 		_nickname(nickname),
