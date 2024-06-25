@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 13:20:48 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:49:34 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,10 +263,10 @@ void	Server::newDataClient(int fd)
 	}
 	else
 	{
-		buffer[recevBytes] = '\0';
 		std::string stdbuffer = std::string(buffer);
 		client->setBuffer(stdbuffer);//set le buffer du client
-		std::string buffer = client->getBuffer();
+		if (client->getBuffer().find_first_of("\r\n") == std::string::npos)
+			return ;
 		std::cout << "Client <" << fd << "> Data: " << client->getBuffer() << std::endl;
 		args = getArgs(client->getBuffer().c_str());
 		for (size_t i = 0; i < args.size(); i++)
