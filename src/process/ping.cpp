@@ -8,7 +8,7 @@ void Server::processPing(int fd, std::string string)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	string.replace(0, 4, "PONG");
+	std::string msg = "PONG localhost" + string.erase(0, 4) + "\n";
 	send(fd, string.c_str(), string.length(), 0);
 	std::cout << string << " sent to " << fd << std::endl;
 }

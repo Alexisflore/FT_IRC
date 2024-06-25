@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 17:02:17 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 17:16:40 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ void			Server::creatSocket()
 
 	if (bind_adress == -1)
 		throw std::runtime_error("(SERVER) failed to bind socket");
-	if (listen(this->_socket_fd, PENDING_QUEUE_MAXLENGTH) == -1)
+	if (listen(this->_socket_fd, SOMAXCONN) == -1)
 		throw std::runtime_error("(SERVER) failed to listen");
 
 	newPoll.fd = _socket_fd;// ajouter le socket du server au pollfd
