@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:22 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 12:08:18 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:40:21 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Server::processUser(int fd, std::string string)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	if (strings.size() < 6)
+	if (strings.size() < 5)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "USER").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
@@ -41,7 +41,8 @@ void Server::processUser(int fd, std::string string)
 		realName += strings[4].erase(0, 1);
 	else
 		realName += strings[4];
-	realName += " " + strings[5];
+	if (strings.size() > 5)
+		realName += " " + strings[5];
 	// std::cout << "Realname: " << realName << std::endl;
 	client->setRealName(realName);
 	client->welcomeMessage();
