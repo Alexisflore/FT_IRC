@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 17:13:00 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:43:05 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void Server::processInvite(int fd, std::string string)
 {
+	if (getClient(fd)->isLogged() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "INVITE").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	std::vector<std::string> args = split_args(string, " ");
 	if (args.size() != 3)
 	{

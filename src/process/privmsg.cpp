@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/17 18:14:47 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:43:25 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void Server::processPrivmsg(int fd, std::string string)
 {
+	if (getClient(fd)->isLogged() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "PRIVMSG").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	std::vector<std::string> args = getArgs(string);
 
 	if (args.size() < 3)

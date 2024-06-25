@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:06 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/22 23:44:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:42:35 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void Server::processPart(int fd, std::string arg)
 {
+	if (getClient(fd)->isLogged() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "PASS").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	std::vector<std::string> args = split_args(arg, " ");
 	std::string channelIn;
 	if (args.size() < 2)

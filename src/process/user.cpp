@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:22 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/22 13:39:37 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:48:36 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void Server::processUser(int fd, std::string string)
 {
+	if (getClient(fd)->isRegistered() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "USER").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	if (split_args(string, " ").size() < 5)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "USER").c_str();
@@ -21,6 +27,13 @@ void Server::processUser(int fd, std::string string)
 		return ;
 	}
 	Client *client = getClient(fd);
+	if (!client->isRegistered())
+	{
+		std::string cmd = "USER";
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), cmd).c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	string.erase(0, 5);
 	std::vector<std::string> strings = split_args(string, " ");
 	client->setUsername(strings[0]);

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:45:56 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:42:49 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,6 @@ void Channel::setMode(t_mode* mode)
 	}
 }
 
-MODE 	Client::getMode() {return _mode;}
 void	Client::setMode(t_mode* mode)
 {
 	char lastOperator;
@@ -331,6 +330,12 @@ void	Client::processMode(int fd, t_mode mode, int size_of_cmd)
 
 void Server::processMode(int fd, std::string string)
 {
+	if (getClient(fd)->isLogged() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "MODE").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	t_mode mode;
 	int size_of_cmd = createModeAndParams(fd, string, mode);
 	unsigned long size = mode.mode.size();

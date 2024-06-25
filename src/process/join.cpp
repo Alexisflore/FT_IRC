@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:46:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:43:00 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 
 void	Server::processJoin(int fd, std::string arg)
 {
+	if (getClient(fd)->isLogged() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "JOIN").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	arg.erase(0, 5);
 	std::string ChannelName;
 	std::string channelusers;

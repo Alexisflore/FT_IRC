@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:49:58 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void Server::processNick(int fd, std::string string)
 {
+	if (getClient(fd)->isRegistered() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "NICK").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	std::vector<std::string> strings = split_args(string, " ");
 	if (strings.size() != 2)
 	{
@@ -33,6 +39,7 @@ void Server::processNick(int fd, std::string string)
 	}
 	getClient(fd)->setNickname(nickname);
 	std::cout << "Client " << fd << " changed nickname to " << nickname << std::endl;
+	getClient(fd)->welcomeMessage();
 }
 
 bool Server::isNicknameUsed(std::string nickname)

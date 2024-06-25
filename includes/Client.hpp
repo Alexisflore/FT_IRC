@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 11:10:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:36:29 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Client
 		void		setBuffer(std::string buffer);
 		void		setNickname(std::string nickname);
 		void		setPassword(std::string password);
+		void		setRegistered(bool registered);
 		void		setIpAdd(std::string ip_add);
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);

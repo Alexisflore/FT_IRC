@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:50 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/22 14:15:22 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:42:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void Server::processNames(int fd, std::string string)
 {
+	if (getClient(fd)->isLogged() == false)
+	{
+		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "NAMES").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		return ;
+	}
 	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
 		std::cout << "Client " << it->getFd() << " has nickname " << it->getNickname() << std::endl;
