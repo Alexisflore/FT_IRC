@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:48:52 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:50:27 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void		Client::removeInvolvedChannel(std::string channelName)
 	}
 }
 
-void		Client::welcomeMessage()
+void		Client::welcomeMessage(std::string creationTime)
 {
 	if (isLogged() == false || _username.empty() || _realname.empty() || _nickname.empty())
 		return ;
@@ -111,7 +111,7 @@ void		Client::welcomeMessage()
 	std::stringstream ss;
 	ss << ltm->tm_mday << "/" << (ltm->tm_mon + 1) << "/" << (ltm->tm_year + 1900) << " " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec;
 	datetime = ss.str();
-	msg = RPL_CREATED(_nickname, datetime);
+	msg = RPL_CREATED(_nickname, creationTime);
 	send(_fd, msg.c_str(), msg.length(), 0);
 }
 

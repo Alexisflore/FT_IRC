@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:22 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 12:42:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:51:09 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void Server::processUser(int fd, std::string string)
 		realName += " " + strings[5];
 	// std::cout << "Realname: " << realName << std::endl;
 	client->setRealName(realName);
-	client->welcomeMessage();
+	client->welcomeMessage(_creationTime);
 	std::cout << "Client " << fd << " has set his username to " << client->getUsername() << " and his realname to " << client->getRealName() << std::endl;
 }
 

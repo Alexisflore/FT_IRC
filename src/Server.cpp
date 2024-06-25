@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:02:30 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:49:48 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@ bool NicknameComparator::operator()(const Client& client) const
 Server::Server()
 {
 	_socket_fd = -1;
+	std::string datetime;
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
+	std::stringstream ss;
+	ss << ltm->tm_mday << "/" << (ltm->tm_mon + 1) << "/" << (ltm->tm_year + 1900) << " " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec;
+	datetime = ss.str();
+	_creationTime = datetime;
 	// std::cout << VERT << "Default constructor are called" << REINIT << std::endl;
 }
 

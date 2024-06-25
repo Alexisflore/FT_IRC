@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:14 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:36:29 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:50:47 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class Client
 		void		addInvolvedChannel(std::string channelName);
 		void		removeInvolvedChannel(std::string channelName);
 		void		clearBuffer();
-		void		welcomeMessage();
+		void		welcomeMessage(std::string creationTime);
 		void		processMode(int fd, t_mode mode, int size_of_cmd);
 	private:
 		int							_fd;

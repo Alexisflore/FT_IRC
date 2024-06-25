@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:31 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/13 15:26:28 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:53:51 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int main(int ac, char **av)
 	{
 		if (ac != 3)
 		{
+			std::cout << "Usage: ./ircserv <port> <password>" << std::endl;
 			throw std::invalid_argument("The ircserv needs port and password for get ready");
 			return (1);
 		}

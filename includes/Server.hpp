@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/24 15:25:21 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:49:39 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,6 @@ class Server
 		std::vector<struct pollfd>	_fds;
 		std::string					_pass;
 		struct sockaddr_in			_socket_add;
+		std::string					_creationTime;
 };
 
