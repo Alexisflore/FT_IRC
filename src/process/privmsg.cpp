@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:43:25 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 14:42:57 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,59 @@
 
 void Server::processPrivmsg(int fd, std::string string)
 {
+	std::string msg;
 	if (getClient(fd)->isLogged() == false)
 	{
-		std::string msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "PRIVMSG").c_str();
+		msg = ERR_NOTREGISTERED(getClient(fd)->getNickname(), "PRIVMSG").c_str();
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	std::vector<std::string> args = getArgs(string);
-
+	std::vector<std::string> args = split_args(string, " ");
 	if (args.size() < 3)
 	{
-		std::cout << "Usage : PRIVMSG <client> <message>" << std::endl;
+		msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "PRIVMSG").c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
+		std::cout << "Client " << fd << " needs to specify the client name and the message" << std::endl;
 		return ;
 	}
-	std::string clientName = args[1];
-	std::string	msg = args[2];
+	std::string user;
+	std::string messageToSend;
+	user += USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
+	user += " PRIVMSG ";
+	if (args[2][0] == ':')
+		messageToSend += args[2].erase(0, 1);
+	else
+		messageToSend += args[2];
 	for (size_t i = 3; i < args.size(); i++)
+		messageToSend += " " + args[i];
+	std::vector<std::string> wheretoSend = split_args(args[1], ",");
+	for (std::vector<std::string>::iterator it = wheretoSend.begin(); it != wheretoSend.end(); it++)
 	{
-		msg += " " + args[i];
+		if (it->empty())
+			continue ;
+		if (it->at(0) != '#' && it->at(0) != '&')
+			sendToClient(fd, *it, user + it->c_str() + " :" + messageToSend);
+		else
+			sendToChannel(fd, *it, user + it->c_str() + " :" + messageToSend);
 	}
+}
 
-	int clientFd = this->findFdByName(clientName);
-	if (clientFd == 0)
+void Server::sendToChannel(int fd, std::string channelName, std::string message)
+{
+	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	channel.sendMessage(message);
+	std::cout << "Client " << fd << " has sent " << message << " to channel " << channelName << std::endl;
+}
+
+void Server::sendToClient(int fd, std::string clientName, std::string message)
+{
+	Client *client = getClientbyNickname(clientName);
+	if (client == NULL)
 	{
-		std::cout << "Client " << clientName << " not found." << std::endl;
+		std::string msg = ERR_NOSUCHNICK(getClient(fd)->getNickname(), clientName).c_str();
+		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
-	std::stringstream ss;
-	ss << fd;
-	std::string fdStr = ss.str();
-	msg = "Private message from fd " + fdStr + " : " + msg;
-	send(clientFd, msg.c_str(), msg.size(), 0);
-	std::cout << "private message sent to " << clientName << std::endl;
+	send(client->getFd(), message.c_str(), message.length(), 0);
+		std::cout << "Client " << fd << " has sent " << message << " to " << clientName << std::endl;
 }

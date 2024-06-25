@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 13:19:40 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 14:10:27 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ class Server
 		int							findFdByName(std::string clientName);
 		std::string					findChannel(std::string string, std::string cmd);
 		int							createModeAndParams(int fd, std::string cmd, t_mode& mode);
+		void						sendToChannel(int fd, std::string channelName, std::string message);
+		void						sendToClient(int fd, std::string clientName, std::string message);
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
