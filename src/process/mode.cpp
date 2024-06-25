@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 13:24:38 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:14:21 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 	msg = "MODE " + getName() + " " + std::string(1, value) + mode + " ";
 	if (mode == 'o')
 	{
-		for (unsigned long i = 0; i < params.size(); i++)
+		for (unsigned long i = 1; i < params.size(); i++)
 		{
 			client = getClientByNick(params[i]);
 			if (client.getFd() == -1)
@@ -276,7 +276,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 	{
 		if (value == '+')
 		{
-			for (unsigned long i = 0; i < params.size(); i++)
+			for (unsigned long i = 1; i < params.size(); i++)
 				param += " " + params[i];
 			if (_modes.setLimit(param) == false)
 			{
