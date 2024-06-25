@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:21:29 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:32:35 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 void	Server::processJoin(int fd, std::string arg)
 {
 	arg.erase(0, 5);
+	std::string ChannelName;
+	std::string channelusers;
 	std::vector<std::string> args = split_args(arg, " ");
 	if (args.size() == 0 || args[0].empty() || args.size() > 2)
 	{
@@ -92,14 +94,15 @@ void	Server::processJoin(int fd, std::string arg)
 					channel.joinChannel(*getClient(fd));
 				std::cout << "Client " << channel.getClient(fd).getNickname() << " joined the channel " << channel.getName() << std::endl;
 				topic = channel.getTopic();
-				newChannel = channel;
+				ChannelName = channel.getName();
+				channelusers = channel.getUsers();
 			}
 		}
 		else
 		{
 			std::cout << "Channel " << (*it).first << " does not exist" << std::endl;
 			Channel newChannel((*it).first);
-
+			ChannelName = newChannel.getName();
 			this->_channels.push_back(newChannel);
 			for (std::vector<Channel>::iterator it2 = this->_channels.begin(); it2 != this->_channels.end(); it2++)
 			{
@@ -112,6 +115,7 @@ void	Server::processJoin(int fd, std::string arg)
 				}
 			}
 			topic = newChannel.getTopic();
+			channelusers = newChannel.getUsers();
 		}
 		std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
 		std::string msg = "JOIN " + newChannel.getName() + "\n";
@@ -120,9 +124,9 @@ void	Server::processJoin(int fd, std::string arg)
 		if (topic.empty() == false)
 			msg = RPL_TOPIC(getClient(fd)->getNickname(), newChannel.getName(), topic).c_str();
 		else
-			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), newChannel.getName()).c_str();
+			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), ChannelName).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), "=", newChannel.getName(), newChannel.getUsers()).c_str();
+		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), "=", ChannelName, channelusers).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
 }
