@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:32:35 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:46:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,8 @@ void	Server::processJoin(int fd, std::string arg)
 			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), ChannelName).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), "=", ChannelName, channelusers).c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), ChannelName).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 10:24:13 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:45:56 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,8 +356,8 @@ void Server::processMode(int fd, std::string string)
 			}
 			client->processMode(fd, mode, size_of_cmd);
 		}
-		std::string msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), mode.name.c_str());
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		// std::string msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), mode.name.c_str());
+		// send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
 }
 
