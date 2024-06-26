@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 15:07:56 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:15:38 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@
 
 typedef struct s_mode
 {
-	std::vector<std::pair<std::string, std::vector<std::string> > >		mode;
+	std::string	mode;
+	std::vector<std::string>	params;
 	int							type;
 	int							client_fd;
 	std::string					clientNick;
