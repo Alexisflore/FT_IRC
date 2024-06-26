@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:43:05 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:10:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void Server::processInvite(int fd, std::string string)
 	std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
 	std::string msg = RPL_INVITING(localhost, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
 	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-	msg = RPL_INVITING(userid, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
+	msg = userid + " INVITE " + client->getNickname() + " :" + channel.getName() + "\n";
 	send(client->getFd(), msg.c_str(), strlen(msg.c_str()), 0);
 	std::cout << "Client " << fd << " has invited " << client->getNickname() << " to the channel " << channel.getName() << std::endl;
 }
