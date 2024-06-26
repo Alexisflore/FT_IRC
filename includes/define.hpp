@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 13:17:34 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 15:07:56 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ typedef struct s_mode
 # define RPL_PONG(user_id, token) (user_id + " PONG " + token + "\r\n")
 
 // QUIT
-# define RPL_QUIT(user_id, reason) (user_id + " QUIT :Quit: " + reason + "\r\n")
+# define RPL_QUIT(user_id, reason) (user_id + " QUIT " + reason + "\r\n")
 # define RPL_ERROR(user_id, reason) (user_id + " ERROR :" + reason + "\r\n")
 
 // PRIVMSG
