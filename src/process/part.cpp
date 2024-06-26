@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:06 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:42:35 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 11:35:57 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,20 @@ void Server::processPart(int fd, std::string arg)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return ;
 	}
+	std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
 	std::vector<std::string> args = split_args(arg, " ");
 	std::string channelIn;
-	if (args.size() < 2)
+	if (args.size() < 2 || args.size() > 3)
 	{
 		std::string msg = ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "PART").c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		std::cout << "Client " << fd << " needs to specify the channel name" << std::endl;
 		return ;
 	}
-
 	std::vector<std::string> channelNames = split_args(args[1], ",");
+	std::string reason;
+	if (args.size() == 3)
+		reason = args[2] + "\n";
 	for (std::vector<std::string>::iterator it = channelNames.begin(); it != channelNames.end(); it++)
 	{
 		Channel& channel = getChannelbyName(*it, getClient(fd)->getNickname());
@@ -41,19 +44,15 @@ void Server::processPart(int fd, std::string arg)
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 			return ;
 		}
-		channel.removeClient(*getClient(fd));
 		std::cout << "Client " << fd << " has left the channel " << channel.getName() << std::endl;
+		channel.removeClient(*getClient(fd));
 		if (channel.getClient(fd).getFd() == -1)
 		{
-			std::cout << "you are still in the channel" << std::endl;
+			std::cout << "you are not in the channel" << std::endl;
 		}
-	}
-	if (args[1][0] == '#' || args[1][0] == '&')
-	{
-		if (args[2][0] == ':')
-			channelIn = args[2];
-		else
-			channelIn = args[1];
+		std::string msg = RPL_PART(userid, channel.getName(), reason).c_str();
+		channel.sendMessage(msg);
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	}
 }
 

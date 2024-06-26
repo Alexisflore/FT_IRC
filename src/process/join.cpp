@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 11:43:00 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 11:06:18 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,11 @@ void	Server::processJoin(int fd, std::string arg)
 		newChannel.sendMessage(userid + " " + msg);
 		std::cout << "Client " << fd << " has joined the channel " << (*it).first << std::endl;
 		if (topic.empty() == false)
-			msg = RPL_TOPIC(getClient(fd)->getNickname(), newChannel.getName(), topic).c_str();
+			msg = RPL_TOPIC(getClient(fd)->getNickname(), ChannelName, topic).c_str();
 		else
 			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), ChannelName).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		std::cout << "joining with this message :" << msg << std::endl;
 		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), "=", ChannelName, channelusers).c_str();
 		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 		msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), ChannelName).c_str();
