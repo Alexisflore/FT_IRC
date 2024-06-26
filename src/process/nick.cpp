@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:03 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 13:09:51 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:20:37 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void Server::processNick(int fd, std::string string)
 		return ;
 	}
 	getClientbyRef(fd).setNickname(nickname);
+	msg = RPL_NICK(getClient(fd)->getNickname(), nickname).c_str();
+	send(fd, msg.c_str(), msg.length(), 0);
 	std::cout << "Client " << fd << " changed nickname to " << nickname << std::endl;
 	getClient(fd)->welcomeMessage(_creationTime);
 }
