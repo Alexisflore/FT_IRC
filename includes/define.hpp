@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 11:06:41 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 13:17:34 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ typedef struct s_mode
 // NICK
 # define ERR_NONICKNAMEGIVEN(client) (":localhost 431 " + client + " :There is no nickname.\r\n")
 # define ERR_ERRONEUSNICKNAME(client, nickname) (":localhost 432 " + client + " " + nickname + " :Erroneus nickname\r\n")
-# define ERR_NICKNAMEINUSE(client, nickname) (":localhost 433 " + client + " " + nickname + " :Nickname is already in use.\r\n")
+# define ERR_NICKNAMEINUSE(nickname, newnick) (":localhost 433 " + nickname + " " + newnick + " :Nickname is already in use.\r\n")
 # define RPL_NICK(userid, client) (userid + " NICK " + client + "\r\n")
 
 // NOTICE

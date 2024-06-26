@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:36 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 12:53:37 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,68 +16,31 @@ void	Server::processQuit(int fd, std::string arg)
 {
 	std::vector<std::string> args = split_args(arg, " ");
 	std::string quitMessage;
-
+	std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
+	std::string msg;
 	if (args.size() > 1)
 	{
-		quitMessage = args[1];
+		quitMessage += args[1];
 		for (size_t i = 2; i < args.size(); i++)
-		{
 			quitMessage += " " + args[i];
-		}
+		quitMessage += "\n";
 	}
-	else 
-	{
-		for (size_t i = 0; i < this->_clients.size(); i++)
-		{
-			if (_clients[i].getFd() == fd)
-			{
-				quitMessage = _clients[i].getNickname();
-			}
-			break;
-		}
-	}
-
-	std::cout << "Client " << fd << " has quit: " << quitMessage << std::endl;
-
-	closeConnection(fd, quitMessage);
+	else
+		quitMessage = ":Quit\n";
+	msg = RPL_QUIT(userid, quitMessage).c_str();
+	for (size_t i = 0; i < _clients.size(); i++)
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+	closeConnection(fd);
 }
 
-void	Server::closeConnection(int fd, std::string quitMessage)
+void	Server::closeConnection(int fd)
 {
 	std::stringstream ss;
 	ss << fd;
 	std::string fdStr = ss.str();
-
-	std::string disconectMessage = "Client " + fdStr + " has quit: " + quitMessage;
-	for (size_t i = 0; i < this->_clients.size(); i++)
-	{
-		if (_clients[i].getFd() != fd)
-			send(_clients[i].getFd(), disconectMessage.c_str(), disconectMessage.size(), 0);
-	}
-	
 	for (size_t i = 0; i < _channels.size(); i++)
-	{
 		_channels[i].leaveChannel(fd);
-	}
-
 	close(fd);
-
-	for (size_t i = 0; i < _clients.size(); i++)
-	{
-		if (_clients[i].getFd() == fd)
-		{
-			_clients.erase(_clients.begin() + i);
-			break;
-		}
-	}
-	
-	for (size_t i = 0; i < _fds.size(); i++)
-	{
-		if (_fds[i].fd == fd)
-		{
-			_fds.erase(_fds.begin() + i);
-			break;
-		}
-	}
-	
+	clearClient(fd);
+	std::cout << "Client " << fd << " has quit " << std::endl;
 }

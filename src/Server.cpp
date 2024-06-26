@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 17:16:40 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 13:06:24 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ Server::Server()
 Server::~Server()
 {
 	// _state = false;
+	std::string msg;
+	msg = "ERROR :Server is shutting down\n";
+	for (size_t i = 0; i < _clients.size(); i++)
+		send(_clients[i].getFd(), msg.c_str(), strlen(msg.c_str()), 0);
+	closeFds();
 	std::cout << ROUGE << "ircserv off" << REINIT << std::endl;
 }
 
@@ -130,7 +135,7 @@ Client *Server::getClient(int fd)
 		if (_clients[i].getFd() == fd)
 			return (&this->_clients[i]);
 	}
-	throw std::runtime_error("The client doesn't exist.");
+	return (NULL);
 }
 
 Client Channel::getClient(int fd)
@@ -157,7 +162,6 @@ Channel&	Server::getChannelbyName(std::string name, std::string clientName)
 	}
 	return *channelIt;
 }
-
 
 void		Server::signalHandler(int signum)
 {
@@ -297,24 +301,6 @@ std::vector<std::string>	Server::getArgs(std::string buffer)
 	return (args);
 }
 
-// std::vector<std::string>	Server::getArgs(char* buffer)
-// {
-// 	std::vector<std::string> args;
-// 	std::istringstream iss(buffer);
-// 	std::string str;
-
-// 	while (iss >> str)
-// 	{
-// 		size_t pos = str.find("\n");
-// 		if (pos != std::string::npos)
-// 			str = str.substr(0, pos);
-// 		args.push_back(str);
-// 	}
-
-// 	return (args);
-// }
-
-
 void	Server::treatData(std::string arg, int fd)
 {
 	std::string command[] = {
@@ -369,11 +355,15 @@ void	Server::initServer(char *port, char *pass)
 				if (_fds[i].fd == _socket_fd)
 					newClient();//accepter un client
 				else
+				{
+					// std::cout << "Client <" << _fds[i].fd << "> Data received" << std::endl;
 					newDataClient(_fds[i].fd);//recevoir une data du client
+				}
 			}
 		}
 	}
-	closeFds();//close tout les fds a l'arret du server
+
+	// closeFds();//close tout les fds a l'arret du server
 }
 
 int	Server::isNameInChannel(const std::string& channelName, const std::string& clientName)
