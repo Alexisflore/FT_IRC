@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 12:35:54 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:03:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ class Server
 		std::vector<std::string>	getArgs(std::string str);
 		Client						*getClient(int fd);
 		Client&						getClientbyRef(int fd);
-		Channel&					getChannelbyName(std::string name, std::string clientName);
+		Channel&					getChannelbyName(std::string name, int fd);
 		// void						selectChannels(std::vector< std::string > channelNames, std::vector<std::string>* password, int fd);
 		Client*						getClientbyNickname(std::string nickname);
 

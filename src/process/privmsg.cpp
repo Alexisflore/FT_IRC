@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:11 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 11:32:22 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:06:40 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void Server::processPrivmsg(int fd, std::string string)
 
 void Server::sendToChannel(int fd, std::string channelName, std::string message)
 {
-	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	Channel &channel = getChannelbyName(channelName, fd);
 	if (!channel.isClientInChannel(fd))
 	{
 		std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channelName).c_str();

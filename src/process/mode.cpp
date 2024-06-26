@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 19:25:19 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:06:56 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,7 +337,7 @@ void Server::processMode(int fd, std::string string)
 	int size_of_cmd = createModeAndParams(fd, string, mode);
 	if ( mode.type == CHANNEL_MODE)
 	{
-		Channel &channel = getChannelbyName(mode.name, getClient(fd)->getNickname());
+		Channel &channel = getChannelbyName(mode.name, fd);
 		channel.processMode(fd, mode, size_of_cmd);
 	}
 	else

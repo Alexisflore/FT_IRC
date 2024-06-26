@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:16 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 19:52:21 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:05:33 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void Server::processTopic(int fd, std::string string)
 		return ;
 	}
 	std::string channelName = findChannel(string, "TOPIC");
-	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	Channel &channel = getChannelbyName(channelName, fd);
 	if (string.find(":") == std::string::npos)
 			displayTopic(fd, channel);
 	else if (channel.canClientSetTopic(fd) == true)

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 17:17:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:04:39 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void Server::processInvite(int fd, std::string string)
 	}
 	std::string channelName = args[2];
 	std::string clientName = args[1];
-	Channel &channel = getChannelbyName(channelName, getClient(fd)->getNickname());
+	Channel &channel = getChannelbyName(channelName, fd);
 	if (!channel.isClientInChannel(fd))
 	{
 		std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channel.getName()).c_str();

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 19:59:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:03:30 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,14 +149,14 @@ Client Channel::getClient(int fd)
 	return (Client());
 }
 
-Channel&	Server::getChannelbyName(std::string name, std::string clientName)
+Channel&	Server::getChannelbyName(std::string name, int fd)
 {
 	std::vector<Channel>::iterator channelIt = std::find_if(this->_channels.begin(), this->_channels.end(), ChannelNameComparator(name));
 	if (channelIt == this->_channels.end())
 	{
-		std::string msg = ERR_NOSUCHCHANNEL(clientName, name);
-		send(findFdByName(clientName), msg.c_str(), strlen(msg.c_str()), 0);
-		std::cout << "Client " << clientName << " no such channel " << name << std::endl;
+		std::string msg = ERR_NOSUCHCHANNEL(getClient(fd)->getNickname(), name).c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		std::cout << "Client " << fd << " is trying to join a channel that doesn't exist" << std::endl;
 		throw std::runtime_error("The channel doesn't exist.");
 		return *channelIt;
 	}

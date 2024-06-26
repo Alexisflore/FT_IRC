@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:09:06 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 11:35:57 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:05:12 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void Server::processPart(int fd, std::string arg)
 		reason = args[2] + "\n";
 	for (std::vector<std::string>::iterator it = channelNames.begin(); it != channelNames.end(); it++)
 	{
-		Channel& channel = getChannelbyName(*it, getClient(fd)->getNickname());
+		Channel& channel = getChannelbyName(*it, fd);
 		if (!channel.isClientInChannel(fd))
 		{
 			std::string msg = ERR_NOTONCHANNEL(getClient(fd)->getNickname(), channel.getName()).c_str();
