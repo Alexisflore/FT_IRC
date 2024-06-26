@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 17:27:26 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:42:05 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void		Client::welcomeMessage(std::string creationTime)
 
 void Client::displayMode(int fd, std::string nick)
 {
-	std::string localhost = "localhost";
+	std::string localhost = ":localhost";
 	std::string msg;
 	std::string mode = "+";
 	std::vector<std::pair<char, bool> > modes = _mode.getMode();
@@ -147,6 +147,8 @@ void Client::displayMode(int fd, std::string nick)
 		if (it->second == true)
 			mode += it->first;
 	}
+	if (mode == "+")
+		mode = "";
 	msg = RPL_UMODEIS(localhost, nick, mode);
 	send(fd, msg.c_str(), msg.length(), 0);
 }

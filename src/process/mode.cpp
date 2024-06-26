@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 17:03:39 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:44:20 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,15 +217,15 @@ void Client::setModeByType(int fd, char mode, char value)
 		_mode.setModeByType(mode, value);
 	else if (value == '+')
 	{
-		if (_mode.getModeValue('o') == true)
-			_mode.setModeByType(mode, value);
-		else if (_mode.getModeValue('o') == false && fd != getFd() && mode == 'o')
+		if (_mode.getModeValue('o') == false && fd != getFd() && mode == 'o')
 		{
 			std::string msg = ERR_USERSDONTMATCH(getNickname()).c_str();
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 			std::cout << "The client doesn't match." << std::endl;
 			return ;
 		}
+		else
+			_mode.setModeByType(mode, value);
 	}
 	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }
