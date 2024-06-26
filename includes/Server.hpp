@@ -105,6 +105,8 @@ class Server
 		void						processCap(int fd, std::string);
 		void						processPing(int fd, std::string);
 		void						closeConnection(int fd);
+		bool						isClientInChannel(const std::string& channelName, int fd);
+		void						sendMessageToClient(int fd, const std::string& message);
 	private:
 		int							_port;
 		int							_socket_fd;

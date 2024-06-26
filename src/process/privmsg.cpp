@@ -77,3 +77,85 @@ void Server::sendToClient(int fd, std::string clientName, std::string message)
 	send(client->getFd(), message.c_str(), message.length(), 0);
 		std::cout << "Client " << fd << " has sent " << message << "to " << clientName << std::endl;
 }
+
+// void	Server::processPrivmsg(int fd, std::string str)
+// {
+// 	std::vector<std::string> args = split_args(str, " ");
+
+// 	if (args.size() < 3)
+// 	{
+// 		std::string error = ERR_NOTEXTTOSEND(getClient(fd)->getNickname());
+// 		send(fd, error.c_str(), error.length(), 0);
+// 		return ;
+// 	}
+
+// 	std::string target = args[1];
+// 	std::string msg = args[2];
+// 	for (size_t i = 2; i < args.size(); i++)
+// 	{
+// 		msg += " " + args[i];
+// 	}
+	
+// 	std::vector<std::string> receivers;
+// 	std::istringstream iss(target);
+// 	std::string receiver;
+// 	while (std::getline(iss, receiver, ','))
+// 	{
+// 		receivers.push_back(receiver);
+// 	}
+
+// 	for (size_t i = 0; i < receivers.size(); i++)
+// 	{
+// 		if (receivers[i][0] == '#')
+// 		{
+// 			std::string channelName = receivers[i];
+// 			if (this->isClientInChannel(channelName, fd))
+// 			{
+// 				sendToChannel(fd, channelName, msg);
+// 			}
+// 			else
+// 			{
+// 				std::string error = ERR_CANNOTSENDTOCHAN(getClient(fd)->getNickname(), channelName);
+// 				send(fd, error.c_str(), error.length(), 0);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			bool clientFound = false;
+//             for (size_t j = 0; j < _clients.size(); ++j)
+// 			{
+//                 if (_clients[j].getNickname() == receivers[i])
+// 				{
+//                     sendMessageToClient(_clients[j].getFd(), msg);
+//                     clientFound = true;
+//                     break;
+//                 }
+//             }
+//             if (!clientFound)
+// 			{
+//                 std::string error = ERR_NOSUCHNICK(getClient(fd)->getNickname(), receivers[i]);
+//                 send(fd, error.c_str(), error.length(), 0);
+//             }
+// 		}
+// 	}
+	
+// }
+
+// void	Server::sendMessageToClient(int fd, const std::string& message)
+// {
+//     std::string privateMessage = "Private message: " + message + "\r\n";
+//     send(fd, privateMessage.c_str(), privateMessage.length(), 0);
+// }
+
+
+// bool	Server::isClientInChannel(const std::string& channelName, int fd)
+// {
+//     for (size_t i = 0; i < _channels.size(); ++i)
+// 	{
+//         if (_channels[i].getName() == channelName)
+// 		{
+//             return _channels[i].isClientInChannel(fd);
+//         }
+//     }
+//     return false;
+// }
