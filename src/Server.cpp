@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 13:06:24 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 19:59:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,6 +331,8 @@ void	Server::treatData(std::string arg, int fd)
 		}
 	}
 	std::cout << "Command " << cmd << " not found." << std::endl;
+	std::string msg = ERR_UNKNOWNCOMMAND(getClient(fd)->getNickname(), cmd).c_str();
+	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }
 
 void	Server::initServer(char *port, char *pass)
