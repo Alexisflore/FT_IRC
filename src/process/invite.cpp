@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 17:10:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:17:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void Server::processInvite(int fd, std::string string)
 	}
 	channel.joinChannel(*client);
 	channel.setClientasInvited(client->getFd());
-	std::string localhost = "localhost";
+	std::string localhost = ":localhost";
 	std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
 	std::string msg = RPL_INVITING(localhost, getClient(fd)->getNickname(), client->getNickname(), channel.getName()).c_str();
 	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
