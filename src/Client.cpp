@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:28 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 18:05:26 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:27:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,8 @@ void		Client::welcomeMessage(std::string creationTime)
 	ss << ltm->tm_mday << "/" << (ltm->tm_mon + 1) << "/" << (ltm->tm_year + 1900) << " " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec;
 	datetime = ss.str();
 	msg = RPL_CREATED(_nickname, creationTime);
+	send(_fd, msg.c_str(), msg.length(), 0);
+	msg = RPL_MYINFO(_nickname, localhost, "1.0", "o", "it", "klo");
 	send(_fd, msg.c_str(), msg.length(), 0);
 }
 
