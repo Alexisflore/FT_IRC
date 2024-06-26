@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 20:06:56 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 21:42:31 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,12 +164,14 @@ void Channel::setMode(t_mode* mode)
 				{
 					setModeByType(mode->client_fd, mode->mode[i], lastOperator, mode->params[0]);
 					mode->params.erase(mode->params.begin());
+					std::cout << mode->params.size() << std::endl;
 				}
 			}
 		else
 		{
-			std::cout << "mode: " << mode->mode[i] << " value: " << lastOperator << std::endl;
 			msg = "MODE " + getName() + " " + std::string(1, lastOperator) + mode->mode[i] + "\n";
+			if (_modes.getModeValue(mode->mode[i]) == (lastOperator == '+'))
+				return ;
 			sendMessage(userid + " " + msg);
 			_modes.setModeByType(mode->mode[i], lastOperator);
 		}
@@ -213,20 +215,16 @@ void Client::setModeByType(int fd, char mode, char value)
 {
 	std::string msg = "MODE " + getNickname() + " " + std::string(1, value) + mode + "\n";
 	std::string localhost = "localhost";
-	if (value == '-')
-		_mode.setModeByType(mode, value);
-	else if (value == '+')
+	if (_mode.getModeValue(mode) == (value == '+'))
+		return ;
+	if (value == '+' && _mode.getModeValue('o') == false && fd != getFd() && mode == 'o')
 	{
-		if (_mode.getModeValue('o') == false && fd != getFd() && mode == 'o')
-		{
 			std::string msg = ERR_USERSDONTMATCH(getNickname()).c_str();
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 			std::cout << "The client doesn't match." << std::endl;
 			return ;
-		}
-		else
-			_mode.setModeByType(mode, value);
 	}
+	_mode.setModeByType(mode, value);
 	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 }
 
@@ -246,9 +244,17 @@ void Channel::setModeByType(int fd, char mode, char value, std::string param)
 			throw std::invalid_argument("The client doesn't exist.");
 		}
 		if (value == '+')
+		{
+			if (isClientOperator(client.getFd()))
+				return 
 			setClientasOperator(client.getFd());
+		}
 		else
+		{
+			if (isClientOperator(client.getFd()) == false)
+				return ;
 			setClientasNormal(client.getFd());
+		}
 		msg = "MODE " + getName() + " " + std::string(1, value) + mode + " " + client.getNickname() + "\n";
 		sendMessage(userid + " " + msg);
 		return ;
@@ -257,32 +263,43 @@ void Channel::setModeByType(int fd, char mode, char value, std::string param)
 	{
 		if (value == '+')
 		{
-			if (_modes.getPassword().empty() == false)
+			if (_modes.getModeValue('k') == true)
 			{
 				msg = ERR_KEYSET(getClient(fd).getNickname(), getName()).c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-				throw std::invalid_argument("The password is already set.");
+				return ;
 			}
 			_modes.setPassword(param);
 			msg += param;
 		}
 		else
+		{
+			if (_modes.getModeValue('k') == false)
+				return ;
 			_modes.clearPassword();
+		}
 	}
 	else if (mode == 'l')
 	{
 		if (value == '+')
 		{
-			if (_modes.setLimit(param) == false)
+			if (ft_atoll(param.c_str()) == -1)
 			{
 				std::string msg = ERR_UNKNOWNMODE(getClient(fd).getNickname(), mode + " ").c_str();
 				send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-				throw std::invalid_argument("The limit is invalid.");
+				return ;
 			}
+			if (ft_atoll(param.c_str()) == _modes.getLimit())
+				return ;
+			_modes.setLimit(param);
 			msg += param;
 		}
 		else
+		{
+			if (_modes.getModeValue('l') == false)
+				return;
 			_modes.clearLimit();
+		}
 	}
 	msg += "\n";
 	sendMessage(userid + " " + msg);
@@ -350,12 +367,6 @@ void Server::processMode(int fd, std::string string)
 			throw std::invalid_argument("The client doesn't exist.");
 		}
 		client->processMode(fd, mode, size_of_cmd);
-	}
-	if (mode.params.size() > 0)
-	{
-		std::string msg = ERR_NEEDMOREPARAMS(mode.clientNick, "MODE").c_str();
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("Not enough parameters.");
 	}
 }
 
