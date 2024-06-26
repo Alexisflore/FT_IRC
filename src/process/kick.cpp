@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:54 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 18:19:32 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 18:26:51 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ void Server::processKick(int fd, std::string arg)
 	msg = RPL_KICK(userid, channel.getName(), client.getNickname(), comment).c_str();
 	send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 	msg = "KICK " + channel.getName() + " " + client.getNickname() + " " + comment + "\n";
-	channel.sendprivmsg(fd, userid + " " + msg);
 	channel.removeClient(client);
+	channel.sendprivmsg(fd, userid + " " + msg);
+	send(client.getFd(), (userid + " " + msg).c_str(), strlen((userid + " " + msg).c_str()), 0);
 	std::cout << "Client " << fd << " has kicked " << client.getNickname() << " from the channel " << channel.getName() << std::endl;
 }
