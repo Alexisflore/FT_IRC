@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 21:42:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 21:55:08 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void Channel::setMode(t_mode* mode)
 				{
 					msg = ERR_NEEDMOREPARAMS(mode->clientNick, "MODE").c_str();
 					send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
-					throw std::invalid_argument("The mode needs parameters.");
+					return ;
 				}
 				else
 				{
@@ -186,7 +186,7 @@ void	Client::setMode(t_mode* mode)
 	{
 		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode + " ").c_str();
 		send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
-		throw std::invalid_argument("The mode must start with + or -");
+		return ;
 	}
 	lastOperator = mode->mode[0];
 	for (unsigned long i = 1; i < mode->mode.size(); i++)
@@ -241,7 +241,8 @@ void Channel::setModeByType(int fd, char mode, char value, std::string param)
 		{
 			std::string msg = ERR_NOSUCHNICK(getClient(fd).getNickname(), param).c_str();
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-			throw std::invalid_argument("The client doesn't exist.");
+			std::cout << "The client doesn't exist." << std::endl;
+			return ;
 		}
 		if (value == '+')
 		{
