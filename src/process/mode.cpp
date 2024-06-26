@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 17:44:20 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 19:25:19 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,6 +350,12 @@ void Server::processMode(int fd, std::string string)
 			throw std::invalid_argument("The client doesn't exist.");
 		}
 		client->processMode(fd, mode, size_of_cmd);
+	}
+	if (mode.params.size() > 0)
+	{
+		std::string msg = ERR_NEEDMOREPARAMS(mode.clientNick, "MODE").c_str();
+		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		throw std::invalid_argument("Not enough parameters.");
 	}
 }
 
