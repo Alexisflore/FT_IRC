@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:52 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 11:06:18 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:28:29 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	Server::processJoin(int fd, std::string arg)
 		return ;
 	}
 	arg.erase(0, 5);
-	std::string ChannelName;
+	std::string msg;
 	std::string channelusers;
 	std::vector<std::string> args = split_args(arg, " ");
 	if (args.size() == 0 || args[0].empty() || args.size() > 2)
@@ -33,7 +33,8 @@ void	Server::processJoin(int fd, std::string arg)
 	}
 	std::vector<std::string> channelNames;
 	std::vector<std::string> passwords;
-	std::string topic;
+	// std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
+	// std::string topic;
 	if (args.size() == 2)
 		passwords = split_args(args[1], ",");
 	Channel newChannel;
@@ -93,22 +94,22 @@ void	Server::processJoin(int fd, std::string arg)
 			}
 			else
 			{
-				std::cout << "Client " << fd << " joined the channel " << channel.getName() << std::endl;
 				if (channel.isClientInChannel(fd) == true)
 					channel.setClientasNormal(fd);
 				else
 					channel.joinChannel(*getClient(fd));
-				std::cout << "Client " << channel.getClient(fd).getNickname() << " joined the channel " << channel.getName() << std::endl;
-				topic = channel.getTopic();
-				ChannelName = channel.getName();
-				channelusers = channel.getUsers();
+				// ChannelName = channel.getName();
+				// channelusers = channel.getUsers();
+				// msg = " JOIN :" + ChannelName + "\n";
+				// channel.sendMessage(userid + msg);
+				channel.messageJoin(getClient(fd));
+				// std::cout << "IAM HERE" << std::endl;
 			}
 		}
 		else
 		{
 			std::cout << "Channel " << (*it).first << " does not exist" << std::endl;
 			Channel newChannel((*it).first);
-			ChannelName = newChannel.getName();
 			this->_channels.push_back(newChannel);
 			for (std::vector<Channel>::iterator it2 = this->_channels.begin(); it2 != this->_channels.end(); it2++)
 			{
@@ -120,26 +121,28 @@ void	Server::processJoin(int fd, std::string arg)
 					break;
 				}
 			}
-			topic = newChannel.getTopic();
-			channelusers = newChannel.getUsers();
+			newChannel.messageJoin(getClient(fd));
 		}
-		std::string userid = USER_ID(getClient(fd)->getNickname(), getClient(fd)->getUsername());
-		std::string msg = "JOIN " + newChannel.getName() + "\n";
-		newChannel.sendMessage(userid + " " + msg);
-		std::cout << "Client " << fd << " has joined the channel " << (*it).first << std::endl;
-		if (topic.empty() == false)
-			msg = RPL_TOPIC(getClient(fd)->getNickname(), ChannelName, topic).c_str();
-		else
-			msg = RPL_NOTOPIC(getClient(fd)->getNickname(), ChannelName).c_str();
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		std::cout << "joining with this message :" << msg << std::endl;
-		msg = RPL_NAMREPLY(getClient(fd)->getNickname(), "=", ChannelName, channelusers).c_str();
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
-		msg = RPL_ENDOFNAMES(getClient(fd)->getNickname(), ChannelName).c_str();
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		// std::cout << "joining with this message :" << msg << std::endl;
 	}
 }
 
+void Channel::messageJoin(Client *client)
+{
+	std::string userid = USER_ID(client->getNickname(), client->getUsername());
+	std::string topic = this->getTopic();
+	std::string msg = " JOIN :" + _name + "\n";
+	sendMessage(userid + msg);
+	if (topic.empty() == false)
+		msg = RPL_TOPIC(client->getNickname(), _name, topic).c_str();
+	else
+		msg = RPL_NOTOPIC(client->getNickname(), _name).c_str();
+	send(client->getFd(), msg.c_str(), strlen(msg.c_str()), 0);
+	msg = RPL_NAMREPLY(client->getNickname(), "=", _name, getUsers()).c_str();
+	send(client->getFd(), msg.c_str(), strlen(msg.c_str()), 0);
+	msg = RPL_ENDOFNAMES(client->getNickname(), _name).c_str();
+	send(client->getFd(), msg.c_str(), strlen(msg.c_str()), 0);
+}
 // void Server::addClientToChannel(int fd, Channel *channel)
 // {
 // 	channel->joinChannel(getClient(fd));

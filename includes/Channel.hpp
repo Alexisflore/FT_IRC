@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:10 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 15:16:13 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:15:27 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ public:
 	/*--------------Methods--------------*/
     void    					leaveChannel(int clientFd);
     void 						sendMessage(const std::string message);
+	void 						messageJoin(Client *client);
 	void						sendprivmsg(int fd, const std::string message);
 	void						sendNotification(const std::string message, int fd);
     void    					joinChannel(Client client);

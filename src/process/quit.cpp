@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 14:42:47 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 12:53:37 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:28:27 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,11 @@ void	Server::processQuit(int fd, std::string arg)
 	}
 	else
 		quitMessage = ":Quit\n";
+	std::cout << "here" << std::endl;
 	msg = RPL_QUIT(userid, quitMessage).c_str();
 	for (size_t i = 0; i < _clients.size(); i++)
-		send(fd, msg.c_str(), strlen(msg.c_str()), 0);
+		if (_clients[i].getFd() != fd)
+			send(_clients[i].getFd(), msg.c_str(), strlen(msg.c_str()), 0);
 	closeConnection(fd);
 }
 
