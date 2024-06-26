@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 16:14:21 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 15:49:26 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,11 @@ long long 				ft_atoll(const char *str)
 		return -1;
 	else if (str[i] == '+')
 		i++;
+	for (int k = i; str[k] != '\0'; k++)
+		if (isdigit(str[k]) == 0)
+			return -1;
 	while (str[i] >= '0' && str[i] <= '9')
 	{
-		if (isdigit(str[i]) == 0)
-			return -1;
 		res = res * 10 + str[i] - '0';
 		if (res > MAX_INT)
 			return -1;
@@ -165,7 +166,7 @@ void Channel::setMode(t_mode* mode)
 		{
 			std::cout << "mode: " << mode->mode[mode->index].first[i] << " value: " << lastOperator << std::endl;
 			msg = "MODE " + getName() + " " + std::string(1, lastOperator) + mode->mode[mode->index].first[i] + "\n";
-			sendMessage(msg);
+			sendMessage(userid + " " + msg);
 			_modes.setModeByType(mode->mode[mode->index].first[i], lastOperator);
 		}
 	}
@@ -236,7 +237,7 @@ void Channel::setModeByType(int fd, char mode, char value, std::vector<std::stri
 	msg = "MODE " + getName() + " " + std::string(1, value) + mode + " ";
 	if (mode == 'o')
 	{
-		for (unsigned long i = 1; i < params.size(); i++)
+		for (unsigned long i = 0; i < params.size(); i++)
 		{
 			client = getClientByNick(params[i]);
 			if (client.getFd() == -1)

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 01:34:39 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/25 15:16:47 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/26 15:38:23 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,42 +223,36 @@ bool Channel::isPasswordProtected(){return _modes.getModeValue('k');}
 bool Channel::isTopicProtected(){return _modes.getModeValue('t');}
 std::string Channel::getPassword() {return _modes.getPassword();}
 bool Client::operator<(const Client& other) const {return this->getNickname() < other.getNickname();}
+
+std::string displaymodewithparams(MODE mode)
+{
+	std::string modewithparams;
+	modewithparams = "+";
+	if (mode.getModeValue('i'))
+		modewithparams += "i";
+	if (mode.getModeValue('t'))
+		modewithparams += "t";
+	if (mode.getModeValue('l'))
+	{
+		std::stringstream ss;
+		ss << mode.getLimit();
+		std::string st = ss.str();
+		modewithparams += "l " + st;
+	}
+	if (mode.getModeValue('k'))
+	{
+		std::string pass = mode.getPassword();
+		if (mode.getModeValue('l'))
+			modewithparams += " +k " + pass;
+		else
+			modewithparams += "k " + pass;
+	}
+	return modewithparams;
+}
 void	Channel::displayMode(int fd, std::string nick)
 {
-	std::string msg;
-	std::string mode = "+";
-	std::vector<std::pair<char, bool> > modes = _modes.getMode();
-	for (std::vector<std::pair<char, bool> >::iterator it = modes.begin(); it != modes.end(); it++)
-	{
-		if (it->second == true)
-		{
-			mode += it->first;
-			if (it->first == 'l')
-			{
-				std::stringstream ss;
-    			ss << _modes.getLimit();
-				mode += " " + ss.str();
-				mode += " +";
-			}
-			if (it->first == 'k')
-			{
-				mode += " " + _modes.getPassword();
-				mode += " +";
-			}
-			if (it->first == 'o')
-			{
-				for (std::vector<std::pair<Client, char> >::iterator it2 = _clients.begin(); it2 != _clients.end(); it2++)
-				{
-					if (it2->second == 'o')
-						mode += " " + it2->first.getNickname();
-				}
-			}
-			mode += " +";
-		}
-	}
-	if (mode == "+")
-		mode += "";
-	msg = RPL_CHANNELMODEIS(nick, _name, mode).c_str();
+	std::string mode = displaymodewithparams(_modes);
+	std::string msg = RPL_CHANNELMODEIS(nick, _name, mode).c_str();
 	send(fd, msg.c_str(), msg.length(), 0);
 }
 
