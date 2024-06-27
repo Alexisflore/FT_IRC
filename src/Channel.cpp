@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 01:34:39 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 21:05:07 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 12:08:25 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void						Channel::setClientasOperator(int clientFd) {
 	{
 		if (it->first.getFd() == clientFd)
 		{
+			std::cout << "Client " << clientFd << " is now operator in the channel " << this->_name << std::endl;
 			it->second = 'o';
 			break ;
 		}
@@ -177,7 +178,8 @@ void Channel::sendMessage(const std::string message)
 {
 	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		send(it->first.getFd(), message.c_str(), message.length(), 0);
+		if (it->second != 'b' && it->second != 'i')
+			send(it->first.getFd(), message.c_str(), message.length(), 0);
 	}
 }
 
@@ -269,7 +271,7 @@ void Channel::sendprivmsg(int fd, std::string message)
 {
 	for (std::vector<std::pair<Client, char> >::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (it->first.getFd() != fd)
+		if (it->first.getFd() != fd && it->second != 'b' && it->second != 'i')
 			send(it->first.getFd(), message.c_str(), message.length(), 0);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 21:55:08 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 12:06:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,13 +242,14 @@ void Channel::setModeByType(int fd, char mode, char value, std::string param)
 			std::string msg = ERR_NOSUCHNICK(getClient(fd).getNickname(), param).c_str();
 			send(fd, msg.c_str(), strlen(msg.c_str()), 0);
 			std::cout << "The client doesn't exist." << std::endl;
-			return ;
+			return;
 		}
 		if (value == '+')
 		{
 			if (isClientOperator(client.getFd()))
-				return 
-			setClientasOperator(client.getFd());
+				return ;
+			std::cout << "here" << std::endl;
+			this->setClientasOperator(client.getFd());
 		}
 		else
 		{
