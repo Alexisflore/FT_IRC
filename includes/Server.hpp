@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 20:03:26 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:48:03 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ class Server
 		int							createModeAndParams(int fd, std::string cmd, t_mode& mode);
 		void						sendToChannel(int fd, std::string channelName, std::string message);
 		void						sendToClient(int fd, std::string clientName, std::string message);
+		void						displayWho(int fd, Channel &channel);
 
 		/*--------------PROCESS--------------*/
 		void						processJoin(int fd, std::string);
@@ -104,6 +105,7 @@ class Server
 		void						processPart(int fd, std::string);
 		void						processCap(int fd, std::string);
 		void						processPing(int fd, std::string);
+		void						processWho(int fd, std::string);
 		void						closeConnection(int fd);
 		bool						isClientInChannel(const std::string& channelName, int fd);
 		void						sendMessageToClient(int fd, const std::string& message);

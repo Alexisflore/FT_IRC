@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/27 12:06:45 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:31:01 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,13 @@ void Channel::setMode(t_mode* mode)
 	char lastOperator;
 	std::string msg;
 	std::string userid = USER_ID(mode->clientNick, getClient(mode->client_fd).getUsername());
-	if (mode->mode[0] != '+' && mode->mode[0] != '-')
+	if (mode->mode == "b")
+	{
+		msg = RPL_ENDOFBANLIST(mode->clientNick, getName()).c_str();
+		send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
+		return ;
+	}
+	if (mode->mode[0] != '+' && mode->mode[0] != '-' && mode->mode[0] != 'b')
 	{
 		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode + " ").c_str();
 		send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);

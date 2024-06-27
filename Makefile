@@ -6,7 +6,7 @@
 #    By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/13 09:48:39 by alfloren          #+#    #+#              #
-#    Updated: 2024/06/20 18:03:15 by alfloren         ###   ########.fr        #
+#    Updated: 2024/06/27 17:56:15 by alfloren         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRC_FILES :=		process/mode.cpp \
 					process/user.cpp \
 					process/pass.cpp \
 					process/cap.cpp \
+					process/who.cpp \
 
 OBJ_FILES	:= $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
 DEP_FILES	:= $(OBJ_FILES:.o=.d)

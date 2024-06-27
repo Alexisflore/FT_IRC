@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 11:39:17 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/26 17:39:44 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:30:45 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,3 +165,10 @@ typedef struct s_mode
 
 // USER
 # define ERR_ALREADYREGISTERED(client) (":localhost 462 " + client + " :You may not reregister.\r\n")
+
+// WHO
+# define RPL_WHOREPLY(clientnick, canal, username, host, nick, mode, hopcount, realname) (":localhost 352 " + clientnick + " " + canal + " " + username + " " + host + " localhost " + nick + " " + mode + " " + hopcount + " " + realname + "\r\n")
+# define RPL_ENDOFWHO(client, name) (":localhost 315 " + client + " " + name + " :End of /WHO list.\r\n")
+
+// BAN
+# define RPL_ENDOFBANLIST(client, channel) (":localhost 368 " + client + " " + channel + " :End of channel ban list\r\n")
