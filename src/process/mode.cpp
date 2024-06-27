@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:08:56 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/27 18:31:01 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:47:48 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,6 @@ void Channel::setMode(t_mode* mode)
 	char lastOperator;
 	std::string msg;
 	std::string userid = USER_ID(mode->clientNick, getClient(mode->client_fd).getUsername());
-	if (mode->mode == "b")
-	{
-		msg = RPL_ENDOFBANLIST(mode->clientNick, getName()).c_str();
-		send(mode->client_fd, msg.c_str(), strlen(msg.c_str()), 0);
-		return ;
-	}
 	if (mode->mode[0] != '+' && mode->mode[0] != '-' && mode->mode[0] != 'b')
 	{
 		msg = ERR_UNKNOWNMODE(mode->clientNick, mode->mode + " ").c_str();
@@ -324,6 +318,12 @@ void Channel::processMode(int fd, t_mode mode, int size_of_cmd)
 	}
 	if (size_of_cmd == 2)
 		displayMode(fd, mode.clientNick);
+	else if (mode.mode == "b")
+	{
+		std::string msg = RPL_ENDOFBANLIST(mode.clientNick, getName()).c_str();
+		send(mode.client_fd, msg.c_str(), strlen(msg.c_str()), 0);
+		return ;
+	}
 	else if (isClientOperator(fd) == false && getClient(fd).getMode().getModeValue('o') == false)
 	{
 		std::string msg = ERR_CHANOPRIVSNEEDED(mode.clientNick, getName()).c_str();
