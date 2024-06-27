@@ -6,7 +6,7 @@
 /*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:39:13 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/27 18:18:31 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:36:35 by alfloren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void Server::displayWho(int fd, Channel &channel)
 
 	for (std::vector<std::pair<Client, char> >::iterator it = clients.begin(); it != clients.end(); it++)
 	{
+		if (it->second == 'i')
+			continue ;
+		else
 		user.clear();
 		user = RPL_WHOREPLY(getClient(fd)->getNickname(), channel.getName(), it->first.getNickname(), it->first.getUsername(), it->first.getIpAdd(), "H", "0", it->first.getRealName()).c_str();
 		msg = user.c_str();
