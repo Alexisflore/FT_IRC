@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:47:59 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/27 18:21:06 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/28 05:10:15 by kali             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,17 +305,17 @@ void	Server::treatData(std::string arg, int fd)
 {
 	std::string command[] = {
 		"JOIN", "QUIT", "NAMES", "BONG", "PART", "KICK", "TOPIC", "PRIVMSG",
-		"INVITE", "MODE", "NICK", "USER", "PASS", "CAP", "PING", "WHO"};
+		"INVITE", "MODE", "NICK", "USER", "PASS", "CAP", "PING", "WHO", "OPER"};
 
-	void	(Server::*commandFunc[16])(int, std::string) = {
+	void	(Server::*commandFunc[17])(int, std::string) = {
 		&Server::processJoin, &Server::processQuit, &Server::processNames, &Server::processBong,
 		&Server::processPart, &Server::processKick, &Server::processTopic, &Server::processPrivmsg,
 		&Server::processInvite, &Server::processMode, &Server::processNick, &Server::processUser,
-		&Server::processPass, &Server::processCap, &Server::processPing, &Server::processWho};
+		&Server::processPass, &Server::processCap, &Server::processPing, &Server::processWho, &Server::processOper};
 
 	std::string cmd;
 	arg.find(" ") != std::string::npos ? cmd = arg.substr(0, arg.find(" ")) : cmd = arg;
-	for (size_t i = 0; i < 16; i++)
+	for (size_t i = 0; i < 17; i++)
 	{
 		if (strcmp(cmd.c_str(), command[i].c_str()) == 0)
 		{

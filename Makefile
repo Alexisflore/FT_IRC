@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+         #
+#    By: kali <kali@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/13 09:48:39 by alfloren          #+#    #+#              #
-#    Updated: 2024/06/27 17:56:15 by alfloren         ###   ########.fr        #
+#    Updated: 2024/06/28 05:11:38 by kali             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ SRC_FILES :=		process/mode.cpp \
 					process/pass.cpp \
 					process/cap.cpp \
 					process/who.cpp \
+					process/oper.cpp \
 
 OBJ_FILES	:= $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
 DEP_FILES	:= $(OBJ_FILES:.o=.d)

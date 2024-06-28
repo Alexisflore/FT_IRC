@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alfloren <alfloren@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:48:20 by alfloren          #+#    #+#             */
-/*   Updated: 2024/06/27 17:48:03 by alfloren         ###   ########.fr       */
+/*   Updated: 2024/06/28 05:11:23 by kali             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ class Server
 		void						processCap(int fd, std::string);
 		void						processPing(int fd, std::string);
 		void						processWho(int fd, std::string);
+		void						processOper(int fd, std::string string);
 		void						closeConnection(int fd);
 		bool						isClientInChannel(const std::string& channelName, int fd);
 		void						sendMessageToClient(int fd, const std::string& message);
